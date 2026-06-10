@@ -1,34 +1,41 @@
 # 1001 Tales of Competitive Age of Empires II
 
-Everything for thesis on generating live text commentary for Age of Empires II matches: the pipeline that turns exported CaptureAge game data into commentary (`sage/`), the R analysis for the two user studies (`studies/`), and the written thesis itself (`thesis/`). The additional datasets can be found on [Hugging Face](https://huggingface.co/datasets/Siewart/sage).
+Everything for thesis on generating live text commentary for Age of Empires II matches: the pipeline that turns exported CaptureAge game data into commentary (`packages/sage-core/`), the R analysis for the two user studies (`studies/`), and the written thesis itself (`thesis/`). The additional datasets can be found on [Hugging Face](https://huggingface.co/datasets/Siewart/sage).
 
 ## Layout
 
 ```
-sage/      the data-to-text pipeline (TypeScript). Its own Yarn workspace.
+packages/
+  sage-core/         the data-to-text pipeline (TypeScript)
+  simplenlg-core/    TypeScript port of SimpleNLG (location-name generation)
+  simplenlg-unwrap/  CLI wrapper around simplenlg-core
 studies/   R analysis for the two studies
   prelim/    preliminary survey - which bits of commentary are worth saying
   eval/      main evaluation - a 2x2 within-subject rating study
 thesis/    the thesis (LaTeX)
 ```
 
-`sage/` is a self-contained Yarn monorepo with its own lockfile and toolchain, so it sits outside the top-level workspace. The top-level workspace covers the R studies and the thesis, which is mostly so `yarn lint` and `yarn format` can reach them from the root.
+Everything is one top-level Yarn workspace (Yarn 4.9.3, Node 24) - the TypeScript packages, the R studies, and the thesis - so `yarn lint` and `yarn format` reach them all from the root. The sage pipeline's reproducible runtime is its Docker image, which pins Node 22 and Yarn 4.6.0, the toolchain it was developed and locked against.
 
 ## Running each part
 
-### `/sage` pipeline
+### `packages/sage-core` pipeline
 
-Needs Node 22 and Yarn 4. Corepack reads the pinned Yarn from `packageManager`, so you do not install Yarn yourself. We ensure reproducible builds with an immutable install and a committed `yarn.lock`.
+Local dev runs from the top-level workspace (Node 24, Yarn 4.9.3). Corepack reads the pinned Yarn from `packageManager`, so you do not install Yarn yourself; installs are immutable against the committed `yarn.lock`.
 
 ```sh
-cd sage
 corepack enable        # once, if you have not already
-yarn install
-yarn build
+yarn install           # from the repo root
 yarn workspace sage-core test:generate   # regenerate the reports for all four matches
 ```
 
-The LLM realiser is off by default (`DISABLE_LLM=true`), so this runs end to end with no API key - the realisers fall back to string templates to outline the information structure. See `sage/README.md` for more information.
+For a fully reproducible run, build the Docker image (Node 22, Yarn 4.6.0) from the repo root:
+
+```sh
+docker build -f packages/sage-core/Dockerfile -t sage-core .
+```
+
+The LLM realiser is off by default (`DISABLE_LLM=true`), so this runs end to end with no API key - the realisers fall back to string templates to outline the information structure. See `packages/sage-core/README.md` for more information.
 
 ### `/studies` R analysis scripts
 
@@ -62,7 +69,7 @@ Needs a TeX Live install with `latexmk` (and `chktex` / `tex-fmt` for lint and f
 
 ## Reproducible builds
 
-- **Node and Yarn.** The exact Yarn version is pinned in each `packageManager` field and run through Corepack; the Node version sits in `engines`. Installs are immutable (`enableImmutableInstalls: true`), so `yarn install` fails rather than quietly bump a dependency, and the committed `yarn.lock` files reproduce the dependency tree exactly. `sage/` pins its own Yarn (4.6.0) and Node (22)separately from the top-level workspace (Yarn 4.9.3, Node 24).
+- **Node and Yarn.** The exact Yarn version is pinned in each `packageManager` field and run through Corepack; the Node version sits in `engines`. Installs are immutable (`enableImmutableInstalls: true`), so `yarn install` fails rather than quietly bump a dependency, and the committed `yarn.lock` reproduces the dependency tree exactly. The top-level workspace uses Yarn 4.9.3 and Node 24; the sage pipeline's Docker image pins Yarn 4.6.0 and Node 22 - the toolchain it was developed and locked against.
 - **R.** Both studies build on `rocker/r-ver:4.5.1`, which fixes the R version. `prelim` pins each package to an explicit version with `remotes::install_version`; `eval` installs from a dated Posit Package Manager snapshot (`2025-08-01`), which pins the whole set at once. The Docker build is the environment the reported results come from.
 - **Data.** `sage-core` ships four matches at one-minute resolution under `packages/sage-core/data/`; the studies ship their cleaned inputs and the output tables they produce. Updated versions of the dataset are hosted on [Hugging Face](https://huggingface.co/datasets/Siewart/sage).
 

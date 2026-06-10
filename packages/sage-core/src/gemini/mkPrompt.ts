@@ -3,9 +3,9 @@ import * as dotenv from "dotenv";
 import * as path from "path";
 import { fileURLToPath } from "url";
 
-const STANDALONE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
-dotenv.config({ path: path.join(STANDALONE_ROOT, ".env.local") });
-dotenv.config({ path: path.join(STANDALONE_ROOT, ".env"), override: false });
+const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+dotenv.config({ path: path.join(PACKAGE_ROOT, ".env.local") });
+dotenv.config({ path: path.join(PACKAGE_ROOT, ".env"), override: false });
 
 const key = process.env["GEMINI_API_KEY"] ?? "DUMMY_KEY";
 const ai = new GoogleGenAI({ apiKey: key });

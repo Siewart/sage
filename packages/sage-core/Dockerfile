@@ -1,7 +1,12 @@
-FROM node:24-slim
+# Node 22 + Yarn 4.6.0 — the toolchain the sage pipeline was developed and locked
+# against. Do NOT bump these to the top-level workspace's Yarn 4.9.3 / Node 24:
+# the reported results come from this environment.
+FROM node:22-slim
 
-# Enable corepack so yarn@4.9.3 from the root packageManager field is used automatically
-RUN corepack enable
+# COREPACK_ENABLE_PROJECT_SPEC=0 tells corepack to ignore the root package.json's
+# "packageManager": "yarn@4.9.3" and use the version we pin here instead.
+ENV COREPACK_ENABLE_PROJECT_SPEC=0
+RUN corepack enable && corepack prepare yarn@4.6.0 --activate
 
 WORKDIR /app
 
@@ -32,10 +37,10 @@ WORKDIR /app/packages/sage-core
 # data/ is mounted at runtime; reports/ is written by the pipeline
 VOLUME ["/app/packages/sage-core/data", "/app/packages/sage-core/reports"]
 
-# Usage: docker run --rm \
+# Usage (from the repo root): docker run --rm \
 #   -v $(pwd)/packages/sage-core/data:/app/packages/sage-core/data \
 #   -v $(pwd)/packages/sage-core/reports:/app/packages/sage-core/reports \
-#   --env-file .env.local \
+#   --env-file packages/sage-core/.env.local \
 #   sage-core generate data/ [--module all]
 ENTRYPOINT ["yarn", "gen"]
 CMD ["generate", "data/"]

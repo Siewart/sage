@@ -23,7 +23,7 @@ yarn build
 
 ## Environment variables
 
-Create `.env.local` in this directory (it is gitignored):
+Create `.env.local` in this directory (`packages/sage-core/`, it is gitignored):
 
 ```
 GEMINI_API_KEY=your_key_here
@@ -59,20 +59,20 @@ Reports are written to `packages/sage-core/reports/` as Markdown and JSON.
 
 ```bash
 # build
-docker build -t sage-core .
+docker build -f packages/sage-core/Dockerfile -t sage-core .
 
 # run — mount your data and reports directories, pass env vars from .env.local
 docker run --rm \
   -v "$(pwd)/packages/sage-core/data:/app/packages/sage-core/data" \
   -v "$(pwd)/packages/sage-core/reports:/app/packages/sage-core/reports" \
-  --env-file .env.local \
+  --env-file packages/sage-core/.env.local \
   sage-core generate data/
 
 # override module config
 docker run --rm \
   -v "$(pwd)/packages/sage-core/data:/app/packages/sage-core/data" \
   -v "$(pwd)/packages/sage-core/reports:/app/packages/sage-core/reports" \
-  --env-file .env.local \
+  --env-file packages/sage-core/.env.local \
   sage-core generate data/ --module base
 ```
 

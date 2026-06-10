@@ -6,6 +6,11 @@
         "thesis"
     ],
     "packageManager": "yarn@4.9.3",
+    "resolutions": {
+        "strnum": "1.0.5",
+        "esbuild": "0.25.9",
+        "get-tsconfig": "4.10.1"
+    },
     "scripts": {
         "lint": "yarn workspaces foreach -Ap run lint",
         "format": "yarn workspaces foreach -Ap run format",
