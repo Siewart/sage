@@ -1,0 +1,188 @@
+\documentclass[11pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+% Page size and margins
+\usepackage[a4paper,margin=1in]{geometry}
+
+\usepackage{watermark}
+\thiswatermark{%
+  \put(-105,-680){\includegraphics[width=7.5cm]{cover/utwentetitle-back-11.pdf}}%
+\put(-60,-755){\includegraphics[width=6cm]{cover/utlogo.pdf}}}
+\renewcommand{\today}{\ifcase \month \or January\or February\or March\or April\or May\or June\or July\or August\or September\or October\or November\or December\fi, \number \year}
+% Keywords environment (from mcs.sty)
+\def\keywords{\vspace{1em}\noindent{\textit{Keywords}:\,\relax}}
+\def\endkeywords{\par}
+\makeatletter
+\newcommand*{\coverauthor}[1]{\gdef\@coverauthor{#1}}
+\newcommand*{\covertitle}[1]{\gdef\@covertitle{#1}}
+\newcommand*{\doctype}[1]{\gdef\@doctype{#1}}
+\newcommand*{\evalcommittee}[1]{\gdef\@evalcommittee{#1}}
+\newcommand*{\makecoverpage}{%
+  \thispagestyle{empty}
+  \hspace{4.0cm}\parbox[t]{10.8cm}{\LARGE MSc Interaction Technology\\\@doctype}
+  \vfill
+  \vfill
+  \hspace{4.0cm}\parbox[t]{10.8cm}{%
+    \begin{flushleft}\huge{\bfseries\@covertitle}
+  \end{flushleft}}
+  \vfill
+  \hspace{4.0cm}\parbox[t]{10.8cm}{\LARGE \@coverauthor}
+  \vfill
+  \hspace{4.0cm}\parbox[t]{10.8cm}{\@evalcommittee}
+  \vfill
+  \hspace{4.0cm}\parbox[t]{10.8cm}{\today}
+  \vfill
+  \hspace{4.0cm}\parbox[t]{10.8cm}{%
+    Human Media Interaction\\
+    Faculty of Electrical Engineering, \\
+    Mathematics and Computer Science, \\
+  University of Twente}%
+  \newpage%
+}
+\makeatother
+\coverauthor{Siewart van Wingerden}
+\covertitle{One Thousand and One Tales \\ \small Automated Age of Empires II eSports Reports from Raw Real-time Game Data}
+\doctype{Final Project}
+\evalcommittee{Evaluation Committee: \\ Dr.\ Mari\"{e}t Theune \\ Dr.\ Lorenzo Gatti \\ Dr.\ Vadim Zaytsev}
+
+% \usepackage{cite}
+\usepackage{graphicx}
+% used for double spacing for review
+\usepackage{setspace}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{microtype}
+\usepackage[T1]{fontenc}
+% Arrays/tables helpers
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage[sfdefault]{AlegreyaSans}
+\renewcommand*\oldstylenums[1]{{\AlegreyaSansOsF #1}}
+
+\usepackage{comment}
+\setlength{\marginparwidth}{2cm}
+\usepackage{todonotes}
+\setuptodonotes{disable}
+\usepackage{url}
+
+% Consolidated xcolor import to prevent option clash
+\usepackage[table]{xcolor}
+
+% \usepackage[numbers,square,sort&compress]{natbib}
+\usepackage[
+  backend=biber,
+  style=numeric-comp, % This creates [1] and compresses multiple citations to [2, 3]
+  natbib=true,        % Intercepts \citet{} to print "Author [Number]"
+  sorting=nyt         % Sorts the reference list alphabetically (standard for ACM/HCI)
+]{biblatex}
+
+\addbibresource{references.bib}
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+% Load hyperref near the end
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle  = {One Thousand and One Tales: Automated Age of Empires II eSports Reports from Raw Real-time Game Data},
+  pdfauthor = {Siewart van Wingerden},
+  pdfkeywords = {esports; data-to-text generation; natural language generation; live commentary; Age of Empires II; large language models; user study; dataset; game telemetry}
+}
+\usepackage{xurl}
+\definecolor{disabled}{RGB}{120, 120, 120}
+
+\usepackage{enumitem}
+
+\usepackage{caption}
+\usepackage{booktabs}  % for nice horizontal lines
+\usepackage{siunitx}   % for number alignment
+\usepackage{makecell}
+\usepackage{longtable} % Added for appendix tables
+\usepackage{lscape}    % Added for landscape pages if needed
+\usepackage{multirow}
+\usepackage{threeparttable}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{listings}
+
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{black}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{darkgray}\ttfamily,
+  stringstyle=\color{darkgray}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{
+  language=JavaScript,
+  backgroundcolor=\color{lightgray},
+  extendedchars=true,
+  basicstyle=\footnotesize\ttfamily,
+  showstringspaces=false,
+  showspaces=false,
+  numbers=left,
+  numberstyle=\footnotesize,
+  numbersep=9pt,
+  tabsize=2,
+  breaklines=true,
+  showtabs=false,
+  captionpos=b
+}
+
+% Custom column types for the coding table (inferred from appendix usage)
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{U}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% Counter for appendix rows
+\newcounter{AppRow}
+% Spacing definitions for appendix
+\newcommand{\SourceLinkGap}{0.2em}
+\newcommand{\AfterSourceLinksVSpace}{0.5em}
+
+\captionsetup{justification=raggedright,singlelinecheck=false}
+% Gentle help for line breaking to reduce underfull hboxes
+\setlength{\emergencystretch}{3em}
+% \doublespacing
+
+\begin{document}
+
+\makecoverpage
+
+\setcounter{tocdepth}{1}
+\input{chapters/acknowledgements}
+\input{chapters/abstract}
+
+\tableofcontents
+
+\input{chapters/introduction}
+\input{chapters/context-related-work}
+\input{chapters/data-collection}
+\input{chapters/preliminary-study}
+\input{chapters/system-design-implementation}
+\input{chapters/summary-eval}
+\input{chapters/discussion-conclusion}
+% \input{chapters/terminology}
+
+% \bibliographystyle{plainnat}
+% \bibliography{references}
+
+\printbibliography
+
+\appendix
+\input{chapters/appendix}
+%\input{chapters/appendix-ch5}
+%\input{chapters/appendix-ch6}
+\input{chapters/appendix-examples}
+\input{chapters/appendix-resources}
+%\input{chapters/appendix-fuzzy-logic}
+
+\end{document}

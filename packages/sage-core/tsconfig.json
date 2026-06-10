@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": ["./src/**/*.ts", "./gen/**/*.ts"],
+  "exclude": ["./dist", "./reports"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "declaration": false,
+    "noEmitOnError": false
+  }
+}

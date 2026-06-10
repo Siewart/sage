@@ -1,0 +1,102 @@
+\chapter{Introduction}
+\label{chap:introduction}
+\section{Esports, Viewers, and Game Data} 
+Electronic sports (esports) have grown into a significant spectator activity. Much like traditional sports, competitively played computer games offer audiences competitive skill, strategy, and drama, broadcast on platforms such as Twitch and YouTube\cite{hamari2017, qian2020}. Both player and viewer numbers continued to rise through the early 2020s, a trend accelerated by the global pandemic, making esports financially significant for players, sponsors, and broadcasters \cite{heinrich2020, Newzoo2020}.
+
+Viewer engagement is driven by a range of motivations: escapism, improving their own gameplay, and social interaction within the community \cite{hamari2017}. While these parallel the motivations of traditional sports spectators \cite{qian2020}, esports has one distinctive feature: it takes place entirely within a digital environment. This makes it possible to collect high-fidelity game data capturing every action and detail of game state.
+
+However, to turn this raw data into engaging experiences that match these motivations, esports, like regular sports, relies on human commentators (shoutcasters) to guide viewers. This thesis investigates how high-fidelity game data can be harnessed to generate automated commentary that improves the spectator experience in esports.
+
+\section{Commentary in Esports}
+\subsection{Shoutcasting and the Spectator Experience}
+In esports, commentary (commonly referred to as shoutcasting) is central to the watching experience. Shoutcasters provide real-time narration, analysis, and emotional depth to matches. They contextualize the action, highlight key moments, and build a narrative arc that makes the game more entertaining for the audience \cite{li2020}. Like traditional sports commentators, shoutcasters must balance play-by-play narration with strategic analysis (often referred to as color casting), often working in pairs to cover both aspects effectively \cite{kempecook2019}. While they may have access to the same video feed as viewers, their expertise allows them to interpret complex game states, predict outcomes, and explain the significance of events as they unfold.
+
+However, high-quality shoutcasting is resource-intensive, requiring substantial preparation and in-the-moment decision making \cite{li2020}. As a result, the kinds of production support and role specialization seen at the highest levels of casting are typically concentrated in major tournaments \cite{kempecook2019}. This means expert live commentary is not available for every competitive match, leaving spectators (and players reviewing their own games) without the narrative guidance that can support the experience.
+
+\subsection{Challenges in Automated Commentary}
+The scarcity of expert live commentary for many competitive matches presents an opportunity for automated systems. The concept of automated commentary is not new; research has explored generating text from game data to improve searchability or provide basic summaries \cite{wang2021}. However, existing approaches often lack the depth and engagement factor of human commentary \cite{zhang2022, wang2021}. Claims about the benefits of such systems—such as personalization or improved viewer experience—are frequently made \cite{wang2021, zheng2025}, but rarely, if ever, supported by empirical evidence. While some work includes small user studies \cite{elarewaju2020,wang2021}, this is a critical step often overlooked \cite{vanderlee2019} across the Natural Language Generation (NLG) field.
+
+Even the assumption that un-commentated matches would benefit from automated commentary remains underexplored. While intuition suggests that audiences could use such systems for knowledge acquisition and escapism \cite{hamari2017}, it is unclear if they can deliver on other metrics of engagement such as excitement, social interaction, or novelty \cite{qian2020}. Furthermore, even if there is interest in knowledge acquisition, it is not certain that automated commentary is the most effective delivery method, given the abundance of alternative analysis tools available to players and viewers \cite{block2018, penney2018}.
+
+\subsubsection{From Summaries to Live Commentary}
+Traditionally, automated commentary systems have focused on generating post-match summaries \cite{vanderlee2017, wiseman2017, puduppully2019}. However, to mimic human shoutcasters, this must be approached from a live commentary perspective, generating text in real time as the match unfolds. Because a system cannot summarize with information that lies in the future, commentary must be based on current and past events and generated as the match progresses. Commentary is often focused around event cues \cite{dodge2018}, which can be expressed through game data to generate live commentary \cite{taniguchi2019, wang2021, zhang2024}. This requires a different approach to data: the source must be high-fidelity enough to capture the nuances of gameplay that human shoutcasters rely on \cite{dodge2018}. This, in turn, introduces new challenges due to the complexity and volume of data involved \cite{wang2021, kim2025}.
+
+Esports generates a sheer volume of simultaneous events \cite{lux2019}. Human casters prioritize these events for explanation \cite{dodge2018}, a skill considered vital for the viewing experience \cite{kempecook2019}. They also provide strategic insights, often preparing extensively \cite{li2020} or working in duo roles to cover both play-by-play and analysis \cite{kempecook2019}. While dashboards can assist with this \cite{charleer2018, margetis2023}, replicating this human ability to filter and contextualize real-time data remains an open challenge for automated systems \cite{dodge2018, kim2025}.
+
+\subsubsection{Evaluation in Esports}
+Evaluation in esports commentary is primarily focused on automatically calculated similarity-based metrics \cite{wang2021, zhang2022, zhang2024}. These metrics have known limitations when evaluating NLG systems \cite{vanderlee2019}, such as a limited ability to capture strategic insights \cite{wang2021}. While some efforts have been made to include human evaluation in esports commentary generation \cite{wang2024}, sample sizes are often small, do not focus on the actual target audience of esports spectators, and rely on non-standardized reporting that makes comparison across systems difficult. If the aim is to provide an experience similar to human shoutcasting of high-level matches, we believe it is essential to validate the actual utility of such systems with the target audience, especially when the goal is to improve viewer engagement or provide strategic insights.
+
+\subsubsection{Broader Applications}
+These challenges motivate the work in this thesis. By studying commentary strategies such as event prioritization and contextual enrichment, we aim to understand what automated commentary systems need to engage esports viewers effectively when consuming esports content. The problem also extends beyond esports: games offer a verifiable testbed for translating complex, parallel event streams into natural language. This is a challenge shared by sports reporting, process monitoring, and other domains where high-fidelity real-time data must be narrated for a human audience.
+
+\section{Case Study}
+In this thesis, we use live text commentary \cite{pavzanin2022, lewandowski2012} as a reporting format: short, incremental, minute-by-minute match updates provided to the reader in text as the match progresses, designed to convey progression in real-time. 
+
+As our data source we use the real-time strategy game \textit{Age of Empires II: Definitive Edition} (AoE2) \cite{Microsoft} with competitive matches played at the highest level of its esports scene. AoE2 is an ideal testbed for several reasons:
+\begin{itemize}
+  \item \textbf{Strategic Depth:} It offers a deep competitive history and complex gameplay where parallel narratives unfold and meet through long-term strategy, economy management, and tactical battles.
+  \item \textbf{Longevity:} With a dedicated player and viewer base for over 25 years \cite{SullyGnome}, the community has established norms and expectations for commentary.
+  \item \textbf{High-Fidelity Data:} It provides a detailed real-time data source through \textit{CaptureAge} \cite{CaptureAge}, an officially supported third-party tool that streams and records detailed game data, allowing us to access the game state at a granular level. Unlike most related studies, which primarily focus on Multiplayer Online Battle Arena (MOBA) games and track only a handful of player characters, this data covers every unit, building, resource, and player action throughout the match. Unlike MOBA games where gameplay can often be summarized by linear event logs (kills, objectives), AoE2 gameplay is defined by complex economic shifts and hidden information on a procedurally generated map.
+\end{itemize}
+
+Since this research focuses on AoE2 esports and viewer motivations in a new digital domain, we will need to develop a new software system suited for its target audience. To achieve this we adopt an iterative approach, which goes through domain analysis, system design, and user evaluation phases. In practice, we followed an approach based on the Design Thinking principles \cite{brown2008}, where we first go through an inspiration phase (context and domain analysis), followed by an ideation phase (system design), and finally an implementation and evaluation phase (prototype and user study). This thesis presents a single full iteration of this process, providing the vertical slice needed to explore the research questions in depth.
+
+This case study is also well-suited to address the gaps identified in existing esports commentary research. AoE2's rich CaptureAge data allows us to go beyond the low-fidelity event logs and video feeds that most prior systems rely on. Its established viewer community and shoutcasting culture provide the grounding needed to design engagement strategies informed by real domain expertise. And its active online community gives us direct access to the target audience for rigorous, viewer-centered evaluation. We go further into this in the next chapter (Chapter~\ref{chap:background}).
+
+\section{Research Goals and Questions}
+Building a working commentary system for one game is the immediate goal; the deeper aim is to use it as a testbed for studying what makes automated commentary engaging, with implications for real-time data-to-text generation more broadly. To this end, we adopt a "vertical slice" approach: an end-to-end pipeline for \textit{Age of Empires II} that can be refined in response to user feedback, allowing us to explore the challenges of high-fidelity data interpretation and test specific shoutcasting strategies.
+\subsection{Research Goals}
+To achieve these aims, we define the following research goals:
+\begin{enumerate}
+  \item \textbf{Interpret High-Fidelity Data:} Develop methods to translate raw, high-fidelity game data into meaningful reportable game events, capable of real-time reporting.
+  \item \textbf{Apply Shoutcasting Strategies:} Identify and implement communication strategies used by human experts to keep text engaging and informative.
+  \item \textbf{Generate Engaging Narratives:} Connect data interpretation with narrative generation to create text-based live text commentary, focusing on what engages viewers.
+\end{enumerate}
+
+\subsection{Research Questions}
+To guide our research toward these goals, we formulate the following questions:
+\begin{enumerate}[label=\textbf{RQ\arabic*:}]
+  \item To what extent do commentator-inspired engagement strategies, implemented in a data-driven pipeline, improve the engageability of automated esports live text commentary?
+  \item How can high-fidelity data be transformed into engaging natural language descriptions of complex esports events?
+  \item How can important events in an esports match be selected and structured to form a coherent narrative?
+  \item What reporting strategies are used by esports commentators and which content types do their viewers find most relevant?
+\end{enumerate}
+
+To address these questions, we proceed through the following steps, each targeting one or more RQs:
+\begin{enumerate}
+  \item \textbf{Domain Analysis} \textit{(RQ4):} Analyze human shoutcasting strategies and validate content relevance with viewers based on existing research and a preliminary study.
+  \item \textbf{System Design \& Implementation} \textit{(RQ2, RQ3):} Translate these strategies into a system design for automated commentary and implement the designed system for live text commentary generation.
+  \item \textbf{Evaluation} \textit{(RQ1):} Evaluate the system with real users to assess whether the implemented strategies improve engageability.
+\end{enumerate}
+
+RQ2 and RQ3 are design questions, answered by two architectural modules that implement commentator-inspired strategies. Their effect on engageability is evaluated as part of RQ1 through an ablation study:
+\begin{enumerate}
+  \item \textbf{Expert Insights:} Implements the design solution to RQ2; enriching high-fidelity data with strategic context and domain knowledge. Its effect on engageability is measured in the evaluation.
+  \item \textbf{Event Structuring:} Implements the design solution to RQ3; selecting and ordering events into a coherent narrative structure. Its effect on engageability is measured in the evaluation.
+  \item \textbf{Combined Effect:} Addresses RQ1 by measuring the combined and individual impact of both modules on viewer engageability.
+\end{enumerate}
+
+\section{Contributions}
+This thesis makes the following contributions:
+
+\begin{itemize}
+  \item \textbf{Cross-Domain Strategy} \textit{(RQ4):} We assess prior research on shoutcasting strategies from other RTS games in the context of Age of Empires II, identifying both generalizable patterns and game-specific adaptations, and explore how these can be integrated into automated commentary systems.
+  \item \textbf{The SAGE Pipeline} \textit{(RQ1, RQ2, RQ3):} We present the design and implementation of \textit{SAGE} (Semantic Abstraction \& Generation from Events), a modular data-to-text pipeline tailored for real-time esports commentary. SAGE implements the design solutions to RQ2 and RQ3 and is the testbed for evaluating RQ1. It processes high-fidelity game snapshots to detect complex events, using Large Language Models (LLMs) for NLG. To support reproducibility and future research, we release two corpora of AoE2 tournament matches (173 KotD IV matches and 3,100 matches) at 1-second and 60-second resolution, to our knowledge the largest publicly available esports game-state dataset at this resolution.
+  \item \textbf{Engagement Strategies} \textit{(RQ2, RQ3):} We design and implement two commentator-inspired strategies as independently ablatable modules:
+    \begin{enumerate}
+      \item \textbf{Expert Insights} \textit{(RQ2):} Enriching commentary with strategic context and domain knowledge derived from high-fidelity game data.
+      \item \textbf{Event Structuring} \textit{(RQ3):} Organizing events to reflect the dynamic and parallel nature of gameplay into a coherent narrative.
+    \end{enumerate}
+  \item \textbf{User-Centric Approach} \textit{(RQ1):} We conduct a preliminary study to identify viewer preferences and a final evaluation with the target audience to assess whether the implemented strategies improve engageability.
+\end{itemize}
+
+\section{Methodology Overview}
+To address the challenges of high-fidelity data interpretation, event selection, and generating engaging real-time commentary, we adopt a user-centered design process structured as follows:
+
+\begin{enumerate}
+  \item \textbf{Context and Related Work (Chapter~\ref{chap:background}):} We define the problem space by outlining what esports commentary is and why it engages the audience, exploring the Age of Empires II domain and its high-fidelity data. We then review existing approaches in data-to-text generation and (e)sports commentary, identifying gaps in their ability to meet requirements such as narrative coherence, strategic contextualization, and appropriate evaluation methodologies.
+  \item \textbf{Domain Analysis (Chapter~\ref{chap:prelim} \& Chapter~\ref{chap:viewer-study}):} Since directly relevant prior work on Age of Empires II commentary is limited, we conduct a preliminary study. We analyze professional shoutcasts to identify key event types and narrative structures, and further specify AoE2-specific requirements through a user survey.
+  \item \textbf{System Design and Implementation (Chapter~\ref{chap:methods}):} Based on these findings, we design and implement a data-to-text pipeline specifically tailored for live, engaging commentary. This design prioritizes low latency and modularity to allow for the integration of engagement-focused components. We implement this design in a prototype system, \textit{SAGE}, combining a classic pipeline approach with modern Large Language Models, focusing on the technical realization of the \textit{Expert Insights} and \textit{Event Structuring} modules.
+  \item \textbf{Evaluation (Chapter~\ref{chap:eval}):} Finally, since engagement is inherently subjective, we evaluate with real AoE2 viewers. We test the system's output with real AoE2 viewers to assess whether the inclusion of \textit{Expert Insights} and \textit{Event Structuring} modules leads to a more engaging experience through an ablation study. We expect each module to contribute positively to engagement.
+  \item \textbf{Discussion and Conclusion (Chapter~\ref{chap:discussion}):} We interpret the results of our evaluation in the context of our research questions, discuss implications for future system design, and identify limitations. We reflect on what the findings imply for the field more broadly, including directions for further research in automated esports commentary and data-to-text generation.
+\end{enumerate}

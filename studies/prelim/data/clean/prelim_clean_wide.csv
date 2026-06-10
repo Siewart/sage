@@ -1,0 +1,58 @@
+participant_id,respondent_id,competence_self,elo_midpoint,watch_frequency_level,watched_before,feedback_open,IntroLayout,IntroPlayers,IntroCivs,IntroEconomy,EventScouting,BattleDelay,BattleMilitary,BattleEcoKills,StateAgeUp,StateMilTech,EventUncommon,BattleBreakIn,BattleOverwhelm,Predictions,Knowledge,Understanding,SummaryOpinion,PreferFullGames,LimitedTime,InterestBattles,InterestStrategy,InterestSkill,TechnicalIssues,has_email,has_name
+P001,1,4,1350,3,No,"The time between the cuts is hard to grasp. I understand that there's not many interesting things happening during that time, but i want to know what those are.",5,3,3,2,2,4,4,5,5,5,4,4,2,3,3,5,5,2,5,5,5,4,2,TRUE,FALSE
+P002,2,5,1350,3,Yes,No,5,3,5,4,4,3,4,4,4,3,2,3,4,4,4,4,4,4,1,3,5,3,1,TRUE,FALSE
+P003,3,4,900,2,Unsure,When Daut took the relics,5,4,5,5,5,5,5,5,5,5,5,5,5,5,5,4,4,5,5,3,5,3,5,TRUE,FALSE
+P004,4,4,1600,3,No,NA,4,2,5,3,4,3,4,4,5,4,3,4,5,2,3,5,3,5,3,4,5,4,4,TRUE,FALSE
+P005,5,3,1350,3,No,NA,3,3,4,5,5,4,5,5,5,4,4,5,5,4,4,5,4,4,2,4,5,4,2,TRUE,FALSE
+P006,6,4,1350,3,Unsure,NA,4,1,5,4,4,4,4,4,3,4,2,4,4,2,4,4,3,5,4,3,5,5,5,TRUE,FALSE
+P007,7,4,1600,3,No,NA,4,3,3,4,5,3,4,4,5,4,4,4,5,2,3,5,3,5,4,2,5,4,1,TRUE,FALSE
+P008,8,4,1100,2,No,"The amount of investment that's being done/sacrificed in economy vs military, e.g. when/if the second, third, fourth Town Centers are being placed.",4,2,5,4,5,4,4,4,4,4,5,5,5,2,4,5,4,4,5,2,5,4,3,TRUE,FALSE
+P009,9,3,1100,3,Unsure,NA,2,2,4,4,5,3,4,5,4,5,2,4,2,1,2,NA,1,4,5,3,4,4,5,TRUE,FALSE
+P010,10,4,900,2,No,NA,4,2,5,3,4,4,4,4,3,4,4,4,4,1,4,5,3,5,5,4,5,3,5,TRUE,FALSE
+P011,11,5,NA,3,No,NA,4,4,3,2,3,3,4,5,5,4,5,4,5,4,4,4,3,4,5,4,5,5,1,TRUE,FALSE
+P012,12,4,NA,2,Yes,"Eventhough I've seen this game before, it's really difficult to follow the game because of the cutting. It could work with a dedicated commentary.",3,4,3,4,5,4,4,4,5,5,4,4,5,2,4,2,3,4,3,3,4,4,5,TRUE,FALSE
+P013,13,5,1850,3,No,nothing on economic advantage gained by villagers kill/raids,5,3,5,5,5,4,4,4,5,4,2,4,3,1,4,4,4,NA,4,1,5,5,1,TRUE,FALSE
+P014,14,4,1350,2,No,Why daut was even on vills with a faster castle age and some kills.,3,4,4,2,5,3,4,5,4,5,3,5,4,2,3,5,2,5,5,3,5,3,4,TRUE,FALSE
+P015,15,4,1350,2,Unsure,"i think framing matches as ""stories"" is exactly why people have so many misconceptions about the game as it usually doesnt consider any contingencies...",3,1,3,1,3,3,3,3,2,3,3,3,3,3,3,2,4,5,5,2,4,2,5,TRUE,FALSE
+P016,16,4,1100,2,No,"For large battles, it would be nice to see a number of units killed in that instance pop up somewhere, just to quantify the outcome of the battle. Likewise notifications when a vil gets killed would be useful.",4,1,4,3,4,3,3,5,5,4,4,3,3,1,3,5,2,5,4,3,4,5,4,TRUE,FALSE
+P017,17,3,NA,2,No,"The ""subtitles"" in the video made it cluttered, and forced me into information overload. I usually use subtitles on movies etc, but here it was annoying me the whole time.",4,4,4,4,4,5,4,4,5,5,4,4,4,4,4,5,4,4,2,3,4,4,4,TRUE,FALSE
+P018,18,5,1350,2,No,NA,4,5,3,2,5,3,4,5,5,4,5,5,5,2,2,4,3,4,4,2,4,4,3,TRUE,FALSE
+P019,19,5,1350,2,No,NA,5,5,5,3,4,1,5,4,5,4,3,3,3,2,3,4,3,3,NA,2,5,3,3,TRUE,FALSE
+P020,20,5,1350,1,No,"The suspance before the final three fights (on the hill with monks, under the castle, inside the base) was close to zero because you didn’t show any of the decision making/build-up that came before",5,5,4,2,3,4,4,5,3,4,5,4,5,4,4,5,3,4,5,2,5,4,3,TRUE,FALSE
+P021,21,5,1350,3,No,NA,4,4,4,3,2,2,4,5,5,5,5,5,5,4,4,5,3,4,3,4,4,5,4,TRUE,FALSE
+P022,22,4,1100,3,No,NA,4,2,1,4,5,5,5,5,5,5,3,4,4,3,4,5,4,5,4,3,4,4,4,TRUE,FALSE
+P023,23,4,900,2,No,NA,4,2,3,3,4,5,5,5,4,4,4,4,4,3,5,4,2,5,3,3,5,1,1,TRUE,FALSE
+P024,24,5,1100,2,No,NA,5,4,5,5,5,4,5,4,4,4,5,4,5,2,3,5,4,5,3,4,4,5,3,TRUE,FALSE
+P025,25,4,1100,2,Unsure,I lack the time shifts,4,4,4,4,5,4,4,4,5,5,4,5,5,4,4,1,3,4,2,2,5,4,5,TRUE,FALSE
+P026,26,5,1600,3,No,NA,5,1,4,3,4,4,4,4,3,4,2,3,4,1,4,4,4,2,5,2,5,3,3,TRUE,FALSE
+P027,27,4,1100,3,No,NA,5,3,5,4,3,3,3,3,5,4,2,3,5,5,4,4,4,4,4,2,4,3,5,TRUE,FALSE
+P028,28,3,NA,3,No,NA,5,4,3,2,5,3,3,4,4,3,5,4,4,2,2,4,3,4,4,2,4,5,4,TRUE,FALSE
+P029,29,3,1350,3,No,"Daut never got any cav armor upgrades which is a relevant piece of information I never heard about. He got up to imp without getting a single armor upgrade for his cav. Sure he is Lithuanians and he gets that relic attack bonus, but armor on knights is huge especially when under TC fire, which his knights seemed to be under often.",4,3,5,4,5,4,4,5,5,4,2,5,5,1,3,5,2,5,4,3,5,4,2,TRUE,FALSE
+P030,30,4,1350,3,No,NA,4,4,4,4,4,4,4,4,4,4,3,4,4,2,3,3,3,5,4,2,4,4,5,TRUE,FALSE
+P031,31,4,1350,3,No,NA,4,1,2,4,4,3,4,4,4,2,2,3,3,2,3,4,3,5,2,3,4,4,5,TRUE,FALSE
+P032,32,4,NA,2,No,NA,4,3,4,3,5,3,3,4,4,4,3,4,3,4,4,5,5,4,NA,4,5,NA,3,TRUE,FALSE
+P033,33,4,1350,3,Unsure,"It felt like watching a football match's highlights, which is good in a way, but didn't exactly told me the story of the game. The most critically missing points for me were : 1/ Players' decision-making moments (when do they decide to tech switch, when do they decide to send an army out, etc.). 2/ Aftermath/consequences of ""highlights"", i.e. : ""now that he's lost that much, what can he do ?"". I may note : I mostly watch games to _learn_ about the game and its strategies. So I'm much more interested in educational casting.",5,4,5,5,5,5,5,5,5,5,4,4,4,4,5,4,4,4,5,1,NA,NA,5,TRUE,FALSE
+P034,34,5,1600,2,No,NA,5,5,4,3,4,2,2,4,4,3,1,3,1,3,2,5,3,5,1,2,5,5,4,TRUE,FALSE
+P035,35,4,1100,2,No,"Early idle time and villager kills did not snowball into a difference in the amount of eco units between the players. So where did Villese have to compromise? Military production, military upgrades, eco upgrades? Did winning fights offer players the opportunity to re-use units and go for upgrades instead of adding military production buildings? Did both players mine stone or did Villese have a disadvantage in food/gold economy because of going to stone? Did Villese secure gold control by expanding north? Did DauT try to prevent or delay this?",4,2,3,3,2,2,4,3,3,4,4,5,5,2,3,5,2,5,4,4,4,4,2,TRUE,FALSE
+P036,36,5,1350,3,Yes,"Maybe content regarding macro (amount of military buildings, eco balance, all in /boomy approach) But it depends on the game of course",5,4,4,3,3,3,3,5,5,3,5,4,5,2,5,5,2,4,3,1,5,2,2,TRUE,FALSE
+P037,37,4,1100,3,No,"The video showed the overall storyline, but DauT's civ choice meant relic collection was a big factor, which was missed in the casting. Some of the larger time jumps felt abrupt, lacking context for the next part.",4,2,4,2,3,3,4,4,3,3,3,4,4,2,3,4,4,3,4,2,5,4,4,TRUE,FALSE
+P038,38,3,1350,3,Yes,NA,3,2,4,3,4,2,3,4,2,4,2,2,2,2,4,4,2,4,2,4,4,4,4,TRUE,FALSE
+P039,39,4,1350,3,No,NA,4,3,2,4,5,4,4,5,4,4,4,4,5,3,5,5,2,5,3,2,4,5,4,TRUE,FALSE
+P040,40,3,1100,2,No,NA,5,5,5,5,4,4,4,5,4,5,5,5,5,4,5,5,4,4,4,3,5,3,5,TRUE,FALSE
+P041,41,4,1350,3,Yes,- Daut collecting the relics -How DauT went from beeing halve a vil ahead after the first vil snipe to beeing a vil behind when villese hits castle,4,2,3,3,4,4,4,4,4,3,3,3,4,3,4,3,2,5,2,4,5,5,2,TRUE,FALSE
+P042,42,4,1600,2,Unsure,"Before castle age up, the summary gave the impression that daut should have the eco lead (shown vil kills). Homever, the difference in uptime does not make up for that -> there were some idle tc time or vil kills not shown, which is (when rewatching) irritating. However, it seems to not impact the outcome of the game After all. So I'm not Sure After all :D",2,1,4,2,1,2,4,3,1,4,2,2,2,1,2,3,5,2,5,3,5,4,4,TRUE,FALSE
+P043,43,4,1350,2,Yes,Economy balance,4,3,4,5,5,5,4,4,4,5,5,5,5,5,4,2,1,5,3,3,5,5,5,TRUE,FALSE
+P044,44,5,1350,3,No,NA,5,4,4,3,4,5,5,5,3,5,5,5,5,4,5,5,5,5,1,4,5,5,5,TRUE,FALSE
+P045,45,4,1350,3,No,NA,2,1,1,2,3,5,5,5,4,5,3,3,2,2,4,4,2,5,3,4,5,5,4,TRUE,FALSE
+P046,46,4,1100,2,Yes,NA,4,1,2,3,3,4,4,4,5,4,4,3,5,1,3,5,4,5,4,3,4,4,1,TRUE,FALSE
+P047,47,3,1100,3,Yes,NA,5,1,5,4,4,4,3,4,3,5,5,4,2,1,4,3,1,5,1,3,5,5,4,TRUE,FALSE
+P048,48,5,1600,3,No,There was no mention of the civilisation match-up and the winning conditions each civilisation has.,4,3,4,3,4,4,4,4,4,4,4,4,4,2,4,5,4,5,3,2,4,5,2,TRUE,FALSE
+P049,49,4,1100,3,No,NA,4,2,3,2,2,4,5,5,5,5,2,3,4,2,4,5,4,5,4,3,5,4,1,TRUE,FALSE
+P050,50,5,1600,2,Yes,NA,3,3,4,3,3,3,4,4,4,4,2,3,3,2,3,4,3,5,5,4,4,4,2,TRUE,FALSE
+P051,51,5,1350,3,No,I feel like the caster wasnt as good as others. Subtitles were nice though. Cant think of anything that would make it better,3,2,4,4,4,5,5,5,4,4,5,4,5,2,4,5,3,5,4,4,4,4,5,TRUE,FALSE
+P052,52,5,1350,2,No,It was hard to see who was ahead economically and technologically in each moment because CA has sooo much info to digest and the clips didn’t give me enough time to see that.,5,1,2,4,4,4,5,5,5,4,5,5,5,2,2,3,2,5,5,2,5,5,4,TRUE,FALSE
+P053,53,4,1100,2,Unsure,NA,4,1,5,3,4,4,5,5,5,5,4,4,5,3,4,5,4,4,2,4,5,4,3,TRUE,FALSE
+P054,54,4,1100,2,Yes,NA,4,2,3,2,3,2,4,5,2,1,1,2,2,1,2,3,2,4,5,2,5,4,5,TRUE,FALSE
+P055,55,3,900,2,Yes,"Previous tournament performance in the same map versus other opponents, Ex: Villese struggles in Arabia or he is known for being good at walling, etc.",4,5,4,4,3,3,3,3,4,3,4,2,4,1,5,5,4,2,5,5,5,4,3,TRUE,FALSE
+P056,56,4,1100,3,Yes,NA,5,3,3,4,5,5,5,5,5,5,3,5,5,NA,5,4,4,4,1,3,5,4,1,TRUE,FALSE
+P057,57,4,1350,2,Yes,"Idle time presentation, i.e. how much of the lead was due to killling and how much due to idle time.",5,5,5,4,4,3,3,4,3,3,2,2,2,2,2,2,3,5,4,2,5,4,2,TRUE,FALSE

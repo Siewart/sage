@@ -1,0 +1,11 @@
+Participants: 33
+Evaluations: 132
+Open-text evaluations: 96
+Game knowledge M(SD): 6.18 (0.95)
+ELO M(SD): 1600.00 (403.43)
+ELO centered M(SD): 400.00 (403.43)
+ELO no-rating count: 3
+Native-like English count: 26
+AI count guess M(SD): 3.30 (0.77)
+AI sentiment M(SD): 3.03 (1.19)
+AI utility M(SD): 4.00 (1.54)

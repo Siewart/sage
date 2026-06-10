@@ -1,0 +1,8 @@
+"","CompetitiveNature","SkillImprovement","GameKnowledge","SkillAppreciation","EntertainingNature","DramaticNature","VicariousSensation"
+"CompetitiveNature",1,0.77,0.84,0.66,0.83,0.81,0.75
+"SkillImprovement",0.77,1,0.75,0.72,0.75,0.7,0.71
+"GameKnowledge",0.84,0.75,1,0.61,0.82,0.78,0.72
+"SkillAppreciation",0.66,0.72,0.61,1,0.57,0.59,0.63
+"EntertainingNature",0.83,0.75,0.82,0.57,1,0.85,0.79
+"DramaticNature",0.81,0.7,0.78,0.59,0.85,1,0.78
+"VicariousSensation",0.75,0.71,0.72,0.63,0.79,0.78,1

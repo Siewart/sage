@@ -1,0 +1,339 @@
+\chapter{Evaluation}\label{chap:eval}
+This chapter evaluates generated match-update texts for Age of Empires II (AoE2). We assess linguistic quality and viewer engageability to guide future audio-visual summaries. Using a glass-box evaluation, we test the effects of two architectural modules (\textit{Expert Insights} and \textit{Event Structuring}) and analyze module effects using Linear Mixed Models (LMMs). Since the goal here is to evaluate the system, compared to the exploratory user study in Chapter~\ref{chap:viewer-study}, this evaluation uses a stricter checklist and additional diagnostics.
+
+\section{Introduction}
+Because we lack reference texts and aim to measure viewer-centered qualities such as engageability, we rely on human evaluation (see Chapter~\ref{chap:related}). Following \citet{wang2025}, we omit automated metrics like BLEU \cite{papineni2002}. These do not capture strategic commentary, do not measure engageability, and we lack comparative data for this modality. We therefore assess linguistic quality and the ability to engage viewers, in line with best practices \cite{vanderlee2021}.
+
+Following our argument in Chapter~\ref{chap:related} (Section~\ref{sec:mses-motivations}), that engageability can be measured by how well a system matches viewer motivations, we adopt the ten Motivation Scale of Esports Spectatorship (MSES) motivations \cite{qian2020} as our lens, and refer to a system's ability to satisfy them as its \textit{engageability}.
+
+We evaluate two architectural modules designed to improve engageability:
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item \textbf{Expert Insights:} Adds context and analysis beyond raw events to clarify the significance of key moments, aiming to satisfy \textit{Skill Improvement}, \textit{Skill Appreciation}, and \textit{Game Knowledge}.
+  \item \textbf{Event Structuring:} Organizes events to highlight narrative flow and make updates easier to follow, aiming to satisfy \textit{Vicarious Sensation}, \textit{Dramatic Nature}, and \textit{Entertaining Nature}.
+\end{itemize}
+
+While our overall research question (RQ1) asks to what extent commentator-inspired strategies improve engageability, this study focuses on estimating the effects of the two architectural modules that implement those strategies (\textit{Expert Insights} for RQ2, \textit{Event Structuring} for RQ3), and uses qualitative feedback to contextualize overall performance.
+
+\section{Hypotheses}
+\label{sec:hypotheses}
+\textit{Friends Bonding} and \textit{Socialization Opportunity} are difficult to influence in a text-only format, so we exclude these motivations to reduce study length. Moreover, \textit{Expert Insights} and \textit{Event Structuring} may interact (e.g., \textit{Event Structuring} increases the total text length that can be generated), so we also evaluate their combined effect.
+
+We test the following hypotheses:
+
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item \textbf{H1:} Including \textit{Expert Insights} in the generated texts will increase their perceived engageability.
+  \item \textbf{H2:} Applying \textit{Event Structuring} to the generated texts will increase their perceived engageability.
+  \item \textbf{H3:} Combining both \textit{Expert Insights} and \textit{Event Structuring} will have a synergistic effect, leading to even higher perceived engageability.
+\end{itemize}
+
+We evaluate these effects for each relevant motivation separately to better understand which module affects which motivations.
+
+We also assess the overall quality of the generated text and the system's usability:
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item \textbf{H4:} Including \textit{Expert Insights} in the generated texts will increase their perceived linguistic quality.
+  \item \textbf{H5:} Applying \textit{Event Structuring} to the generated texts will increase their perceived linguistic quality.
+  \item \textbf{H6:} Combining both \textit{Expert Insights} and \textit{Event Structuring} will have a synergistic effect, leading to even higher perceived linguistic quality.
+\end{itemize}
+
+\section{Evaluation Design}
+
+\subsection{Latin Square Design}
+With two binary modules, we have four configurations. Since repeatedly reading the same match with different module configurations can bias results, we used four matches, leading to 16 generated texts. To balance exposure, we randomize match--module combinations across participants and randomize the presentation order of the four texts. With enough participants, this counterbalances ordering effects; since there are 24 ($4!$) possible orderings, the approach is inspired by a classical Latin Square design.
+
+For clarity, we refer to Match 1--4 as the four matches and Module Configurations A--D as the module sets (A: No Modules, B: Expert Insights, C: Event Structuring, D: Both). A Text is a match--configuration pair (e.g., A1 is Match 1 with Configuration A). Each participant reads four texts (one per match) and sees each configuration exactly once (Table~\ref{tab:latin-square}), in randomized order.
+\begin{table}[H]
+  \centering
+  \begin{tabular}{cccccc}
+    \toprule
+    \textbf{Set} & \textbf{Match 1} & \textbf{Match 2} & \textbf{Match 3} & \textbf{Match 4} \\
+    \midrule
+    1            & A (None)         & B (Expert)       & C (Struct)       & D (Both) \\
+    2            & B (Expert)       & C (Struct)       & D (Both)         & A (None) \\
+    3            & C (Struct)       & D (Both)         & A (None)         & B (Expert) \\
+    4            & D (Both)         & A (None)         & B (Expert)       & C (Struct) \\
+    \bottomrule
+  \end{tabular}
+  \caption{Latin-square-style assignment of module configurations (A: No Modules, B: Expert Insights, C: Event Structuring, D: Both) to four Texts per participant. Each participant sees each configuration and each match exactly once, in randomized order.}
+  \label{tab:latin-square}
+\end{table}
+
+This within-subjects design reduces variance from individual differences; we analyze it using LMMs (see Results).
+
+\subsection{Match Selection}
+\label{sec:match-selection}
+For the evaluation, we used the same dataset as in our prototype development, the King of the Desert IV tournament. This tournament features high-level 1v1 play on a consistent map (Arabia), helping reduce map-driven variation so observed differences more often reflect player decisions.
+
+We selected four distinct matches to serve as the basis for our stimuli. To avoid any bias from participants recognizing specific player tendencies, we selected matches featuring eight different players (no repeats). The selected matches were:
+
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item \textbf{Match 1:} Vinchester vs MbL (Game 3, Group Stage; Appendix~\ref{appendix:vinchester-mbl}) \footnote{This is not the same match as during the prototype development.}
+  \item \textbf{Match 2:} Mr\_Yo vs DauT (Game 3, Group Stage; Appendix~\ref{appendix:yo-daut})
+  \item \textbf{Match 3:} Tatoh vs Nicov (Game 2, Group Stage; Appendix~\ref{appendix:tatoh-nicov})
+  \item \textbf{Match 4:} TheViper vs Jordan (Game 3, Semifinals; Appendix~\ref{appendix:viper-jordan})
+\end{itemize}
+
+The appendix includes all generated texts for these matches under all four module configurations.
+
+\subsection{Text Generation}
+For each match, we generated four text versions corresponding to our experimental conditions: (A) No Modules, (B) Expert Insights only, (C) Event Structuring only, and (D) Combined. This resulted in 16 unique texts.
+
+To ensure a fair evaluation of the system's capabilities, we did not manually post-edit the generated texts. They are presented exactly as the system produced them. As a result, they reflect the current limitations of the prototype, including:
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item \textbf{Repetition:} One text contained a duplicated sentence, which was left uncorrected.
+  \item \textbf{Hallucination/Grounding Errors:} Occasionally, the system misinterpreted Retrieval-Augmented Generation (RAG) data, leading to inconsistent location descriptions.
+  \item \textbf{Tense inconsistency:} Minor fluctuations between past and present tense.
+\end{itemize}
+Preserving these errors ensures our evaluation reflects the actual performance of the SAGE pipeline rather than a curated ideal.
+
+\section{Questionnaire Design}
+The study was conducted as an online questionnaire.
+
+\subsection{Survey}
+The questionnaire consisted of four sections; full question tables are provided in Appendix~\ref{appendix:evaluation-details}. First, we collected game related profile information and viewership habits (Table~\ref{tab:intro-questions}).
+
+Second, the core evaluation phase presented the four texts described in Section~\ref{sec:match-selection}. After each text, participants rated its engageability using questions adapted from the Motivation Scale of Esports Spectatorship (MSES) \cite{qian2020}. We selected two items per motivation to reduce fatigue (Table~\ref{tab:engageability-questions}).
+
+Before answering these questions, participants were prompted: \textit{Please indicate to what extent you agree with the following statements, based on the match updates you read last. If you are unsure, please select ``Neither agree nor disagree.'' Feel free to navigate back to reread the text.}
+
+Then, for each Text we asked questions adapted from \cite{callaway2002} to assess linguistic quality (Table~\ref{tab:linguistic-questions}) and additional questions regarding comprehension (Table~\ref{tab:additional-questions}).
+
+Finally, we ended the questionnaire with general questions about AI perception (Table~\ref{tab:final-questions}).
+
+\subsection{Recruitment and Pilot}
+We recruited participants by posting a call for participation on the Age of Empires II subreddit (\texttt{r/aoe2}), chosen as the recruitment channel because esports subreddits have been shown to yield substantial respondent pools for studies targeting this audience \cite{hamari2017, bidermayer2020}; the survey ran for one week from August 26th to September 1st, 2025.
+
+We performed a pilot to ensure the setup was sound, but these results are not included and were insufficient in scope for additional power analysis. First, we did a soft recruitment on Siege Engineers (AoE2 modding Discord \footnote{For full transparency: This Discord is moderated and the associated non-profit chaired by the author}); this did not raise unforeseen situations. We then posted the questionnaire on the AoE2 Reddit.
+
+All participants provided consent. Post-experiment, they received a debrief indicating they could withdraw their data within one week of participation (if they provided an email), in line with ethical guidelines.
+
+\subsection{Procedure}
+The experimental procedure was as follows:
+\begin{enumerate}[noitemsep,topsep=0pt]
+  \item \textbf{Introduction \& Consent:} Participants were briefed on the study's purpose (evaluating live match updates) and provided informed consent. They were not informed about the AI-generated nature of the texts to avoid bias.
+  \item \textbf{Profile:} Participants answered questions regarding their experience with AoE2 (Elo, viewing habits) and English proficiency.
+  \item \textbf{Evaluation Phase:} Participants read four texts in sequence. After each text, they completed the engageability and linguistic quality questionnaires.
+  \item \textbf{Closing:} Finally, participants were informed that some texts were AI-generated, then asked several general questions about their perception of AI in esports and were given the opportunity to provide their email for debrief and potential data withdrawal.
+\end{enumerate}
+
+\subsection{Latin Square Implementation}
+We operationalized this setup in Qualtrics by exporting its internal JSON-like format, generating the required permutations and combinations, and re-importing the modified format. Qualtrics can balance participant counts per condition and manage presentation-order randomization online. Since unfinished responses are also counted toward these totals, we monitored counts and adjusted balancing as needed; unfinished responses were not reported in the final analysis.
+\subsection{Power Analysis}
+In line with recommendations \cite{meteyard2020}, we performed a power analysis prior to starting the experiment.
+We ran a Monte Carlo simulation for the planned linear mixed-effects model to detect a minimum meaningful change of 0.5 points on a 7-point Likert scale at $\alpha = .05$ with 80\% power. Outcome variability was based on the standard deviation observed in the preliminary study in the same target population (scaled to 7-point Likert, SD = 0.57). Power was estimated using 2,000 simulated datasets per candidate sample size. The simulation indicated that N = 10 participants was sufficient for 80\% power for all main effects. We aimed for at least 30 participants to account for the unpredictable effects of Likert scaling (from 5 to 7), different questions, and time between the preliminary and main study (3 years). The values are optimistic, but since this is the first study of this system we focused on large effects.
+
+\section{Ethics \& Transparency}
+Ethical clearance was obtained from the university ethics board (Application Nr: 251345, Computer \& Information Science - University of Twente). The study was not formally preregistered. Exclusion criteria (incomplete responses, nonsense answers) were applied post-hoc during data cleaning.
+
+Based on best practice guidelines for human evaluation of Natural Language Generation (NLG) \cite{vanderlee2021} and reporting standards for LMMs \cite{meteyard2020}, we used a pre-study checklist to guide study preparation and reporting. The full checklist is provided in Appendix~\ref{appendix:pre-study-checklist}.
+
+\section{Results}
+\label{sec:summary-results}
+The analysis scripts and anonymized dataset are available online\footnote{See Appendix~\ref{app:resources} for analysis scripts and dataset}. We used R\footnote{R Version 4.5.1 (2025-06-13), lme4 v1.1.37, emmeans v1.11.2.8, psych: v2.5.6} with \texttt{lme4} for model fitting, \texttt{emmeans} for post-hoc analyses, and \texttt{psych} for testing correlations.
+
+We report fixed-effect estimates ($\beta$) with standard errors, test statistics and p-values, and 95\% confidence intervals; full model output tables are provided in Appendix~\ref{appendix:evaluation-details} (Tables~\ref{app:fixed_effects} and~\ref{tab:random_effects}).
+
+For each dependent variable (the individual motivation and quality Likert scores), we fitted a model with the following specification:
+
+\begin{equation}
+  \textit{Score} \sim \textit{EventStructuring} * \textit{ExpertInsights} + \textit{Order} + (1|\textit{Match}) + (1|\textit{ParticipantId})
+\end{equation}
+
+We left Match as a random effect (so the measured variance does not depend on the specific match) since it represents four randomly selected matches from a larger population, and we want to generalize beyond these specific texts. We also ran a model with Match as a fixed effect to verify robustness and found no major differences.
+
+Where:
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item $EventStructuring$ and $ExpertInsights$ are binary fixed effects indicating whether the respective module was active; we included their interaction to test for synergistic effects (Hypothesis H3 and H6).
+  \item $Order$ is the presentation order (1--4), included as a covariate to account for fatigue or learning effects throughout the survey.
+  \item $(1|Match)$ represents the specific match (not a specific text), included as a random effect to control for intrinsic differences in the matches (e.g., one match being naturally more exciting).
+  \item $(1|ParticipantId)$ specifies a random intercept for each participant, accounting for individual differences in baseline rating tendencies.
+\end{itemize}
+
+In support of our hypotheses, we use Sum Contrasts to test module effects \cite{schad2020}. This makes each module's coefficient interpretable as the deviation from the grand mean, the average of all conditions. We averaged each pair of questions per motivation, yielding 7 motivation scores. For linguistic quality, we treated each question separately, yielding 5 quality scores.
+
+\subsection{Assumptions}
+We created diagnostic models for each construct to check LMM assumptions. To inspect the difference between observed and predicted values, we examined residuals. Residual plots indicated no substantial deviations from linearity for the Order covariate, approximate symmetry/normality (Q-Q plots), and no discernible patterns for homoscedasticity. Boxplots for \textit{Event Structuring} and \textit{Expert Insights} residuals showed few outliers; these were retained as they did not unduly influence results.
+
+Since Likert-scores are ordinal rather than continuous, we analyzed the data using an ordinal mixed model as well, but the results remained substantively unchanged, so we report LMM results for ease of interpretation. Based on these results, we are confident that LMM assumptions are sufficiently met to interpret results using a parametric model \cite{norman2010}. For residuals, we examined skewness (showing a moderate bias for Learning and Immersion; heavy for Logicality only) and kurtosis (showing tails as moderate for Logicality and Expertise; heavy for Learning in a few constructs only). This deviation from normality is expected in Likert data \cite{norman2010}, and LMMs are known to be robust to these violations \cite{schielzeth2020}.
+
+Internal consistency (how consistently the items in a scale measure the same construct) was assessed for all multi-item constructs prior to scale construction. Each construct was measured using two Likert-type items. Cronbach’s alpha values ranged from .79 to .93, indicating satisfactory to excellent reliability. Inter-item correlations ranged from r = .66 to r = .87, exceeding recommended thresholds for two-item scales. This supports using composite construct scores for our adapted motivation measures (see Table~\ref{tab:reliability}).
+
+Inter-construct correlations were examined to assess discriminant validity. Correlations ranged from r = 0.57 to r = 0.85, indicating that the constructs are related but sufficiently distinct. The strongest correlations were observed between Entertaining Nature and Dramatic Nature ($r = 0.85$) and between Competitive Nature and Game Knowledge ($r = 0.84$), reflecting conceptual overlap consistent with the original theoretical framework. The pattern supports the use of these averaged composite scores in subsequent analyses.
+
+External scripts for diagnostics and robustness checks are provided in Appendix~\ref{app:resources} for reproducibility.
+
+\begin{table}[H]
+  \centering
+  \caption{Reliability of Multi-Item Constructs}
+  \label{tab:reliability}
+  \begin{tabular}{lcccl}
+    \toprule
+    \textbf{Construct}  & \textbf{Items} & $\alpha$ & \textbf{Inter-item r} \\
+    \midrule
+    Competitive Nature  & 2              & 0.93     & 0.87 \\
+    Skill Improvement   & 2              & 0.90     & 0.81 \\
+    Game Knowledge      & 2              & 0.87     & 0.77 \\
+    Skill Appreciation  & 2              & 0.81     & 0.68 \\
+    Entertaining Nature & 2              & 0.88     & 0.79 \\
+    Dramatic Nature     & 2              & 0.93     & 0.87 \\
+    Vicarious Sensation & 2              & 0.79     & 0.66 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Participant Profile}
+Thirty-three participants completed the study (35 started; 2 excluded for low-quality responses such as straight-lining), yielding 132 text evaluations. The sample was highly domain-experienced: all participants watched competitive AoE2 at least during major tournaments, 32 at least weekly, and 23 several times per week. Self-assessed understanding of competitive play was high ($M$ (mean) $=6.18$, $SD$ (standard deviation) $=0.95$ on a 7-point scale). The mean self-reported 1v1 Elo\footnote{Elo is a rating system used in the game to calculate the relative skill levels of players in matches, to match opponents of similar strength.} was 1600 ($M=1600$, $SD=403$), well above the average player base rating of approximately 1000, indicating a core/enthusiast sample and a step up from the preliminary study ($M=1282$, $SD=210$). Twenty-six participants reported native-like English proficiency. We did not ask for demographic information to maximize privacy and encourage participation, so we cannot report on age, gender, geographical distribution, or other demographic factors.
+
+\subsection{General Sentiment \& AI Perception}
+At the end of the survey, participants were moderately divided on AI. Nearly half (16/33, 48\%) correctly identified all four texts as AI-generated; the remainder believed at least one was human-written, with an average guess of 3.3 out of 4 ($SD=0.77$). Those who suspected AI reported a slight negative sentiment bias ($M=3.03$, $SD=1.19$, where 4 is neutral). Opinions on AI utility for un-commentated matches were evenly split ($M=4.00$, $SD=1.54$), with the high standard deviation reflecting genuine polarization rather than indifference.
+
+Exploratory participant-level correlations suggest that more positive AI utility attitudes were associated with higher ratings on \textit{Game Knowledge} (Spearman $\rho=0.53$, $p=0.0016$; Benjamini--Hochberg-adjusted $p=0.0218$ across outcomes for this covariate), but this pattern did not generalize across all dimensions. Participants who were more optimistic about AI's potential were also more likely to be engaged by being able to use their game knowledge to understand the text.
+
+
+\subsection{Baseline Performance Overview}
+Before analyzing module effects, we first note absolute performance across conditions. As seen in the model intercepts (Table~\ref{tab:fixed_effects_short}), i.e., estimated grand means using sum contrasts, engageability motivation scores were generally low, ranging from approximately 2.5 to 3.9 on a 7-point scale (where 4 represents "Neither agree nor disagree"). Participants tended to disagree that the texts were engaging across most motivational dimensions. In contrast, linguistic quality intercepts were higher: \textit{Readability} ($\approx 4.6$), \textit{Detail Level} ($\approx 4.4$), and \textit{Logicality} ($\approx 5.6$), suggesting coherent, readable text even when it failed to excite the audience. That is, the system produced text participants found well-formed and appropriately detailed, but not necessarily compelling to read.
+
+Using Wilcoxon signed-rank tests with Holm false-discovery rate correction across all responses, all dimensions differed significantly ($\alpha = .05$) from the neutral midpoint, except Game Knowledge, Overall Quality, and Word Choice. This means the low engageability scores are not simply noise: participants meaningfully rated the texts below neutral on most motivational dimensions. 
+
+\subsection{Variance}
+We examined variance components to understand sources of variability (Table~\ref{tab:random_effects}). Across almost all motivations and quality metrics, variance attributed to \textit{Match} was negligible (often $< 0.05$ or even $0.00$ for Overall Quality), suggesting limited dependence on the specific match. Match played a minor role for \textit{Reading Thoroughness}, \textit{Detail Level}, and \textit{Readability}, likely due to varying match lengths impacting perceived detail. In contrast, \textit{Participant} variance was substantial (ranging from $\approx 0.4$ to $2.7$), often exceeding residual variance. This motivates random intercepts for participants to control baseline rating tendencies and increase power.
+
+This pattern is also reflected in marginal and conditional $R^2$ values for the mixed models (Table~\ref{tab:r2_nakagawa}). Across outcomes, the fixed effects explain only a small share of variance (marginal $R^2$ range: 0.008--0.062; median 0.018), while the combination of fixed effects plus random intercepts explains substantially more (conditional $R^2$ range: 0.341--0.795; median 0.617). The modules themselves account for a small fraction of what drives ratings; once we account for who is rating, the model explains most of the variance. This confirms that individual taste dominates module effects.
+
+Consistent with this, intraclass correlation coefficients (ICCs; Table~\ref{tab:icc}) indicate strong clustering by participant and weak clustering by match. Across outcomes, the participant ICC ranged from 0.282 to 0.788 (median 0.591), whereas the match ICC ranged from 0.000 to 0.096 (median 0.012).
+
+\subsection{Engageability (H1-H3)}
+We analyzed the impact of our modules on the seven motivations for engageability. The results for the fixed effects are summarized in Table~\ref{tab:fixed_effects_short} (full model output including SE, df, and $t$ in Table~\ref{app:fixed_effects}). When interpreting these values we use a significance threshold of $\alpha = .05$. $\beta$ values represent the estimated change in the score associated with the presence of the module, compared to the grand mean across all conditions. For example, a $\beta$ of 0.199 for \textit{Competitive Nature} under \textit{Expert Insights} means that, on average, texts with \textit{Expert Insights} were rated 0.199 points higher on \textit{Competitive Nature} than the average rating across all texts, regardless of other modules or match, but this is only meaningful if the effect is statistically significant (i.e., if $p < .05$).
+
+\begin{table}[H]
+\scriptsize
+\centering
+\begin{tabular}{l l r r r}
+  \toprule
+  Outcome & Effect & $\beta$ & 95\% CI & $p$ \\
+  \midrule
+  \multicolumn{5}{l}{\textit{Engageability}} \\
+  \midrule
+  \textit{Competitive Nature}  & \textit{Intercept}    & \textit{3.20}  & \textit{2.65--3.74}   & \\
+  Competitive Nature    & Expert Insights   & \textbf{0.199} & \textbf{0.05--0.35} & \textbf{.008} \\
+  Competitive Nature    & Event Structuring & 0.047          & -0.10--0.19           & .522 \\
+  Competitive Nature    & Interaction       & 0.018          & -0.13--0.16           & .812 \\
+  \addlinespace
+  \textit{Skill Improvement}   & \textit{Intercept}    & \textit{2.58}  & \textit{2.09--3.08}   & \\
+  Skill Improvement     & Expert Insights   & \textbf{0.186} & \textbf{0.07--0.30} & \textbf{.002} \\
+  Skill Improvement     & Event Structuring & -0.049         & -0.17--0.07           & .413 \\
+  Skill Improvement     & Interaction       & 0.032          & -0.09--0.15           & .586 \\
+  \addlinespace
+  \textit{Game Knowledge}      & \textit{Intercept}    & \textit{3.86}  & \textit{3.22--4.51}   & \\
+  Game Knowledge        & Expert Insights   & 0.143          & -0.03--0.32           & .109 \\
+  Game Knowledge        & Event Structuring & 0.016          & -0.16--0.19           & .854 \\
+  Game Knowledge        & Interaction       & -0.081         & -0.26--0.09           & .359 \\
+  \addlinespace
+  \textit{Skill Appreciation}  & \textit{Intercept}    & \textit{2.53}  & \textit{2.08--2.99}   & \\
+  Skill Appreciation    & Expert Insights   & 0.101          & -0.01--0.22           & .082 \\
+  Skill Appreciation    & Event Structuring & -0.040         & -0.15--0.07           & .483 \\
+  Skill Appreciation    & Interaction       & -0.107         & -0.22--0.01           & .066 \\
+  \addlinespace
+  \textit{Entertaining Nature} & \textit{Intercept}    & \textit{2.88}  & \textit{2.37--3.39}   & \\
+  Entertaining Nature   & Expert Insights   & 0.112          & -0.03--0.26           & .124 \\
+  Entertaining Nature   & Event Structuring & 0.109          & -0.03--0.25           & .132 \\
+  Entertaining Nature   & Interaction       & 0.001          & -0.14--0.14           & .987 \\
+  \addlinespace
+  \textit{Dramatic Nature}     & \textit{Intercept}    & \textit{2.65}  & \textit{2.14--3.17}   & \\
+  Dramatic Nature       & Expert Insights   & 0.103          & -0.05--0.25           & .176 \\
+  Dramatic Nature       & Event Structuring & 0.014          & -0.14--0.16           & .856 \\
+  Dramatic Nature       & Interaction       & 0.087          & -0.06--0.24           & .252 \\
+  \addlinespace
+  \textit{Vicarious Sensation} & \textit{Intercept}    & \textit{2.79}  & \textit{2.30--3.29}   & \\
+  Vicarious Sensation   & Expert Insights   & \textbf{0.252} & \textbf{0.10--0.41} & \textbf{.001} \\
+  Vicarious Sensation   & Event Structuring & 0.098          & -0.05--0.25           & .206 \\
+  Vicarious Sensation   & Interaction       & 0.042          & -0.11--0.19           & .588 \\
+  \midrule
+  \multicolumn{5}{l}{\textit{Linguistic Quality}} \\
+  \midrule
+  \textit{Overall Quality}     & \textit{Intercept}    & \textit{3.82}  & \textit{3.41--4.23}   & \\
+  Overall Quality       & Expert Insights   & 0.080          & -0.13--0.29           & .444 \\
+  Overall Quality       & Event Structuring & 0.077          & -0.13--0.28           & .461 \\
+  Overall Quality       & Interaction       & -0.030         & -0.24--0.18           & .770 \\
+  \addlinespace
+  \textit{Word Choice}         & \textit{Intercept}    & \textit{4.28}  & \textit{3.90--4.66}   & \\
+  Word Choice           & Expert Insights   & 0.012          & -0.20--0.22           & .905 \\
+  Word Choice           & Event Structuring & 0.146          & -0.06--0.35           & .166 \\
+  Word Choice           & Interaction       & 0.023          & -0.19--0.23           & .828 \\
+  \addlinespace
+  \textit{Readability}         & \textit{Intercept}    & \textit{4.62}  & \textit{4.04--5.20}   & \\
+  Readability           & Expert Insights   & -0.044         & -0.26--0.17           & .685 \\
+  Readability           & Event Structuring & -0.097         & -0.31--0.12           & .371 \\
+  Readability           & Interaction       & -0.102         & -0.32--0.11           & .349 \\
+  \addlinespace
+  \textit{Logicality}          & \textit{Intercept}    & \textit{5.61}  & \textit{5.28--5.93}   & \\
+  Logicality            & Expert Insights   & 0.038          & -0.13--0.21           & .656 \\
+  Logicality            & Event Structuring & \textbf{0.216} & \textbf{0.05--0.39} & \textbf{.013} \\
+  Logicality            & Interaction       & 0.125          & -0.05--0.30           & .149 \\
+  \addlinespace
+  \textit{Detail Level}        & \textit{Intercept}    & \textit{4.41}  & \textit{3.77--5.05}   & \\
+  Detail Level          & Expert Insights   & \textbf{-0.243}& \textbf{-0.45--{-0.04}} & \textbf{.022} \\
+  Detail Level          & Event Structuring & 0.064          & -0.14--0.27           & .538 \\
+  Detail Level          & Interaction       & 0.051          & -0.16--0.26           & .628 \\
+  \addlinespace
+  \textit{Reading Thoroughness}& \textit{Intercept}    & \textit{4.56}  & \textit{3.77--5.35}   & \\
+  Reading Thoroughness  & Expert Insights   & -0.150         & -0.38--0.08           & .202 \\
+  Reading Thoroughness  & Event Structuring & 0.145          & -0.09--0.38           & .218 \\
+  Reading Thoroughness  & Interaction       & 0.018          & -0.21--0.25           & .878 \\
+  \addlinespace
+  \textit{Understanding}       & \textit{Intercept}    & \textit{4.46}  & \textit{3.91--5.02}   & \\
+  Understanding         & Expert Insights   & 0.160          & -0.04--0.36           & .114 \\
+  Understanding         & Event Structuring & -0.125         & -0.32--0.08           & .217 \\
+  Understanding         & Interaction       & -0.149         & -0.35--0.05           & .141 \\
+  \bottomrule
+\end{tabular}
+\caption{Module fixed effects ($\beta$, 95\% CI, $p$). Intercept rows (italicised) show the grand mean with its CI; $p$ not shown as all intercepts are $< .001$. Bold = significant at $\alpha = .05$. See Table~\ref{app:fixed_effects} for full output.}
+\label{tab:fixed_effects_short}
+\end{table}
+
+\subsubsection{Effect of Expert Insights (H1)}
+Support for H1 was mixed but positive for the motivations most directly targeted by strategic context and analytical insight. \textit{Expert Insights} had a statistically significant positive effect on \textit{Competitive Nature} ($\beta=0.199, p=0.008$), \textit{Skill Improvement} ($\beta=0.186, p=0.002$), and \textit{Vicarious Sensation} ($\beta=0.252, p=0.001$). No significant effects were found for \textit{Game Knowledge}, \textit{Skill Appreciation}, \textit{Entertaining Nature}, or \textit{Dramatic Nature}. Adding strategic context made the texts feel more competitive, educational, and immersive to read, but did not make them more entertaining or emotionally dramatic. These results suggest that the insights deepen analytical engagement rather than spectacle.
+
+\subsubsection{Effect of Event Structuring (H2)}
+Contrary to our expectations, H2 was largely unsupported. \textit{Event Structuring} did not show a statistically significant positive effect on any engageability motivation; coefficients were generally close to zero or slightly negative (e.g., \textit{Understanding}, $\beta=-0.125, p=0.217$). Thus, reordering events to follow a narrative flow did not, by itself, increase engageability for this audience. Structuring the timeline is not enough: without causal explanation, a more logical sequence is not a more engaging one.
+
+\subsubsection{Interaction Effects (H3)}
+We found no significant interaction effects between \textit{Expert Insights} and \textit{Event Structuring} for any of the motivations (e.g., \textit{Competitive Nature} interaction $p=0.812$). This indicates that the benefits of \textit{Expert Insights} are independent of how the events are structured, and the combination of modules did not produce the hypothesized synergistic boost in engageability. What \textit{Expert Insights} contributes, it contributes regardless of whether events are structured by our other module.
+
+\subsection{Linguistic Quality (H4-H6)}
+\subsubsection{Logicality \& Structuring}
+\textit{Event Structuring} had a significant positive effect on \textit{Logicality} ($\beta=0.216, p=0.013$), partially supporting H5: event sequences appeared more logical and less out of order compared to the baseline, even though engageability did not improve. The module succeeded at what it was designed to do structurally, but logical ordering alone was not enough to translate into a more engaging experience.
+
+\subsubsection{Detail \& Length}
+\textit{Expert Insights} showed a significant negative effect on the \textit{Detail Level} rating ($\beta=-0.243, p=0.022$). The model intercept ($\approx 4.41$; grand mean) was slightly above the midpoint of 4 (Just Right), placing it on the side of "too much detail"; the negative coefficient pulls this down to approximately $4.17$, closer to the optimal value. In practical terms: without \textit{Expert Insights}, participants found texts slightly too detailed; with them, perceived detail felt more appropriate, even though the module does not reduce word count. Instead, the module replaces some repetitive skirmish reporting with targeted strategic context, which participants experienced as less cluttered. This interpretation is consistent with qualitative feedback: the baseline was criticized for repeating minor skirmishes, whereas \textit{Expert Insights} was described as more focused.
+
+\subsubsection{Order Effects}
+We observed a significant positive effect of \textit{Order} on \textit{Overall Quality} ($\beta=0.185, p=0.049$): each successive text position was associated with a slightly higher \textit{Overall Quality} rating, regardless of which configuration it was; suggesting adaptation rather than a content effect. This may indicate a learning effect, where participants became more accustomed to the AI's writing style or calibrated their expectations downward after the first text.
+
+\subsection{Qualitative Feedback}
+Out of the 132 evaluations, 96 included open-text feedback; we performed a thematic analysis to interpret the statistical results.
+
+\subsubsection{Common Themes}
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item \textbf{Length vs. Value}: The most consistent complaint was inefficiency: texts were perceived as too long relative to strategic value. The "No Modules" baseline was criticized for over-reporting micro-skirmishes, making the text tedious.
+  \item \textbf{Missing Macro Context}: Participants struggled to visualize game state and requested anchors (villager counts, resources, map positions). Without these, even logically structured updates (\textit{Event Structuring}) felt disconnected.
+  \item \textbf{Tone Mismatch}: Attempts at "hype" or dramatic phrasing (often meant to support \textit{Dramatic Nature}) were rejected as artificial. Participants preferred a drier, more analytical tone for text updates, reserving excitement for audio-visual formats.
+\end{itemize}
+
+\subsubsection{Module-Specific Perceptions}
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item \textbf{Expert Insights}: Generally the preferred configuration: more focused, but still prone to narrative gaps (e.g., describing that a fight \textit{happened} while missing setup \textit{leading up} to a fight).
+  \item \textbf{Event Structuring}: While statistically more logical, readers still found strategic consequences unclear: structuring fixed the timeline, not causal links.
+  \item \textbf{Baseline (No Modules)}: Criticized for repeating minor skirmishes, leading to a fragmented reading experience.
+\end{itemize}
+
+\subsubsection{Specific Critical Incidents}
+Two specific feedback items highlighted critical limitations in trust and logical consistency:
+
+\paragraph{Narrative Plausibility}
+One high-level participant ($>$1600 Elo) completely rejected the validity of a generated text (``the events described don't make sense for an actual game''). The participant correctly identified AI but assumed the \textit{gameplay events} were hallucinated; in reality, the SAGE pipeline had identified the events, but the narrative framing did not justify the questioned strategic decisions. This mismatch between the participant's mental model of optimal play and the unjustified description led to a complete breakdown in trust.
+
+\paragraph{Implicit Logic Gaps}
+Other participants noted a text update describing the Aztecs fielding cavalry, which seemed inconsistent because Aztecs cannot train cavalry natively. In the referenced moment the Aztec player \textit{did} possess cavalry, but the text did not connect this to the presence of Monks (the only way for Aztecs to obtain cavalry is through Monks' conversions), causing confusion.
+
+Full random-effects model output tables are provided in Appendix~\ref{appendix:evaluation-details}.
+

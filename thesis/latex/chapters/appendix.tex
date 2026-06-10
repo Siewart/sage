@@ -1,0 +1,1148 @@
+
+\chapter{Domain Analysis}
+\input{chapters/appendix-domain-analysis-coding}
+\input{chapters/appendix-domain-analysis-supplementary-tables}
+\chapter{Prototype}
+\label{appendix:prototype}
+
+\section{Data Schema}
+\label{appendix:data-schema}
+Each recorded game is exported as a set of Apache Arrow files, one per data type, along with a descriptor file that indexes the files and provides metadata.
+
+\subsection{Game Lobby Settings}
+\label{appendix:lobby-settings}
+The recorded games in our KotD IV dataset were played with the following lobby configuration:
+\begin{itemize}[noitemsep,topsep=0pt]
+  \item \textbf{Data Mod:} Definitive Set
+  \item \textbf{Game Mode:} Random Map
+  \item \textbf{Location:} Arabia
+  \item \textbf{Map Size:} Tiny
+  \item \textbf{AI Difficulty:} Standard
+  \item \textbf{Resources:} Standard
+  \item \textbf{Population:} 200
+  \item \textbf{Game Speed:} Normal
+  \item \textbf{Reveal Map:} Normal
+  \item \textbf{Starting Age:} Standard
+  \item \textbf{Ending Age:} Standard
+  \item \textbf{Treaty Length:} None
+  \item \textbf{Victory:} Conquest
+  \item \textbf{Lock Teams:} On
+  \item \textbf{Team Together:} On
+  \item \textbf{Team Positions:} Off
+  \item \textbf{Shared Exploration:} Off
+  \item \textbf{Lock Speed:} On
+  \item \textbf{Allow Cheats:} Off
+  \item \textbf{Turbo Mode:} Off
+  \item \textbf{Full Tech Tree:} Off
+  \item \textbf{Record Game:} On
+\end{itemize}
+
+\subsection{Descriptor}
+The export process generates a \texttt{descriptor.json} file that serves as an index for the generated Arrow files. It categorizes the data files into dictionaries, binned tables, series, and single records. It also contains metadata such as string offsets and the time boundaries for each bin.
+
+The fields are defined as follows:
+\begin{itemize}
+  \item \textbf{name}: The name of the recorded game.
+  \item \textbf{recordedGame}: The filename of the source CaptureAge recording.
+  \item \textbf{dictionaries}: Static key-value pairs used for lookup (e.g. strings).
+  \item \textbf{binned}: Windowed values providing snapshots of the game state at a fixed frequency (defined by \texttt{binWidth} in milliseconds).
+  \item \textbf{series}: Time-stamped streams of symbolic data (events).
+  \item \textbf{records}: One-off values that apply to the entire game and do not evolve over time (e.g. map terrain).
+  \item \textbf{metadata}: Contains auxiliary information:
+    \begin{itemize}
+      \item \texttt{civStringIdOffset} / \texttt{colorStringIdOffset}: Offsets added to IDs to retrieve the corresponding name from the string dictionary.
+      \item \texttt{binTimes}: An array of inclusive start/end times (in milliseconds) corresponding to each bin index. Gaps between windows exist due to the discrete nature of the simulation time steps.
+    \end{itemize}
+\end{itemize}
+
+\begin{verbatim}
+{
+  "name": "Kotd4-Groups S06G2-Mbl vs Vinchester",
+  "recordedGame": ".../Kotd4-Groups S06G2-Mbl vs Vinchester.carz",
+  "dictionaries": [
+    { "type": "strings", "path": "./strings.arrow" }
+  ],
+  "binned": [
+    { "type": "players", "binWidth": 60000, "path": "./players.arrow" },
+    { "type": "researchStates", "binWidth": 60000,
+      "path": "./research-states.arrow" },
+    { "type": "entities", "binWidth": 60000, "path": "./entities.arrow" },
+    { "type": "masters", "binWidth": 60000, "path": "./masters.arrow" },
+    { "type": "world", "binWidth": 60000, "path": "./world.arrow" }
+  ],
+  "series": [
+    { "type": "events", "path": "./events.arrow" }
+  ],
+  "records": [
+    { "type": "settings", "path": "./settings.arrow" },
+    { "type": "map", "path": "./map.arrow" }
+  ],
+  "metadata": {
+    "civStringIdOffset": 10270,
+    "colorStringIdOffset": 10631,
+    "binTimes": [
+      [ 4841, 60014 ],
+      [ 60039, 120021 ],
+      ...
+      [ 3480496, 3531404 ]
+    ]
+  }
+}
+\end{verbatim}
+
+\subsection{Entry Shapes}
+
+Each Arrow file contains rows ("entries") built from the corresponding schema.
+Columns marked (dict) are Arrow dictionary encoded.
+Optional columns (nullable in schema) are noted in the \textbf{Condition} column, specifying the \texttt{modelType} or logical condition that enables them.
+
+\subsubsection*{Notes}
+\begin{itemize}
+  \item We could not use Arrow's Unions for polymorphic types in Arrow due to the level of support in the JavaScript implementation. Instead we indicate the type using a \texttt{modelType} dictionary column, and optional columns for each type. We use the optional column to indicate for which type the column is valid.
+  \item Some values are not well described below (in particular id-mapping), please refer to Advanced Genie Editor (included with the AoE2 DE tools) for further details. If some values are unclear, please contact the author for clarification.
+  \item Long identifiers in the tables below may be hyphenated (e.g. with \texttt{-}) for display purposes; these hyphens are not part of the actual field names or types.
+\end{itemize}
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{Common Values}
+
+\begin{itemize}
+  \item \texttt{sage:modelType} (dict \texttt{Uint8}) — present in multi‑model tables (\texttt{entities}, \texttt{masters}, \texttt{events}).
+  \item \texttt{sage:binId} (\texttt{Uint32}) — present in binned tables, increasing id, can be used with descriptor's \texttt{binTimes} array to retrieve window start/end times.
+  \item DUCT lifecycle (only in \texttt{entities}):
+    \begin{itemize}
+      \item \texttt{sage:ductType} (dict \texttt{Int8}) values: Deleted, Updated, Created, Transient.
+      \item \texttt{sage:creationTime} (\texttt{Uint32}, optional), kept at all times to keep track on the first time this entry was seen
+      \item \texttt{sage:deletionTime} (\texttt{Uint32}, optional), kept in the last window where it was present to indicate the last time it was seen
+    \end{itemize}
+\end{itemize}
+
+List element wrapping:
+
+\begin{itemize}
+  \item \texttt{List<Struct>} columns (e.g. production queues, attribute lists) store an empty list \texttt{[]} when logically present but source array is null, \texttt{null} when not present.
+\end{itemize}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{\texttt{settings.arrow} (record)}
+
+This contains only three fields, which support the map.arrow interpretation.
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  mapWidth & \texttt{Uint16} & & Map width in tile count \\
+  mapHeight & \texttt{Uint16} & & Map height in tile count \\
+  mapName & \texttt{Utf8} & & Always ``Arabia'' for our data set \\
+  \bottomrule
+\end{longtable}
+
+\subsubsection*{\texttt{map.arrow} (record)}
+
+One row per tile.
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  x & \texttt{Int32} & & Tile x-position \\
+  y & \texttt{Int32} & & Tile y-position \\
+  elevationLevel & \texttt{Uint8} & & Tile height level \\
+  terrainType & \texttt{Uint8} & & Tile terrain type (id refers to in-game terrain id e.g. ``Grass 2'') \\
+  \bottomrule
+\end{longtable}
+
+\subsubsection*{\texttt{world.arrow} (binned)}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  \texttt{sage:binId} & \texttt{Uint32} & & Bin identifier \\
+  time & \texttt{Uint32} & & World time (ms) \\
+  woodPrice & \texttt{Float32} & & Base price in gold to buy or sell wood \\
+  foodPrice & \texttt{Float32} & & Base price in gold to buy or sell food \\
+  stonePrice & \texttt{Float32} & & Base price in gold to buy or sell stone \\
+  \bottomrule
+\end{longtable}
+Note: Market events report actual values themselves.
+
+\subsubsection*{\texttt{strings.arrow} (dictionary)}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  id & \texttt{Int32} & & String ID \\
+  string & \texttt{Utf8} & & schema non‑nullable \\
+  \bottomrule
+\end{longtable}
+
+For our practical use we only used English strings, and filtered to those referenced by any string id, pluse colors and civilizations.
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{\texttt{players.arrow} (binned)}
+
+Basic (non-spatial) player state snapshot.
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  \texttt{sage:binId} & \texttt{Uint32} & & Bin identifier \\
+  id & \texttt{Int8} & & Player id, typically 0 is Gaia (computer controlled, e.g. resources, props, and animals) \\
+  color & \texttt{Int32} & & Color, can be used with the descriptor's \texttt{colorStringIdOffset} to get the name from \texttt{strings.arrow} \\
+  name & \texttt{Utf8} & & Player in-game name \\
+  civilization & \texttt{Uint32} & & Player civilization id, can be used with the descriptor's \texttt{civStringIdOffset} to get the name from \texttt{strings.arrow} \\
+  victoryPoints & \texttt{Int32} & & Score as shown in game \\
+  startX & \texttt{Float32} & & x-position of the starting units (typically a Town Center) \\
+  startY & \texttt{Float32} & & y-position of the starting units (typically a Town Center) \\
+  resigned & \texttt{Bool} & & Has the player resigned? \\
+  gameStatus & \texttt{Uint8} & & Player status (e.g. Human, AI) \\
+  \bottomrule
+\end{longtable}
+
+Dynamic (technically optional, but commonly available):
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  food & \texttt{Float32} & Dynamic & Food stockpile \\
+  wood & \texttt{Float32} & Dynamic & Wood stockpile \\
+  stone & \texttt{Float32} & Dynamic & Stone stockpile \\
+  gold & \texttt{Float32} & Dynamic & Gold stockpile \\
+  maxPop & \texttt{Float32} & Dynamic & Population Capacity \\
+  currentAge & \texttt{Float32} & Dynamic & 0 = Dark Age, etc. \\
+  population & \texttt{Float32} & Dynamic & Current Population \\
+  razings & \texttt{Float32} & Dynamic & Cumulative number of buildings destroyed \\
+  foodTotal & \texttt{Float32} & Dynamic & Cumulative food collected throughout the game \\
+  woodTotal & \texttt{Float32} & Dynamic & Cumulative wood collected throughout the game \\
+  stoneTotal & \texttt{Float32} & Dynamic & Cumulative stone collected throughout the game \\
+  goldTotal & \texttt{Float32} & Dynamic & Cumulative gold collected throughout the game \\
+  relicGold & \texttt{Float32} & Dynamic & Cumulative gold collected from holding relics \\
+  relicFood & \texttt{Float32} & Dynamic & Cumulative food collected from holding relics \\
+  relicWood & \texttt{Float32} & Dynamic & Cumulative wood collected from holding relics \\
+  relicStone & \texttt{Float32} & Dynamic & Cumulative stone collected from holding relics \\
+  civilianPop & \texttt{Float32} & Dynamic & Number of civilian units (villagers, fishing ships, trade carts, etc.) \\
+  militaryPop & \texttt{Float32} & Dynamic & Number of military units \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{\texttt{research-states.arrow} (binned)}
+
+States of all research include:
+\begin{itemize}
+  \item \texttt{CanResearchLater} (0)
+  \item \texttt{CanResearch} (1)
+  \item \texttt{Researching} (2)
+  \item \texttt{Researched} (3)
+  \item \texttt{Queued} (4)
+\end{itemize}
+
+Excludes (for storage space reasons):
+\begin{itemize}
+  \item \texttt{CantResearch} (-1) — technologies unavailable to the player.
+\end{itemize}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  \texttt{sage:binId} & \texttt{Uint32} & & Bin identifier \\
+  playerId & \texttt{Int8} & & Player id \\
+  researchId & \texttt{Int16} & & Unique id for the technology \\
+  stringId & \texttt{Int32} & Named Tech & If technology is named (some are not UI facing, such as civilization bonuses) \\
+  researchDone & \texttt{Float32} & & Progress \\
+  state & \texttt{Uint8} & & Enum (e.g. \texttt{CanResearch}, ...) \\
+  buildObjId & \texttt{Int16} &  & Building being researched at \\
+  timesResearched & \texttt{Int16} & Repeatable & For repeatable techs \\
+  allowMultipleResearch & \texttt{Bool} & Multi-research & For techs allowing multiple \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{\texttt{events.arrow} (series)}
+
+Per event; \texttt{sage:modelType} dictionary over:
+\begin{itemize}
+  \item \texttt{damage}: An entity deals damage to another.
+  \item \texttt{death}: An entity kills another (in addition to damage).
+  \item \texttt{monkConversion}: An entity converts another (unless heresy activated, in which case it died).
+  \item \texttt{marketTransaction}: A player bought or sold resources.
+  \item \texttt{techStatus}: Tech status changed. (tags: \texttt{researching}, \texttt{completed}, \texttt{canceled}, \texttt{forceCanceled})
+  \item \texttt{garrison}: An entity enters or leaves another. (tags: \texttt{garrison}, \texttt{ungarrison})
+  \item \texttt{unitCreated}: A unit is created.
+  \item \texttt{lifeCycle}: An entity changed its life cycle (tags: \texttt{created}, \texttt{constructed}, \texttt{underConstruction}, \texttt{dead}).
+\end{itemize}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  \texttt{sage:modelType} & dict \texttt{Uint8} & & Event kind \\
+  worldTime & \texttt{Uint32} & & World time this event happened (ms) \\
+  worldX, worldY, worldZ & \texttt{Float32} & Spatial & Spatial events (unit / position relevant) \\
+  objectEntity & \texttt{Int32} & & Target / object ID \\
+  subjectEntity & \texttt{Int32} & & Source / or actor ID \\
+  objectPlayerId & \texttt{Uint8} & & Player ID of the target \\
+  subjectPlayerId & \texttt{Uint8} & & Player ID of the source \\
+  resourceType & \texttt{Uint8} & \texttt{marketTransaction} & Resource type ID (e.g. Food, Wood) \\
+  resourceAmount & \texttt{Uint16} & \texttt{marketTransaction} & Amount of resource bought/sold \\
+  goldAmount & \texttt{Uint16} & \texttt{marketTransaction} & Gold cost or revenue \\
+  techId & \texttt{Uint16} & \texttt{techStatus} & Technology ID \\
+  heresyActivated & \texttt{Bool} & \texttt{monkConversion} & True if Heresy tech prevented conversion \\
+  tag & dict \texttt{Uint8} & (various) & See list above \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{\texttt{entities.arrow} (binned)}
+
+\texttt{sage:modelType} dictionary over:
+\texttt{Entity}, \texttt{DoppleEntity}, \texttt{ActionEntity}, \texttt{CombatEntity}, \texttt{MissileEntity}, \texttt{BuildingEntity}.
+
+This contains all entities present in the game at each time window, including units, buildings, resources, and projectiles, as well as doppleganger entities used to represent Fog of War states. Notably, it also includes entities that are in different states of their lifecycle:
+
+\begin{itemize}
+  \item \texttt{Building} (0)
+  \item \texttt{AlmostAlive} (1)
+  \item \texttt{Alive} (2)
+  \item \texttt{Dead} (3)
+  \item \texttt{AlmostDead} (4)
+  \item \texttt{ReallyDead} (5)
+  \item \texttt{Undead} (6)
+  \item \texttt{Remove} (7)
+  \item \texttt{Going} (8)
+\end{itemize}
+
+Some of these states are transient within the game loop and will likely not appear in the binned snapshots, but they are included for completeness.
+
+Base (always present):
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  \texttt{sage:modelType} (dict) & \texttt{Uint8} & & Entity model type \\
+  \texttt{sage:binId} & \texttt{Uint32} & & Bin identifier \\
+  \texttt{sage:ductType} (dict) & \texttt{Int8} & & Data update type (Created, Updated, etc.) \\
+  \texttt{sage:creationTime} & \texttt{Uint32} & & Time entity was created \\
+  \texttt{sage:deletionTime} & \texttt{Uint32} & & Time entity was deleted \\
+  id & \texttt{Int32} & & Entity ID \\
+  masterId & \texttt{Int16} & & When negative it uses a custom master field\footnote{For example this can happen when a unit is converted from another player, e.g. with more advanced upgrades.}, which is added to the \texttt{masters.arrow} \\
+  refMasterId & \texttt{Int16} & & Used for special cases, e.g., all villagers types (male farmer, female forager) have their own masterIds, refMasterId refers the same id for all. In most cases this is the recommended identifier. \\
+  ownerId & \texttt{Uint8} & & Player ID owning the entity \\
+  worldX & \texttt{Float32} & & X coordinate \\
+  worldY & \texttt{Float32} & & Y coordinate \\
+  worldZ & \texttt{Float32} & & Z coordinate (height) \\
+  heldAttributeAmount & \texttt{Float32} & & Amount of resource held (e.g. by villager) \\
+  heldAttributeType & \texttt{Int16} & & Type of resource held \\
+  state & \texttt{Uint8} & & Entity state (e.g. Alive, Dead) \\
+  doppleFlag & \texttt{Bool} & & Is a virtual clone of another player's building or resource node, to show the last seen variation in the Fog of War \\
+  type & \texttt{Uint8} & & Unit Class Type \\
+  hp & \texttt{Float32} & & Current hit points \\
+  insideObjId & \texttt{Int32} & & ID of object this entity is inside (garrisoned) \\
+  groupId & \texttt{Int32} & & Group ID for formation/selection \\
+  workerNum & \texttt{Int32} & & Number of workers (e.g. on a building) \\
+  lastSeen & \texttt{List\-<Uint32>} (or \texttt{[undefined]}) & & Time entry for lastSeen for each player (Gaia = 0) \\
+  \bottomrule
+\end{longtable}
+
+Optional / modelType‑specific:
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  doppledObjectId & \texttt{Int32} & \texttt{DoppleEntity} & value = entity.id \\
+  doppledPlayerId & \texttt{Int8} & \texttt{DoppleEntity} & value = entity.ownerId \\
+  currentAction & Action & \texttt{ActionEntity}, \texttt{CombatEntity} & Current action being performed \\
+  formationType & \texttt{Uint8} & \texttt{ActionEntity}, \texttt{CombatEntity} & Current formation ID \\
+  attackStance & \texttt{Uint8} & \texttt{ActionEntity}, \texttt{CombatEntity} & Stance (Aggressive, Defensive, etc.) \\
+  firedFromId & \texttt{Int32} & \texttt{MissileEntity} & ID of unit that fired this missile \\
+  linkedOwnerId & \texttt{Int32} & \texttt{BuildingEntity} & ID of owner for linked buildings (e.g. farms) \\
+  current\-Production\-Queue\-Action & Action & \texttt{BuildingEntity} & Action currently at head of queue \\
+  gatherPointX / gatherPointY / gatherPointZ & \texttt{Float32} & \texttt{BuildingEntity} & Rally point coordinates \\
+  gatherPointTargetId & \texttt{Int32} & \texttt{BuildingEntity} & ID of target for rally point \\
+  buildPts & \texttt{Float32} & \texttt{BuildingEntity} & Construction progress points \\
+  originalOwnerId & \texttt{Int8} & \texttt{BuildingEntity} & Player ID who originally built this \\
+  built & \texttt{Bool} & \texttt{BuildingEntity} & True if construction is complete \\
+  relicCount & \texttt{Int32} & \texttt{BuildingEntity} & Number of relics garrisoned \\
+  productionQueue & \texttt{List\-<Production}\-\texttt{Queue}\-\texttt{Record>} & \texttt{BuildingEntity} & List of units/techs queued \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{\texttt{masters.arrow} (binned)}
+
+Binned; \texttt{sage:modelType} dictionary over:
+\texttt{MasterEntity}, \texttt{MasterMovingEntity}, \texttt{MasterActionEntity}, \texttt{MasterCombatEntity}, \texttt{MasterMissileEntity}, \texttt{MasterBuildingEntity}.
+
+Base (always):
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  \texttt{sage:binId} & \texttt{Uint32} & & Bin identifier \\
+  \texttt{sage:modelType} (dict) & \texttt{Uint8} & & Master model type \\
+  id & \texttt{Int16} & & Master ID (Unit/Building Type ID) \\
+  playerId & \texttt{Uint8} & & Player ID \\
+  type & \texttt{Uint8} & & Unit class type \\
+  stringId & \texttt{Int32} & & Name string ID \\
+  objectGroup & \texttt{Int16} & & Object group ID \\
+  hp & \texttt{Int16} & & Max Hit Points \\
+  objCapacity & \texttt{Uint8} & & Garrison capacity \\
+  radiusX & \texttt{Float32} & & Collision radius X \\
+  radiusY & \texttt{Float32} & & Collision radius Y \\
+  radiusZ & \texttt{Float32} & & Collision radius Z \\
+  available & \texttt{Bool} & & True if available to player \\
+  disabled & \texttt{Bool} & & True if disabled \\
+  constructionRadiusX & \texttt{Float32} & & Foundation size X \\
+  constructionRadiusY & \texttt{Float32} & & Foundation size Y \\
+  resourceGroup & \texttt{Uint8} & & Resource group ID \\
+  attributesHeld & \texttt{List\-<Attribute}\-\texttt{Value>} & & Resources carried capacity/type \\
+  \bottomrule
+\end{longtable}
+
+Optional / modelType mapping (prefixes \texttt{Master} and suffixes \texttt{Entity} omitted in Condition for brevity):
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Column & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  speed & \texttt{Float32} & \texttt{Action}, \texttt{Combat}, \texttt{Moving} & Movement speed \\
+  baseArmor & \texttt{Int16} & \texttt{Combat} & Base armor value \\
+  armor & \texttt{List\-<Armor}\-\texttt{Weapon}\-\texttt{Info>} & \texttt{Combat} & Armor classes and values \\
+  weapon & \texttt{List\-<Armor}\-\texttt{Weapon}\-\texttt{Info>} & \texttt{Combat} & Attacks and damage values \\
+  weaponRange & \texttt{Float32} & \texttt{Combat} & Attack range \\
+  areaDamage & \texttt{Float32} & \texttt{Combat} & Blast radius \\
+  speedOfAttack & \texttt{Float32} & \texttt{Combat} & Reload time \\
+  combatAbility & \texttt{Uint8} & \texttt{Combat} & Special combat flags \\
+  origArmor & \texttt{Int16} & \texttt{Combat} & Original armor (before buffs) \\
+  origWeapon & \texttt{Int16} & \texttt{Combat} & Original weapon \\
+  origWeaponRange & \texttt{Float32} & \texttt{Combat} & Original range \\
+  origSpeedOfAttack & \texttt{Float32} & \texttt{Combat} & Original reload time \\
+  buildPtsRequired & \texttt{Float32} & \texttt{Combat}, \texttt{Building} & Total build points needed \\
+  minimumWeaponRange & \texttt{Float32} & \texttt{Combat} & Minimum range \\
+  buildInventory & \texttt{List\-<Attribute}\-\texttt{Value>} & \texttt{Combat} & Cost to build \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{Nested Struct: AttributeValue}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Field & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  type & \texttt{Int16} & & Attribute type ID (e.g. Gold, Wood) \\
+  amount & \texttt{Float32} & & Quantity \\
+  flag & \texttt{Uint8} & & Usage flag (e.g. some resources are return upon death) \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{Nested Struct: ProductionQueueRecord}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Field & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  unitId & \texttt{Int16} & & ID of unit being produced \\
+  refUnitId & \texttt{Int16} & & Reference ID for unit type \\
+  techId & \texttt{Int16} & & ID of technology being researched \\
+  unitCount & \texttt{Int16} & & Number of units in this batch \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{Nested Struct: Action}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Field & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  \texttt{sage:modelType} & dict \texttt{Uint8} & & Action model type \\
+  type & \texttt{Int16} & & Action Type ID \\
+  state & \texttt{Int8} & & Action State \\
+  targetId & \texttt{Int32} & & Target Entity ID \\
+  targetX & \texttt{Float32} & & Target X coordinate \\
+  targetY & \texttt{Float32} & & Target Y coordinate \\
+  targetZ & \texttt{Float32} & & Target Z coordinate \\
+  timer & \texttt{Float32} & & Duration \\
+  objId & \texttt{Int16} & \texttt{MakeObject} & Object ID being created \\
+  workDone & \texttt{Float32} & \texttt{MakeObject} & Progress \\
+  techId & \texttt{Int16} & \texttt{MakeTech} & Tech ID being researched \\
+  researchProgress & \texttt{Float32} & \texttt{MakeTech} & Research progress \\
+  startTime & \texttt{Float32} & \texttt{MakeTech} & Start time \\
+  targetType & \texttt{Int32} & \texttt{Gather}, \texttt{Hunt} & Target type \\
+  wasSameOwner & \texttt{Bool} & \texttt{Convert} & Was same owner? \\
+  requiredRange & \texttt{Float32} & \texttt{Convert} & Required range \\
+  totalTimer & \texttt{Float32} & \texttt{Convert} & Total timer \\
+  taskWorkVal1 & \texttt{Float32} & \texttt{Convert} & Task work value 1\footnote{Related to complex conversion mechanics: see: \url{https://ageofempires.fandom.com/wiki/Conversion\#Conversion_mechanics}} \\
+  taskWorkVal2 & \texttt{Float32} & \texttt{Convert} & Task work value 2 \\
+  wonderTime & \texttt{Float32} & \texttt{Wonder} & Wonder time \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\subsubsection*{Nested Struct: ArmorWeaponInfo}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.14\textwidth}p{0.22\textwidth}p{0.30\textwidth}@{}}
+  \toprule
+  Field & Type & Condition & Notes \\
+  \midrule
+  \endhead
+  type & \texttt{Int16} & & Armor or Attack class ID \\
+  value & \texttt{Int16} & & Value (armor or damage) \\
+  \bottomrule
+\end{longtable}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+\section{Data Transformations}\label{appendix:examples}
+
+This appendix contains the data structures output by each stage of the pipeline. These examples illustrate the transformation of data from raw ingestion to the final preprocessed format used for realization.
+
+\subsection{Data Ingestion}
+\label{sec:example-ingestion}
+\begin{lstlisting}[language=JavaScript, caption={Raw event input stream to Signal Analysis.}, label={lst:signal-input}]
+{
+    type: "damage" | "death",
+    worldX: number,
+    worldY: number,
+    worldZ: number,
+    subjectEntity: number,      // Unit or Building causing the event
+    subjectPlayerId: number,
+    objectEntity: number,       // Unit or Building receiving the event
+    objectPlayerId: number
+}
+
+{
+    type: "lifeCycle",
+    tag: "created" | "constructed" | "underConstruction" | "dead",
+    subjectEntity: number,
+    subjectPlayerId: number,
+    worldX: number,
+    worldY: number,
+    worldZ: number
+}
+\end{lstlisting}
+
+\subsection{Signal Analysis}
+\label{sec:example-signal}
+
+\begin{lstlisting}[language=JavaScript, caption={Clustered and filtered output from Signal Analysis.}, label={lst:signal-output}]
+{
+    type: "battle",
+    startTimeMs: number,    // Interval event: start time
+    endTimeMs: number,      // Interval event: end time
+    worldX: number,
+    worldY: number,
+    data: InstantEvent[]    // Array of clustered "damage" and "death" events
+}
+
+{
+    type: "buildingPlaced" | "buildingConstructed",
+    playerId: number,
+    worldTime: number,      // Instant event: time in ms
+    worldX: number,
+    worldY: number,
+    worldZ: number,
+    entityId: number,
+    refMasterId: number     // Used to look up building type
+}
+
+{
+    type: "minuteTick",
+    worldTime: number,      // Time in ms
+    minute: number          // Minute number
+}
+\end{lstlisting}
+
+\subsubsection{Signal Analysis Implementation Details}
+\label{appendix:signal-analysis-details}
+
+\paragraph{Spatiotemporal Clustering}
+We use a spatiotemporal variant of DBSCAN (ST-DBSCAN)\cite{shi2019, ansari2020} to cluster damage and kill events into fights. The main text (Section~\ref{sec:pipeline-implementation}; Figure~\ref{fig:online-temporal-spatial-clustering}) describes the method choice, requirements, and online behavior. This appendix focuses on implementation specifics: Figure~\ref{lst:online-dbscan} provides the per-event procedure, and the following section lists the concrete parameter values used in the prototype.
+
+\begin{figure}[H]
+\begin{verbatim}
+Definitions:
+    e : The current incoming event from the stream
+    C_open : Set of currently open clusters
+    N : Set of noise points
+    dist(a, b) : Spatial distance between events a and b
+    time(a, b) : Temporal difference between events a and b
+    eps : Maximum spatial distance threshold
+    tau : Maximum temporal difference threshold
+    minPts : Minimum number of points to form a cluster
+
+Algorithm ProcessEvent(e):
+    // 1. Identify and close timed-out clusters
+    closed_clusters <- {}
+    for each cluster c in C_open:
+        if time(e, c.last_event) > tau:
+            move c from C_open to closed_clusters
+
+    // 2. Find neighbors for the current event
+    neighbors <- {}
+    for each cluster c in C_open:
+        // Check if e is density-reachable from the cluster
+        if exists p in c such that dist(e, p) <= eps:
+            merge c into neighbors
+            remove c from C_open
+
+    noise_neighbors <- { n in N | dist(e, n) <= eps and time(e, n) <= tau }
+
+    // 3. Update clusters or noise
+    if neighbors is empty and size(noise_neighbors) < minPts:
+        add e to N
+    else:
+        // new cluster from union of neighbors,
+        //   noise_neighbors, and incoming event {e}
+        new_cluster <- neighbors U noise_neighbors U {e}
+        add new_cluster to C_open
+        remove noise_neighbors from N
+
+    // 4. Clean up old noise
+    remove { n in N | time(e, n) > tau } from N
+
+    // 5. Return completed clusters
+    return closed_clusters
+\end{verbatim}
+  \caption{Online spatiotemporal clustering of damage events - it operates on a per incoming event basis, and can close off old clusters as new events arrive.}
+  \label{lst:online-dbscan}
+\end{figure}
+
+Originally our implementation could buffer closed clusters as long as ongoing battles exist. But we disabled this behavior in the final prototype to ensure Interval Events were emitted as soon as possible and as single battles, supporting the baseline evaluation.
+
+\paragraph{Clustering Parameters}
+The following values were found to perform well within our iteration goals for Age of Empires II battle clusters:
+\begin{itemize}
+  \item \textbf{Spatial Distance (\texttt{eps}):} 14 square tiles --- Maximum distance in tiles between events to consider them part of the same cluster. (In some cases, e.g., Trebuchets fighting each other from a distance, this may be too small, but generally works well for most battles.)
+  \item \textbf{Temporal Distance (\texttt{tau}):} 60 seconds --- Maximum game time between events to consider them part of the same cluster. This is per local cluster, so clusters can close off while others are still ongoing.
+  \item \textbf{Minimum Points (\texttt{minPts}):} 10 events --- Minimum of 10 damage or kill events to form a cluster. (For every kill event, a damage event is also emitted, so implicitly battles with kills are more likely to be detected, but this is a rare case.)
+\end{itemize}
+
+We also experimented with a $maxSilenceTime$, ensuring that clusters were returned only if no events occurred for a certain duration globally, but found the $\tau$ parameter sufficient.
+
+
+
+
+\subsection{Data Interpretation}
+\label{sec:example-interpretation}
+\begin{lstlisting}[language=JavaScript, caption={Enriched fight event with contextual information.}, label={lst:enriched-output}]
+{
+  type: "battle";
+  startTimeMs: number;
+  endTimeMs: number;
+  location: string; // named location
+  worldX: number;
+  worldY: number;
+  data: StudyInstant[];
+  player1: { // player1 is used over arrayer index for easier LLM parsing
+    participants: string[]; // all participating entities (as receiver or dealer of damage)
+    casualties: string[]; // resulting casualties
+    survivors: string[]; // resulting survivors
+  };
+  player2: {...}
+  fightType: string; // as classified (e.g., "raid")
+  beforeState: {...} // before and after player states are added here (same as matchIntro below)
+  afterState: {...}
+}
+
+{
+  type: "buildingPlaced" | "buildingConstructed";
+  playerId: number;
+  entityId: number;
+  refMasterId: number;
+  buildingName: string; // used entityId, then refMasterId to look up building type
+  worldX: number;
+  worldY: number;
+  worldZ: number;
+  worldTime: number;
+  location: string; // named location based on query
+  isForward: boolean;
+  type: "castle" | "townCenter" | "tower"; // building type category, castle and tower have subtypes
+};
+
+{
+    type: "mapIntro"
+    timeMs: number;
+    minute: number;
+    mapName: string; // e.g., "Arabia"
+    player1:{
+      resourceData: {
+        ["forageBushes" | "huntables" | "herdables" | "lurables" | "stoneMines" | "goldMines" | "hills" | "woodlines" ]: {
+            size: number; // number of entities or tiles in cluster
+            forwardedness: number; /
+            playerRelativePosition: string;
+            playerId: number;
+            height: number; // only for hills
+        }
+      }
+    }
+    player2:{...}
+}
+
+{
+    type: "matchIntro"
+    timeMs: number;
+    minute: number;
+    player1:{
+        name: string;
+        color: string;
+        id: number;
+        civilization: string;
+
+        unitCount: {
+            unitName: string;
+            count: number;
+            forwardCount: number;
+        };
+        buildingCount: {
+            unitName: string;
+            count: number;
+            forwardCount: number;
+        };
+        technologies: [{name: string, state: string}]; //
+        score: number;
+        totalMilitaryUnits: {[name: string]: number;}[];
+        totalEcoUnits: {[name: string]: number;}[];
+        expertInsights: { // If Expert Insights module is active
+            looksLikeStrategy: string;
+            playerTrivia: string;
+            civilizationInfo: string;
+        };
+    }
+    player2:{...}
+}
+
+{ // minute tick event are propagated
+    type: "minuteTick",
+    worldTime: number,
+    minute: number
+}
+\end{lstlisting}
+
+\subsection{Document Planning}
+\label{sec:example-planning}
+\begin{lstlisting}[language=JavaScript, caption={Document Planner output: A content unit containing grouped events.}, label={lst:planner-output}]
+{
+    type: "multipleEvents"
+    startTimeMs: number;
+    endTimeMs: number;
+    battles: [...],
+    constructions: [...],
+    strategyUpdate: {...} // if Expert Insights module is active only
+}
+
+{
+    type: "mapIntro" // as is
+    ...
+}
+
+{
+    type: "matchIntro" // as is
+    ...
+}
+\end{lstlisting}
+
+
+\begin{figure}[htbp]
+\begin{lstlisting}[
+  language={},
+  basicstyle=\small\ttfamily,
+  backgroundcolor=\color{white},
+  numbers=none,
+  frame=single,
+  xleftmargin=1em,
+  xrightmargin=1em,
+  breaklines=true,
+  label=alg:doc-planning,
+  caption={Document Planning flush logic for the \textit{Event Structuring} module. MatchIntro and MapQuality events bypass the buffer and are realized immediately. All other events are deferred and flushed as a grouped content unit when one of three conditions is met.}
+]
+battlesInflationCounter <- 1   // cooldown: suppress rapid battle reports
+deferredQueue <- []
+lastFlushTime <- 0
+
+for each event in stream:
+
+  // Intro and Map events: bypass buffer, realize immediately
+  if event.type in {intro, mapQuality}:
+    realize(event)
+    continue
+
+  // All other events: interpret and push to deferred queue
+  interpreted <- interpret(event)
+  if interpreted != null:
+    deferredQueue.push({type, time: event.worldTime, data: interpreted})
+    // return null -- no immediate realization
+
+  // On each minute tick: decrement battle cooldown
+  if event.type == minuteTick:
+    battlesInflationCounter <- max(0, battlesInflationCounter - 1)
+
+  // Flush conditions (checked only on minute ticks)
+  if event.type == minuteTick:
+    hasBattles  <- deferredQueue.any(type == "battles")
+    hasEndGame  <- deferredQueue.any(type == "endGame")
+    timeSinceFlush <- event.worldTime - lastFlushTime
+
+    shouldFlush <- (hasBattles AND battlesInflationCounter == 0)
+                OR (timeSinceFlush > 180000)   // 3-minute timeout
+                OR hasEndGame
+
+    if shouldFlush:
+      if hasBattles:
+        battlesInflationCounter <- 5  // 5-tick cooldown after battle report
+
+      grouped <- {
+        battles:         deferredQueue.filter(type == "battles"),
+        technologies:    deferredQueue.filter(type == "technologies"),
+        buildings:       deferredQueue.filter(type == "buildingEvent"),
+        strategyUpdates: deferredQueue.filter(type == "strategyUpdate")
+      }
+      deferredQueue   <- []
+      lastFlushTime   <- event.worldTime
+
+      realize(grouped)   // send structured group to LLM Realizer
+\end{lstlisting}
+\end{figure}
+
+\subsection{Data Preprocessing}
+\label{sec:example-preprocessing}
+\begin{lstlisting}[language=JavaScript, caption={Document Preprocessing output: Including readable timestamps and full text player names.}, label={lst:preprocessing-output}]
+  [previousRealisations],
+  {
+    "type": "gameEnded",
+    "winner": 2,
+    "winnerName": "WallMaster77",
+    "worldTime": 987845,
+    "timestamp": "16:27"
+  }
+\end{lstlisting}
+\subsection{Realization}
+\label{sec:example-realization}
+An example without Expert Insights or Event Structuring modules active, but the Writing Style module is active.
+\begin{quote}
+  Welcome to Arabia! In this matchup, we have CastleDropper, playing as the Yellow Bulgarians. Facing them is WallMaster77, representing the Blue Indians. The action is just getting started!
+\end{quote}
+
+\begin{quote}
+  Good forward main gold and stone for CastleDropper, and their woodlines are close. WallMaster77 also has close main gold, stone, and readily available woodlines. Standard Arabia spawns for both!
+\end{quote}
+
+\begin{quote}
+  CastleDropper is pushing forward! A Watch Tower is now going up right on the doorstep of WallMaster77! This could be a very aggressive play early on!
+\end{quote}
+
+\begin{quote}
+  \dots
+\end{quote}
+
+\begin{quote}
+  A huge battle just concluded at WallMaster77's forward gold! CastleDropper's entire military of Man-at-Arms and Skirmishers was wiped out, losing 9 units and a Villager! WallMaster77 only lost 2 Archers in a crushing defense!
+\end{quote}
+
+\begin{quote}
+  And that's it! The game has ended! WallMaster77, playing as the Blue Indians, takes the victory! What a comeback by WallMaster77 after early aggression!
+\end{quote}
+
+You can see that sometimes it decides still use the past tense for recaps of earlier events, depending on the context.
+
+\section{Fuzzy Logic Strategy Detection}
+\label{appendix:fuzzy-logic}
+
+This appendix details the implementation of the fuzzy logic system used in the Expert Insights module for strategy detection. The system allows for the definition of strategies using declarative templates, which are then evaluated against the game state using a fuzzy logic engine implemented in TypeScript.
+
+\subsection*{Strategy Template Example}
+Strategies are defined as templates specifying the required conditions in terms of unit counts, building placements, and resource distributions. Listing~\ref{lst:fuzzy-template} shows an example configuration for detecting a "Tower Rush" strategy.
+
+Note that the configuration uses helper functions to generate the underlying fuzzy set definitions. For example, \texttt{atLeast(n)} creates a trapezoidal set that functions as a crisp requirement: it has a vertical "cliff" at \texttt{n}, meaning any value below \texttt{n} has 0 membership, and any value \texttt{n} or above has 1 membership. This allows for hard constraints within the fuzzy logic system.
+
+\begin{lstlisting}[language=JavaScript,caption={Configuration template for Tower Rush strategy},label={lst:fuzzy-template}]
+ {
+    strategyName: "Tower Rush",
+    timeRegion: between(6, 11),
+    criteria: {
+      unitCriteria: [
+        {
+          unitType: "Villager",
+          count: { trapezoid: [18, 20, 25, 28] },
+        },
+      ],
+      villagerDistribution: {
+        stone: atLeast(2), // must have at least 2 on stone (crisp)
+      },
+      buildingCriteria: [
+        {
+          unitType: "Watch Tower",
+          count: atLeast(1),
+          position: "forward",
+        },
+      ],
+      technologyCriteria: [
+        {
+          technology: "Loom",
+          required: true, // Boolean crisp requirement
+        },
+      ],
+      constraints: {
+        age: between(0, 1), // Dark to Feudal Age
+      },
+    },
+  }
+\end{lstlisting}
+
+\section{Prompt \& Context}
+\label{appendix:prompts}
+
+\subsection{Base Prompts}
+
+\subsubsection{Base instruction}
+\begin{verbatim}
+You are a live esports commentator for Age of Empires 2 matches.
+Write engaging, short recaps based on JSON game data provided in each request.
+
+STRICT RULES:
+- Only use information from the provided data set - never add external knowledge
+  or make assumptions
+- Write as if commenting live on the action
+- Focus on general trends rather than specific numbers (except occasionally for
+  score, economy, army size), you can mention specifics if it support the
+  reader's mental image
+- If data is missing, omit that information entirely
+- Output only your commentary response
+
+Your previous responses are included for context,
+but only provide your next commentary segment.
+\end{verbatim}
+
+This prompt sets the role and constraints for the LLM agent:
+
+\begin{itemize}
+  \item Behave as a live Age of Empires 2 esports commentator.
+  \item Write engaging, concise recaps based on provided JSON game data.
+  \item Use only the information from the provided data; do not add external knowledge or assumptions.
+  \item Write as if commenting live on the action.
+  \item Focus on general trends rather than specific numbers, unless specifics help the reader visualize the action.
+  \item Omit any information that is missing from the data.
+  \item Output only the commentary response, with no additional context or requests.
+\end{itemize}
+
+\subsubsection{Output format}
+
+>outputFormat: plain text, **no markup** (i.e. no HTML, Markdown, etc.), **use real newlines** not escaped/stringified newlines
+This prompt ensures the output is in plain text format without any markup, which is required for the evaluation setup. The timestamp will be added automatically; do not include it in your response.
+
+\subsubsection{Output Length}
+\begin{verbatim}
+Feel free to use any number of words, but your entire response has a
+{{targetLengthInWords}} words limit.
+\end{verbatim}
+We use this prompt to set a target number of words, replacing the $targetLengthInWords$ with the given numerically represented number. We do not set an additional explicit hard output token limit in the LLM settings, since this can lead to abrupt cutoffs. The use of bold markdown is to emphasise the importance of this constraint to the LLM. We allow it to generate less words if the content does not require the full amount.
+
+\subsubsection{Output Language}
+>outputLanguage: English
+This prompt sets the output language for the commentary, which is fixed to English for the current evaluation.
+
+\subsection{Communicative Goal Prompts}
+For each event type, we provide a specific communicative goal prompt to guide the LLM in generating relevant commentary. These prompts are designed to focus the commentary on the key aspects of each event type.
+
+\subsubsection*{Match Introduction Prompt}
+\begin{verbatim}
+Write an engaging introduction including: map name, player names
+civilizations, colors, and map positions.
+\end{verbatim}
+This prompt guides the LLM to generate an engaging introductory prompt.
+
+\subsubsection*{Map Introduction Prompt}
+>Analyze key resource locations (main/secondary gold, stone, woodlines) and their strategic implications. Use "mapQuality" data. Focus on gameplay impact rather than tile distances.
+This prompt focuses the LLM on analyzing the strategic implications of resource placements on the map. It was prone to realizing exact tile distances, which was not desired, so we added the note to focus on gameplay impact, with moderate success.
+
+\subsubsection*{Event Prompt}
+We used a single prompt for all event types, since each has the same aims, and it adapted well to the information that was provided, not hallucinating information to adhere to the prompt. The base prompt is as follows:
+\begin{verbatim}
+Prioritize major events: highlight key battles, strategic moves, and
+significant actions (forward buildings, tech switches). For multiple
+important events, summarize each briefly and note simultaneous action.
+Defensive and economic actions should only be mentioned briefly and
+supportive of other events in the section.
+
+Context metrics:
+- Villager distribution: economic advantage
+- Army size/value: military strength
+- Victory points: overall game state
+
+Report ongoing battles as in-progress; update when resolved. Focus on
+engagement and clarity over exhaustive detail.
+\end{verbatim}
+
+This prompt aims to guide the LLM through different event types. It lists several important events to focus on, which are provided as events or contextual information. Event without event structuring module we asked it to note simultateous action, since this can happen (e.g., when a technology is researched at the same time as a battle is ongoing, or in the final moments of the game, where all information is gathered for a final prompt). It also frames contextual information and how to use it to inform the commentary. Finally, it instructs the LLM to report ongoing battles as in-progress. To further reduce the length of the output, it instructs the LLM to focus on engagement and clarity over exhaustive detail.
+
+\subsubsection*{Writing style}
+\begin{verbatim}
+Write an engaging introduction including: map name, player names, civilizations,
+colors, and map positions.
+\end{verbatim}
+This prompt was always included, and effectively operated as a Base Prompt, however by design it's a communicative goal prompt since tone can differ based on event type, but we did not explore this in depth after abandoning it as a ablative module, thus we reverted to a single prompt to reduce variables.
+
+\subsection{Architectural Modules}
+\label{appendix:arch-modules-prompts}
+Finally, architectural modules modified prompts. This was done by adding "additional notes" to the prompt for each event. In addition to prompts a negative prompt was added to prevent the LLM from applying Analytical Knowledge when Expert Insights module was disabled, this prevented hallucinations and support evaluation of Expert Insights module.
+
+\subsubsection{Expert Insights Module}
+When the Expert Insights module was enabled, an additional note was added to the prompt for each event:
+\paragraph{Match Introduction} This was a simple prompt addition, simply pointing it at the data to use in the prompt.
+>Explain each civilization's strengths and include player trivia from "expertInsights" data.
+
+\paragraph{Map Introduction} The LLM struggled making use of the Expert Insights data for map introductions, often ignoring it, possibly to not knowing enough about Age of Empires 2 intricacies. Thus we gave it explicit instructions to use the data for insights:
+\begin{verbatim}
+Analyze resource positioning impact: Forward main gold (risky), back main gold
+(safe), and strategic implications. Use "expertInsights" data for map analysis.
+Apply civilization knowledge:
+- Against archer civs: need wide walls or be forced to make defensive
+  towers when resources are pressured
+- Against scout openings: smaller walls or spearmen may be sufficient
+  to fend off early aggression
+- Forward gold may force early aggression by the unfortunate player who
+  has that, forcing them to pressure the opponent early
+- Early pressure can be a Drush to get more time to secure forward resources
+  or to enable an early Castle Age
+- Stone position crucial for tower rush civs (Bulgarians, Incas, Koreans)
+\end{verbatim}
+
+With this is was effective at linking information from the civilization expert insights data to the map resource placements.
+
+\paragraph{Event Realisation} The prompt was simple, as most was provided by the addition of the data for the insights:
+\begin{verbatim}
+Explain player actions, motivations, and potential game impact with strategic
+analysis
+\end{verbatim}
+
+\paragraph{Negative Prompt when Disabled} When the Expert Insights module was disabled, the following negative prompt was added to prevent the LLM from applying Analytical Knowledge:
+\begin{verbatim}
+Report only events from data - no strategic commentary.
+Essentially reiterating the base prompt's instruction to not add external
+knowledge, but specifically targeting strategic commentary.
+\end{verbatim}
+
+\subsubsection{Event Structuring} When the Event Structuring module was enabled, an additional note was added to the prompt for each content unit. We applied this to both standard events and Introductions (which are treated as Synthetic Events). This was the hardest event to tweak, as the LLM would invent Information Asymmetry (e.g., claiming an army already in the opponent's base was yet to be discovered). And, hilariously, Domain Knowledge (civilization bonuses) as things that contributed to Information Asymetry. We focussed on  The final prompt used is as follows:
+\begin{verbatim}
+Select the most important events from the pre-ordered data to report.
+Create suspense by clearly showing simultaneous events using
+timestamps. Emphasize information asymmetry:
+- What you know but players don't (opponent's actions that a player
+  is about to discover)
+- What players know but audience doesn't (strategies not yet clear
+  to the audience)
+
+For ongoing and parallel events, use transitional phrases such as:
+"Meanwhile, on the other side", "But their opponent doesn't know",
+or "What are they planning?"
+
+Focus on: newly created armies, early resource locations, uncommon
+strategies, unexpected tactical choices.
+Note: General civilization knowledge is assumed for both players
+and audience.
+\end{verbatim}
+
+For map introductions we used the following:
+\begin{verbatim}
+Maps are random - opponents must scout each other. Predict player
+reactions to map layouts: forward gold creates pressure opportunities,
+back gold enables safer play.
+\end{verbatim}
+
+\subsection{Experiment: Agentic Planning}
+We also used an experiment to test in the LLM could take over content selection itself, rather than relying on the Document Planner module. This did not make it into the final evaluation, but is documented here for completeness. It was supplied as an "additional notes" prompt alongside the base prompts for each event passed to the LLM.
+
+\begin{verbatim}
+CONTENT FILTERING RULES:
+- Skip unimportant or repetitive events to maintain engagement
+- "deferredData" entries were deferred by you in previous responses
+- NEVER defer if a winner is declared
+
+DEFERRAL SYSTEM:
+- To defer events: output only <DEFER>
+- Before Castle Age: aim to report at least every minute
+- After Castle Age: aim to report roughly every 3 minutes
+- Incorporate "deferredData" entries to maintain narrative coherence
+
+ENGAGEMENT PRIORITY: Keep readers engaged over completeness.
+\end{verbatim}
+
+This prompt was paired with a system that skips realization if the prompt output was exactly "<DEFER>", allowing the LLM to control which events to comment on. For the next prompt a "deferredData" field was added to the JSON context, containing all previously deferred events to allow the LLM to incorporate them later.
+In practice, the LLM did not rely heavily on this ability, and the final evaluation used the Document Planner module for content selection.
+
+\subsection{Target Length Selection}
+For each combination of architectural modules, we selected a target word count to achieve a total commentary length of 500–800 words for an average match duration of 45 minutes.
+
+\begin{itemize}
+  \item \textbf{Base:}
+    \begin{itemize}
+      \item Match Introduction: 60 words
+      \item Map Introduction: 40 words
+      \item Event Report: 40 words
+    \end{itemize}
+  \item \textbf{Expert Insights:}
+    \begin{itemize}
+      \item Match Introduction: 60 words
+      \item Map Introduction: 40 words
+      \item Event Report: 40 words
+    \end{itemize}
+  \item \textbf{Event Structuring:}
+    \begin{itemize}
+      \item Match Introduction: 60 words
+      \item Map Introduction: 60 words
+      \item Event Report: 60 words
+    \end{itemize}
+  \item \textbf{Both:}
+    \begin{itemize}
+      \item Match Introduction: 60 words
+      \item Map Introduction: 60 words
+      \item Event Report: 60 words
+    \end{itemize}
+\end{itemize}
+
+\subsection{Prompt Structure}
+Finally the event data and all previous realization (but not their data), were provided to the LLM as Dynamic Content.
+Reiterating on the full prompt structure. There are three types of prompt components:
+
+\begin{itemize}
+  \item \textbf{Base Prompts: }these are the same for each prompt, regardless of the request.
+  \item \textbf{Communicative Goal Prompts: }these vary based on the type of event being commented on and the architectural modules enabled.
+  \item \textbf{Dynamic Context: }this is the JSON content unit provided for each request.
+\end{itemize}
+
+\input{chapters/appendix-evaluation-details}

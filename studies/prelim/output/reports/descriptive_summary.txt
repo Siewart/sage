@@ -1,0 +1,7 @@
+Participants (raw): 57
+Participants (post-clean): 57
+ELO available: 52
+ELO M(SD): 1281.73 (210.28)
+Game knowledge M(SD): 4.12 (0.66)
+Watched before counts (No/Unsure/Yes): 36/8/13
+Watch frequency counts (Daily/Weekly/Monthly/Never): 30/26/1/0

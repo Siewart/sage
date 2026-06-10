@@ -1,0 +1,15 @@
+{
+    "name": "@1001tales/thesis",
+    "private": true,
+    "packageManager": "yarn@4.9.3",
+    "scripts": {
+        "lint:wall": "cd latex && chktex -q -n22 -n30 -n35 -e16 -Wall main.tex",
+        "lint": "cd latex && chktex -q -n22 -n30 -e16 main.tex",
+        "format": "cd latex && tex-fmt main.tex --recursive --nowrap --tabsize 2",
+        "format:check": "cd latex && tex-fmt --check main.tex --recursive --nowrap --tabsize 2",
+        "build": "cd latex && latexmk -pdf -outdir=.build -interaction=nonstopmode main.tex",
+        "dev": "cd latex && latexmk -silent -pdf -pvc -outdir=.build -interaction=nonstopmode main.tex",
+        "test": "echo \"No tests configured for thesis\"",
+        "clean": "cd latex && latexmk -c -outdir=.build main.tex"
+    }
+}

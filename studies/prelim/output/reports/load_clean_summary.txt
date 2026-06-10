@@ -1,0 +1,19 @@
+# Prelim Cleaning Summary
+
+- Raw rows: 57
+- Raw columns: 34
+- Output wide rows: 57
+- Output long C rows: 855
+- Output long G rows: 456
+- Duplicate respondent IDs: 0
+- Invalid C entries before recode: 0
+- Invalid G entries before recode: 0
+- Missing C scores after recode: 1
+- Missing G scores after recode: 7
+- Rows with email present: 57
+- Rows with name present: 0
+
+## Notes
+- The cleaned outputs are anonymized with generated participant IDs.
+- Start/end timestamps and direct identifiers are excluded from clean outputs.
+- `I don't know` and `Does Not Apply` are set to missing values (NA).

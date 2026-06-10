@@ -1,0 +1,36 @@
+{
+  "name": "sage-core",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.6.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noCheck && cpx \"../simplenlg-core/src/**/*.xml\" dist/simplenlg-core/src/ && cpx \"../simplenlg-core/LexAccessCopyright.MD\" dist/simplenlg-core/",
+    "gen": "tsx gen/cli.ts",
+    "format": "prettier --write src gen test",
+    "format:check": "prettier --check src gen test",
+    "test:generate": "yarn node --experimental-vm-modules $(yarn bin jest) --runInBand",
+    "test:generate:t1": "yarn node --experimental-vm-modules $(yarn bin jest) --runInBand -t \"T1\""
+  },
+  "dependencies": {
+    "@apache-arrow/ts": "20.0.0",
+    "@google/genai": "1.0.1",
+    "arquero": "8.0.1",
+    "clipanion": "4.0.0-rc.4",
+    "dotenv": "16.5.0",
+    "fast-xml-parser": "4.5.1",
+    "remeda": "2.23.1",
+    "zod": "3.25.48"
+  },
+  "devDependencies": {
+    "@jest/globals": "29.7.0",
+    "@types/jest": "29.5.14",
+    "cpx": "1.5.0",
+    "jest": "29.7.0",
+    "prettier": "3.6.2",
+    "ts-jest": "29.2.5",
+    "ts-node": "10.9.2",
+    "tsx": "4.20.4",
+    "typescript": "5.8.2"
+  }
+}

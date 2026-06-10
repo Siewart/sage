@@ -1,0 +1,1 @@
+This folder contains the original arrow files used for the SAGE prototype and evaluation. These contain some inconsistencies and errors that were later fixed for the final datasets, but they are included here for traceability and reproducibility of the prototype and evaluation results. The final datasets are available at https://huggingface.co/datasets/Siewart/sage

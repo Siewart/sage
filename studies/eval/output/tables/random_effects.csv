@@ -1,0 +1,43 @@
+"Outcome","Grouping","Effect","variance","SD"
+"Competitive Nature","Participant","Intercept",1.96871101918191,1.40310762922233
+"Competitive Nature","Match","Intercept",0.0243966407809071,0.156194240549731
+"Competitive Nature","Residual","Observation",0.711983299629024,0.843791028412263
+"Skill Improvement","Participant","Intercept",1.75875687760705,1.32618131400161
+"Skill Improvement","Match","Intercept",0.00601723057561175,0.0775708100744845
+"Skill Improvement","Residual","Observation",0.46578352058897,0.682483348213691
+"Game Knowledge","Participant","Intercept",2.69103002795526,1.64043592619622
+"Game Knowledge","Match","Intercept",0.0390352501355509,0.197573404423649
+"Game Knowledge","Residual","Observation",1.02255117916654,1.01121272696033
+"Skill Appreciation","Participant","Intercept",1.22364709374573,1.10618583147034
+"Skill Appreciation","Match","Intercept",0.0372325529836169,0.192957386444823
+"Skill Appreciation","Residual","Observation",0.432140233442319,0.657373739544195
+"Entertaining Nature","Participant","Intercept",1.63628340028444,1.27917293603502
+"Entertaining Nature","Match","Intercept",0.025286700617456,0.159017925459541
+"Entertaining Nature","Residual","Observation",0.68013257264265,0.824701505177874
+"Dramatic Nature","Participant","Intercept",1.48548419806463,1.21880441337592
+"Dramatic Nature","Match","Intercept",0.0452549216938061,0.212732042000744
+"Dramatic Nature","Residual","Observation",0.749446073464507,0.865705535077896
+"Vicarious Sensation","Participant","Intercept",1.4829694983473,1.21777235078946
+"Vicarious Sensation","Match","Intercept",0.0287239546576192,0.169481428651104
+"Vicarious Sensation","Residual","Observation",0.770078096594883,0.877540937275796
+"Overall Quality","Participant","Intercept",0.976873948370531,0.98836933803641
+"Overall Quality","Match","Intercept",0,0
+"Overall Quality","Residual","Observation",1.41481817516925,1.18946129620482
+"Word Choice","Participant","Intercept",0.805702566034067,0.897609361601174
+"Word Choice","Match","Intercept",0,0
+"Word Choice","Residual","Observation",1.44018170580689,1.20007570836464
+"Readability","Participant","Intercept",1.03816398972525,1.01890332697722
+"Readability","Match","Intercept",0.100821593262785,0.317524161699208
+"Readability","Residual","Observation",1.53401407908961,1.23855322012807
+"Logicality","Participant","Intercept",0.400419593588647,0.632787162945526
+"Logicality","Match","Intercept",0.0078091345070746,0.0883693074945968
+"Logicality","Residual","Observation",0.966483320750058,0.983098835697641
+"Detail Level","Participant","Intercept",1.26750748431676,1.12583634881663
+"Detail Level","Match","Intercept",0.141850864685052,0.376630939627977
+"Detail Level","Residual","Observation",1.41870836520409,1.19109544756249
+"Reading Thoroughness","Participant","Intercept",0.812543671794708,0.901412043293581
+"Reading Thoroughness","Match","Intercept",0.276994762304505,0.52630291876875
+"Reading Thoroughness","Residual","Observation",1.78810832812207,1.337201678178
+"Understanding","Participant","Intercept",1.56258803504076,1.25003521352031
+"Understanding","Match","Intercept",0.0517471605049123,0.22748002221055
+"Understanding","Residual","Observation",1.32401373134212,1.15065795584184

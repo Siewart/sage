@@ -1,0 +1,6 @@
+
+node_modules/
+dist/
+build/
+java-4.5/ # we don't want to format the java code
+tsconfig.json # leave the comments alone please

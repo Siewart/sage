@@ -1,0 +1,5 @@
+Fixed effects significant at p < .05 (out of 14 outcomes):
+  Event Structuring: 1
+  Expert Insights:   4
+  Order:             1
+  Interaction:       0

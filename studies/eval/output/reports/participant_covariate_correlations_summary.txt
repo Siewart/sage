@@ -1,0 +1,4 @@
+Exploratory participant-covariate correlations (Spearman, BH-adjusted).
+98 tests (14 outcomes x 7 covariates).
+Significant at global BH <= .05: 0
+Strongest: Game Knowledge ~ AIUtility, rho = 0.529, p_BH = 0.153

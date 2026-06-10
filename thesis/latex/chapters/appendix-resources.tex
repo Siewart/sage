@@ -1,0 +1,48 @@
+\chapter{Resources}
+\section{Preliminary User Study}
+\label{app:preliminary-analysis}
+The anonymized dataset, analysis scripts, and stimuli used for the first user study are available at the following GitHub repository: \url{https://github.com/siewart/sage}
+
+The repository contains:
+\begin{itemize}
+  \item \textbf{Dataset:} Anonymized data from the user study.
+  \item \textbf{Scripts:} R scripts used for statistical analysis.
+  \item \textbf{Stimuli:} The generated summaries and other materials used in the evaluation.
+\end{itemize}
+
+
+\section{SAGE Dataset - Age of Empires II Match Corpus}
+\label{app:corpus}
+Both datasets described in this thesis are publicly available on Hugging Face:
+
+\url{https://huggingface.co/datasets/Siewart/sage}
+
+The dataset includes two corpora: the KotD IV dataset (173 Age of Empires II matches, and 3 "restored" matches) and the May 2026 dataset (3,100 matches alongside this thesis, with additional matches being added later (and marked separately)). Both are exported at 1-second and 60-second snapshot resolutions. Full schema documentation, field definitions, and data type coverage are provided on the dataset page, and go beyond what was used for the evaluation in this thesis.
+
+\section{SAGE Source Code}
+\label{app:source-code}
+The source code for the Semantic Abstraction \& Generation from Events (SAGE) system is available at the following GitHub repository:
+\url{https://github.com/siewart/sage}
+
+The source code includes:
+\begin{itemize}
+  \item \textbf{sage-core:} The main implementation of the SAGE system.
+  \item \textbf{simplenlg-core:} A TypeScript implementation of the SimpleNLG library, used for simple natural language generation in SAGE.
+  \item \textbf{simplenlg-unwrap:} A TypeScript implementation of the SimpleNLG library's XML parser. Used primarily for testing and debugging purposes.
+\end{itemize}
+
+\section{User Study}
+\label{app:resources}
+The anonymized dataset, analysis scripts, and stimuli used for the second user study are available at the following GitHub repository:
+\url{https://github.com/siewart/sage}
+
+The repository contains:
+\begin{itemize}
+  \item \textbf{Dataset:} Anonymized data from the user studies.
+  \item \textbf{Scripts:} R scripts used for statistical analysis.
+  \item \textbf{Stimuli:} The generated summaries and other materials used in the evaluation (also see Appendix \ref{app:generated-outputs}).
+\end{itemize}
+
+\section{Use of Generative AI Tools}
+\label{app:ai-tools}
+\textit{During the preparation of this work, we used GitHub Copilot (in Visual Studio Code) to summarize and edit drafts, assist with table formatting, and support code completion, review, and refactoring. We also used it to help convert portions of SimpleNLG from Java to TypeScript. We thoroughly reviewed and edited all AI-assisted material and take full responsibility for the final manuscript and software. No decisions regarding the design, analysis, or interpretation of the research were made by AI tools.}

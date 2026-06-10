@@ -1,0 +1,181 @@
+\section{Supplementary Tables}
+\label{appendix:domain-analysis-supplementary-tables}
+
+Table~\ref{tab:captureage-states} (sub-type descriptions and PEAS mapping) appears in Chapter~\ref{chap:prelim} because it serves as a core scaffold for the coding scheme.
+
+\section{User Study Operationalization Notes}
+\label{appendix:prelim-operationalization}
+
+The following notes summarize how we operationalized event and content sub-types when selecting questionnaire items.
+
+We distinguish between the following types of Battles:
+\begin{itemize}
+  \item \textbf{Eco Delay:} Battles that aim to delay an opponent's economy or building production, often early game. These don't usually lead to deaths, but can dictate where battles take place.
+  \item \textbf{Raids:} Battles that lead to villager deaths, often early game. This can also happen late game, aiming at killing villagers.
+  \item \textbf{Regular Battles:} Battles that lead to unit deaths.
+  \item \textbf{Breaking through Defenses:} Battles where one player tries to break through the opponent's walls or other defenses, often leading to a decisive victory or great economic damage.
+  \item \textbf{Overwhelming Opponent Base:} Battles where one player floods the opponent's base with units, often leading to a decisive victory or great economic damage. This aims to further push an advantage, rather than causing economic damage.
+\end{itemize}
+
+For Production we distinguish between:
+\begin{itemize}
+  \item \textbf{Military Production:} Production of military units, often indicating an upcoming battle.
+  \item \textbf{Economic Production:} Production of economic units, often indicating a focus on economy.
+  \item \textbf{Forward Construction:} Construction of forward military buildings and fortifications, aiming to establish a strategic position closer to the opponent or deny access to critical resources.
+  \item \textbf{Defensive Construction:} Construction of military buildings and fortifications at home, often indicating a shift in strategy.
+  \item \textbf{Economy Construction:} Construction of buildings that focus on economy, such as Town Centers or Mills, often indicating an economic boom strategy.
+\end{itemize}
+We leave out technologies from events since they are more important as part of state updates.
+
+In our coding we didn't distinguish between different types of scouting, but based on our experience we distinguish between:
+\begin{itemize}
+  \item \textbf{Scout movements:} Movements of scout units to gather information about the opponent's base and army composition and movements.
+  \item \textbf{Exploration:} Exploring the map to find resources, enemy positions, and potential expansion sites, this is permanently revealed in the Fog of War.
+  \item \textbf{Player gaze:} The areas of the map that players are focusing on, as indicated by their camera movements and unit selections. While technically the player can see something either in the viewport or minimap, it doesn't mean that they are actually paying attention to it.
+\end{itemize}
+
+Finally for Moving we distinguish between:
+\begin{itemize}
+  \item \textbf{Army Movements:} Movements of military units, often indicating an upcoming battle or strategic positioning.
+  \item \textbf{Economy Movements:} Movements of economic units, often indicating resource gathering or expansion, or a forward building.
+  \item \textbf{Monk Movements:} Movements of monk units, often indicating relic collection or strategic positioning.
+\end{itemize}
+
+For additional context, such as state updates, we identify the following aspects:
+\begin{itemize}
+  \item \textbf{Economy distribution:} Per-player allocation of villagers across tasks (including idle Villagers)
+  \item \textbf{Army composition:} The counts and types of military units within each player's army.
+  \item \textbf{Economy balance:} The total count of economic units (and idles) compared between players.
+  \item \textbf{Army balance:} The total count of military units compared between players.
+  \item \textbf{Economic Technologies:} Technologies that enhance economic capabilities.
+  \item \textbf{Military Technologies:} Technologies that enhance military capabilities.
+  \item \textbf{Age-up Timings:} The timings of advancing to the next age.
+\end{itemize}
+
+For high-level understanding of the narrative content we select three distinct categories. Although we didn't explicitly use these categories in our coding, we find them useful for understanding the importance of different content types. We distinguish between:
+\begin{itemize}
+  \item \textbf{Action-heavy sections:} Sections that focus on battles and other high-intensity events.
+  \item \textbf{Strategic sections:} Sections that focus on strategic decisions and analysis, such as technology choices and uncommon plays.
+  \item \textbf{Skill-based sections:} Sections that focus on explaining player skill and mastery, such as specific unit control (micromanagement).
+\end{itemize}
+
+\section{Preliminary Study Questionnaire}
+\label{appendix:prelim-questionnaire}
+
+This appendix lists the full wording of the questionnaire items used in the preliminary user study.
+
+\subsection{Commentary Content Items (C-set)}
+Items were answered on a 5-point Likert scale: Not Relevant, Slightly Relevant, Relevant, Very Relevant, Required.
+
+\textit{For each of the following described events please indicate their relevance for you to understand the course of the game\footnote{"Game" refers to match among viewers of Age of Empires II.} from the video. If you don't know what a term means, simply select "I don't know". If you think the relevance of an event is dependent on other factors, assume it to be the most common case. Optionally, you can rewatch sections of the video below at your convenience.}
+\begin{enumerate}[label={C\arabic*}]
+  \item \textbf{IntroLayout} Introduction of map layout - including resource locations and possible wall locations
+  \item \textbf{IntroPlayers} Introduction of players and related trivia
+  \item \textbf{IntroCivs} Introduction of civilizations and their strengths
+  \item \textbf{IntroEconomy} Early economy decisions (e.g. pushing deer)
+  \item \textbf{BattleDelay} Aggressive maneuvers: Not leading to kills, but delaying a player
+  \item \textbf{BattleMilitary} Aggressive maneuvers: Leading to kills or losses on military units
+  \item \textbf{BattleEcoKills} Aggressive maneuvers: Leading to kills on villagers and other economy units
+  \item \textbf{BattleBreakIn} Breaking through the wall, over-chops and possible defenses.
+  \item \textbf{BattleOverwhelm} Overwhelming the opponent's base with a large army
+  \item \textbf{EventScouting} Scouting information
+  \item \textbf{EventUncommon} Uncommon events like: Daut Castles and Siege Tower hops
+  \item \textbf{StateAgeUp} Technology Status: Age-up timings
+  \item \textbf{StateMilTech} Technology Status: Improving unit strength leading up to a fight, e.g. "+4 knights"
+  \item \textbf{Predictions} Predictions (e.g. Villese will resign when Imperial Age is reached)
+  \item \textbf{Knowledge} Specific information to the current situation (e.g. You don't want to lose your berries as Franks)
+\end{enumerate}
+
+\subsection{General Preference Items (G-set)}
+Items were answered on a 5-point Likert scale: "Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree". "Does not apply" was added as an option to indicate they do not watch other content; when selected the question was ignored in the analysis.
+
+\begin{enumerate}[label={G\arabic*}]
+  \item \textbf{Understanding} Watching the video summary gave me a good idea how the game played out.
+  \item \textbf{SummaryOpinion} In general, I think game summaries can help me consume competitive AoE2 content more effectively.
+  \item \textbf{PreferFullGames} Generally, I prefer watching full games, even if that means that some of the spoken content is not relevant to the game.
+  \item \textbf{LimitedTime} I only watch a few competitive games from a tournament because I don't have time to watch all the games I would want to watch.
+  \item \textbf{InterestBattles} When watching games I'm generally interested in the large battles.
+  \item \textbf{InterestStrategy} When watching games I'm generally interested in the strategic choices made by each player.
+  \item \textbf{InterestSkill} When watching games I am generally interested in watching the skill level of the players.
+  \item \textbf{TechnicalIssues} It was hard to ignore video cutting issues and casting style as they negatively impacted my watching experience.
+\end{enumerate}
+
+\subsection{Other and Open-ended Items (O-set)}
+\begin{enumerate}[label={O\arabic*}]
+  \item \textbf{CompetenceSelf} How competent do you think you are in understanding Age of Empires II: Definitive Edition competitive 1v1 Random Map games?  \textit{(Not Competent, Slightly Competent, Competent, Very Competent, Expert)}
+  \item \textbf{CompetenceELO} What is your current ELO\footnote{Elo is a rating system use in the game to calculate the relative skill levels of players in games, to match opponents of similar strength} on the 1v1 ladder for AoE2: Definitive Edition?  \textit{(800 or less, 801-1000, 1001-1200, 1201-1500, 1501-1700, 1700 or higher, I don't have a rating)}
+  \item \textbf{WatchFrequency} How often do you watch competitive AoE2 videos or live streams?  \textit{(Daily, Weekly, Monthly, Never)}
+  \item \textbf{WatchPreviously} Did you see this game before? This can be on any channel or in spectator mode. \textit{(Yes/No, Unsure)}
+\end{enumerate}
+
+\begin{enumerate}[label={O5}]
+  \item \textbf{Feedback} Did you feel there was anything missing to follow "the story" of this match? If so, please indicate what you were missing below.
+\end{enumerate}
+
+\begin{table}[htbp]
+  \caption{Frequency of Event Description sub-types reported in the sample commentary, repeated tags for the same event have been deduplicated. State information that is part of an event description (e.g. contrasting economic strength) is excluded.}
+  \centering
+  \setlength{\tabcolsep}{8pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabularx}{0.6\textwidth}{@{}l>{\centering\arraybackslash}X@{}}
+    \toprule
+    \textbf{Event} & \textbf{Count} \\
+    \midrule
+    Battle (Incl. Eco Delay \& Raids)              & 16 \\
+    Building Production & 9  \\
+    Scouting            & 4  \\
+    Movement            & 3  \\
+    Technology          & 2  \\
+    Economy             & 2  \\
+    Laming              & 1  \\
+    Age-up              & 1  \\
+    Unit Production     & 1  \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:event-frequencies}
+\end{table}
+
+\begin{table}[htbp]
+  \caption{Frequency of Information sources used by T90 \& Nili in their commentary.}
+  \centering
+  \setlength{\tabcolsep}{8pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabularx}{0.6\textwidth}{@{}l>{\centering\arraybackslash}X@{}}
+    \toprule
+    \textbf{Event} & \textbf{Count} \\
+    \midrule
+    Descriptive         & 92 \\
+    Domain              & 55  \\
+    Analytical          & 46  \\
+    Background          & 21  \\
+    Experiential        & 19  \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:info-sources-frequencies}
+\end{table}
+
+\begin{table}[htbp]
+  \caption{Co-occurrence of Categories and Information Sources used by T90 \& Nili. Values indicate the proportion of each Information source within each Commentary Category. The rightmost column indicates the total count of utterances for each Commentary Category.}
+  \label{tab:co-occurrence-type-source}
+  \begin{tabular}{lrrrrrrrr}
+    & Descr. & Domain & Analy. & Backgr. & Exp. & \textless{}untagged\textgreater{} & Count &  \\
+    Event Description                 & \textbf{78\%}                                                                           & 10\%                                                                      & 8\%                                                                           & 0\%                                                                           & 0\%                                                                             & 3\%                                                                                                  & 86                                                                       \\
+    Strategy Discussion               & 5\%                                                                            & \textbf{47\%}                                                                      & \textbf{39\%}                                                                          & 5\%                                                                           & 0\%                                                                             & 3\%                                                                                                  & 38                                                                       \\
+    Strategy Prediction               & 12\%                                                                           & \textbf{24\%}                                                                      & \textbf{53\%}                                                                          & 3\%                                                                           & 0\%                                                                             & 9\%                                                                                                  & 34                                                                       \\
+    Game Discussion                   & 0\%                                                                            & \textbf{21\%}                                                                      & 13\%                                                                          & \textbf{17\%}                                                                          & \textbf{17\%}                                                                            & \textbf{33\%}                                                                                                 & 24                                                                       \\
+    Historical Account                & 0\%                                                                            & 0\%                                                                       & 0\%                                                                           & \textbf{50\%}                                                                          & \textbf{25\%}                                                                            & \textbf{25\%}                                                                                                 & 16                                                                       \\
+    Off-Topic                         & 0\%                                                                            & 0\%                                                                       & 0\%                                                                           & 0\%                                                                           & \textbf{38\%}                                                                            & \textbf{63\%}                                                                                                 & 16                                                                       \\
+    Civilization Analysis             & \textbf{21\%}                                                                           & \textbf{43\%}                                                                      & 7\%                                                                           & 14\%                                                                          & 0\%                                                                             & 14\%                                                                                                 & 14                                                                       \\
+    State Update                      & \textbf{83\%}                                                                           & 17\%                                                                      & 0\%                                                                           & 0\%                                                                           & 0\%                                                                             & 0\%                                                                                                  & 12                                                                       \\
+    Player Analysis                   & 0\%                                                                            & 10\%                                                                      & 0\%                                                                           & \textbf{30\%}                                                                          & \textbf{50\%}                                                                            & 10\%                                                                                                 & 10                                                                       \\
+    Technical Issues                  & 17\%                                                                           & \textbf{33\%}                                                                      & 0\%                                                                           & 0\%                                                                           & 0\%                                                                             & \textbf{50\%}                                                                                                 & 6                                                                        \\
+    Joke                              & 0\%                                                                            & \textbf{33\%}                                                                      & 0\%                                                                           & 17\%                                                                          & 0\%                                                                             & \textbf{50\%}                                                                                                 & 6                                                                        \\
+    Recap                             & \textbf{80\%}                                                                           & 0\%                                                                       & \textbf{20\%}                                                                          & 0\%                                                                           & 0\%                                                                             & 0\%                                                                                                  & 5                                                                        \\
+    Skill Discussion                  & 0\%                                                                            & \textbf{67\%}                                                                      & \textbf{33\%}                                                                          & 0\%                                                                           & 0\%                                                                             & 0\%                                                                                                  & 3                                                                        \\
+    Match Introduction                & \textbf{100\%}                                                                           & 0\%                                                                       & 0\%                                                                           & 0\%                                                                           & 0\%                                                                             & 0\%                                                                                                  & 1                                                                        \\
+    Map Analysis                      & \textbf{100\%}                                                                           & 0\%                                                                       & 0\%                                                                           & 0\%                                                                           & 0\%                                                                             & 0\%                                                                                                  & 1                                                                        \\
+    \textless{}untagged\textgreater{} & 0\%                                                                            & 0\%                                                                       & 0\%                                                                           & 0\%                                                                           & 0\%                                                                             & \textbf{100\%}                                                                                                & 2                                                                        \\
+  \end{tabular}
+\end{table}
+
+\FloatBarrier

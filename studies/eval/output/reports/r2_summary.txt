@@ -1,0 +1,3 @@
+Nakagawa R^2 across 14 outcomes:
+  marginal:    min 0.008  median 0.018  max 0.062
+  conditional: min 0.341  median 0.617  max 0.795

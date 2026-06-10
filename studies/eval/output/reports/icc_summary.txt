@@ -1,0 +1,3 @@
+ICC across 14 outcomes:
+  participant: min 0.282  median 0.591  max 0.788
+  text:        min 0.000  median 0.012  max 0.096

@@ -1,0 +1,126 @@
+{
+  "name": "Kotd4-SF S02G3-TheViper vs Jordan",
+  "dictionaries": [
+    {
+      "type": "strings",
+      "path": "./strings.arrow"
+    }
+  ],
+  "binned": [
+    {
+      "type": "players",
+      "binWidth": 60000,
+      "path": "./players.arrow"
+    },
+    {
+      "type": "researchStates",
+      "binWidth": 60000,
+      "path": "./research-states.arrow"
+    },
+    {
+      "type": "entities",
+      "binWidth": 60000,
+      "path": "./entities.arrow"
+    },
+    {
+      "type": "masters",
+      "binWidth": 60000,
+      "path": "./masters.arrow"
+    },
+    {
+      "type": "world",
+      "binWidth": 60000,
+      "path": "./world.arrow"
+    }
+  ],
+  "series": [
+    {
+      "type": "events",
+      "path": "./events.arrow"
+    }
+  ],
+  "records": [
+    {
+      "type": "settings",
+      "path": "./settings.arrow"
+    },
+    {
+      "type": "map",
+      "path": "./map.arrow"
+    }
+  ],
+  "metadata": {
+    "civStringIdOffset": 10270,
+    "colorStringIdOffset": 10631,
+    "binTimes": [
+      [
+        4490,
+        60008
+      ],
+      [
+        60029,
+        120010
+      ],
+      [
+        120030,
+        180020
+      ],
+      [
+        180040,
+        240031
+      ],
+      [
+        240052,
+        300040
+      ],
+      [
+        300060,
+        360047
+      ],
+      [
+        360067,
+        420060
+      ],
+      [
+        420080,
+        480073
+      ],
+      [
+        480093,
+        540081
+      ],
+      [
+        540099,
+        600083
+      ],
+      [
+        600103,
+        660093
+      ],
+      [
+        660111,
+        720101
+      ],
+      [
+        720119,
+        780103
+      ],
+      [
+        780123,
+        840109
+      ],
+      [
+        840129,
+        900127
+      ],
+      [
+        900147,
+        960135
+      ],
+      [
+        960153,
+        987845
+      ]
+    ]
+  }
+}

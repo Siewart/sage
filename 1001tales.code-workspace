@@ -1,0 +1,53 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": ".",
+    },
+    {
+      "name": "thesis-latex",
+      "path": "thesis/latex",
+    },
+    {
+      "name": "prelim-study",
+      "path": "studies/prelim",
+    },
+    {
+      "name": "eval-study",
+      "path": "studies/eval",
+    },
+    {
+      "name": "sage-core",
+      "path": "packages/sage-core",
+    },
+    {
+      "name": "simplenlg-core",
+      "path": "packages/simplenlg-core",
+    },
+    {
+      "name": "simplenlg-unwrap",
+      "path": "packages/simplenlg-unwrap",
+    },
+  ],
+  "settings": {
+    "latex-workshop.linting.chktex.exec.args": [
+      "-wall",
+      "-n22",
+      "-n30",
+      "-e16",
+      "-q",
+      "-n35"
+    ],
+    "js/ts.tsdk.path": "root/node_modules/typescript/lib"
+  },
+  "extensions": {
+    "recommendations": [
+      "james-yu.latex-workshop",
+      "tecosaur.latex-utilities",
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "docker.docker",
+      "REditorSupport.r"
+    ]
+  }
+}

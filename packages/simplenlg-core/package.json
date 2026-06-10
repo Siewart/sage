@@ -1,0 +1,96 @@
+{
+  "name": "simplenlg-core",
+  "main": "dist/index",
+  "license": "MPL-2.0",
+  "type": "module",
+  "packageManager": "yarn@4.6.0",
+  "private": true,
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc && cpx \"src/**/*.xml\" dist/",
+    "clean-build": "yarn clean && yarn build",
+    "build:debug": "tsc --sourceMap && cpx \"src/**/*.xml\" dist/",
+    "clean-build:debug": "yarn clean && yarn build:debug",
+    "test": "yarn node --experimental-vm-modules $(yarn bin jest)",
+    "lint": "yarn eslint src/**/*.ts test/**/*.ts",
+    "format": "prettier --write src test",
+    "format:check": "prettier --check src test"
+  },
+  "dependencies": {
+    "fast-xml-parser": "4.5.1",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@jest/globals": "29.7.0",
+    "@jest/types": "29.6.3",
+    "@types/jest": "29.5.14",
+    "@types/node": "22.13.4",
+    "cpx": "1.5.0",
+    "eslint": "9.20.1",
+    "globals": "16.0.0",
+    "jest": "29.7.0",
+    "prettier": "3.5.1",
+    "rimraf": "6.0.1",
+    "ts-jest": "29.2.5",
+    "ts-node": "10.9.2",
+    "typescript": "5.7.3"
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./aggregation": {
+      "default": "./dist/aggregation/index.js",
+      "types": "./dist/aggregation/index.d.ts"
+    },
+    "./factory": {
+      "default": "./dist/factory/index.js",
+      "types": "./dist/factory/index.d.ts"
+    },
+    "./factory/english": {
+      "default": "./dist/factory/english/EnglishFactory.js",
+      "types": "./dist/factory/english/EnglishFactory.d.ts"
+    },
+    "./features": {
+      "default": "./dist/features/index.js",
+      "types": "./dist/features/index.d.ts"
+    },
+    "./framework": {
+      "default": "./dist/framework/index.js",
+      "types": "./dist/framework/index.d.ts"
+    },
+    "./lexicon": {
+      "default": "./dist/lexicon/index.js",
+      "types": "./dist/lexicon/index.d.ts"
+    },
+    "./morphology/english": {
+      "default": "./dist/morphology/english/index.js",
+      "types": "./dist/morphology/english/index.d.ts"
+    },
+    "./orthography/english": {
+      "default": "./dist/orthography/english/OrthographyProcessor.js",
+      "types": "./dist/orthography/english/OrthographyProcessor.d.ts"
+    },
+    "./phrasespec": {
+      "default": "./dist/phrasespec/index.js",
+      "types": "./dist/phrasespec/index.d.ts"
+    },
+    "./syntax/english": {
+      "default": "./dist/syntax/english/index.js",
+      "types": "./dist/syntax/english/index.d.ts"
+    },
+    "./zod/realiser": {
+      "default": "./dist/zod/realiser.js",
+      "types": "./dist/zod/realiser.d.ts"
+    },
+    "./zod/wordlist": {
+      "default": "./dist/zod/wordlist.js",
+      "types": "./dist/zod/wordlist.d.ts"
+    },
+    "./xmlrealiser": {
+      "default": "./dist/xmlrealiser/Unwrapper.js",
+      "types": "./dist/xmlrealiser/Unwrapper.d.ts"
+    }
+  }
+}

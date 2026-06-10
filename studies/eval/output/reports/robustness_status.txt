@@ -1,0 +1,2 @@
+LMM (TextId random) vs LMM (TextId fixed) significance flips: 1
+CLMM vs LMM significance flips: 3

@@ -1,0 +1,143 @@
+\chapter{Preliminary Viewer Study}\label{chap:viewer-study}
+The domain comparison in Chapter~\ref{chap:prelim} leaves AoE2-specific questions about which event types matter, how to balance action-focused and contextual content, and whether event-driven summaries remain coherent. To align the prototype with viewer needs (beyond caster practice) \cite{penney2021}, we conducted a user study.
+
+\section{Goals}
+
+We aim to (a) identify which event types and knowledge updates viewers consider essential, (b) understand preferences for action-focused vs.\ contextual content, and (c) assess whether an event-driven summary can still produce a coherent narrative. We deliberately omit linguistic quality and engagement here because the summaries are assembled from existing shoutcasts and would confound content with stylistic variability; these aspects are better assessed later in a controlled prototype evaluation. Instead, we focus on perceived content relevance and narrative coherence.
+
+To guide the study, we focus on three research questions derived from the domain analysis, addressing the second part of RQ4 from Chapter~\ref{chap:introduction}, which content types viewers find most relevant:
+\begin{enumerate}[noitemsep, topsep=0pt]
+  \item \textbf{RQB1: Which events and knowledge updates are most important to include in a summary?} Which event sub-types and supporting state updates are valued by viewers, and does contextual information such as predictions improve understanding?
+  \item \textbf{RQB2: How should different types of content be balanced to maintain viewer interest?} Commentary spans action-focused events and contextual strategic or skill-based content; we aim to understand the preferred balance.
+  \item \textbf{RQB3: To what extent can an event-driven summary produce a coherent and understandable narrative?} We evaluate whether a summary constructed from key events enables viewers to follow the match narrative.
+\end{enumerate}
+
+\section{Experimental Design}
+To answer these questions we conduct a user study, showing viewers a short summary video. This section describes the experimental design of this exploratory study.
+
+\subsection{Design Overview}
+We presented participants with a short hand-made summary video\footnote{\url{https://youtu.be/x-otkWbBBdc}}. Video is familiar to viewers and lets us focus on content and narrative structure without introducing the additional factor of a new medium (text).
+
+The summary was assembled from a real match shoutcast by MembTV (Villese vs DauT), chosen for its shorter length, single-caster format, and clear production cues (a DauT Castle \footnote{A partially built defensive structure, investing significant resources, but never making it to completion, leaving it essentially useless. Named after the player known for this risky play}). We included subtitles for accessibility and to mitigate variability in audio quality, video-editing/cutting artifacts, and accents. Although we do not focus on linguistic aspects, we chose MembTV because his casting style is broadly compatible with the kinds of play-by-play and incremental reporting patterns described in live text commentary \cite{lewandowski2012, pavzanin2022}.
+
+Then players were asked to answer several questions in a questionnaire (operationalization notes in Appendix \ref{appendix:prelim-operationalization}; full item wordings in Appendix \ref{appendix:prelim-questionnaire}), based on the Commentary Categories and sub-types we found in the shoutcaster analysis. The Commentary items (C-set) cover intro context, battle variants (delay, military losses, villager kills, break-ins, overwhelming), scouting and uncommon events, key state updates (age-ups, military tech), and limited contextual content (situation-specific information, predictions). Technologies are treated as state updates rather than standalone events. The General items (G-set) capture broader preferences for action, strategy, and skill content and attitudes toward summaries vs. full matches. Because our coding was coarse and based on a small set of matches, C-set selections were refined using the author’s domain experience while remaining grounded in the A–E–P+S loop and adapted to the chosen video.
+
+The specific procedure was as follows: First participants consented, followed by; viewing habits and skill level (O-items 1--3); watch the summary; report whether they had watched the match before; rate C-items, then G-items; provide optional open feedback and prior-exposure items (O-items 4--5). The questionnaire was posted on \texttt{r/aoe2}, chosen as the recruitment channel because esports subreddits have been shown to yield substantial respondent pools for studies targeting this audience \cite{hamari2017, bidermayer2020}. The survey ran from March 5th to March 8th, 2021.
+
+\subsection{Survey Design}
+The question set was not fully comprehensive with the findings from the Commentary Categories and sub-types we found in the shoutcaster analysis to balance coverage with respondent fatigue. Some values prominent in CaptureAge were omitted (e.g., economy state updates and army balance), with the assumption that these would be relevant regardless. In our sample, most production-related reporting concerned uncommon building constructions (e.g., forward placement), so we grouped this with other uncommon events (e.g., Siege Tower hops). We also asked about summary quality, adapting phrasing to the video format.
+
+Full item wordings for the questionnaire are provided in Appendix~\ref{appendix:prelim-questionnaire}. The Commentary questions (C-set) asked participants to rate the relevance of specific commentary content types on a 5-point Likert scale (Not Relevant, Slightly Relevant, Relevant, Very Relevant, Required), covering intro context, multiple battle types, scouting and uncommon events, key state updates (age-up timings, military tech), plus predictions and situation-specific knowledge. The General questions (G-set) used a 5-point agreement scale (plus a Does-not-apply option) to capture perceived understanding of the summary, attitudes toward summaries vs.\ full matches and time constraints, content preferences (battles/strategy/skill), and perceived impact of video-cutting artifacts. The other questions (O-set) captured self-reported competence, Elo bracket \footnote{Elo is a rating system used in the game to calculate the relative skill levels of players in matches to match opponents of similar strength -- used as a mathematical proxy for skill level.}, viewing frequency, prior exposure, and an open-ended feedback prompt.
+Ethical clearance was obtained from the university ethics board (reference RP~2021-36).
+
+\section{Results}
+We report participants, analysis approach, and results for the C-set and G-set items.
+
+\subsection{Participants}
+57 respondents participated. Five reported no 1v1 AoE2:DE ranked rating (indicating they do not play competitively); for the remaining 52 we used the midpoint of their reported Elo range, yielding a sample with slightly elevated skill ($M = 1282$, $SD = 210$), above the average player base. All respondents watched competitive AoE2 at least monthly; most watched daily ($n=30$, 53\%). The majority had not watched the specific stimulus match before (No: 63\%, Yes: 23\%, Unsure: 14\%). This represents a sample of frequent-viewing, skill-elevated participants appropriate for informing design aimed at the core viewer audience, though less representative of casual viewers.
+For Other (O) responses "Does not apply" were omitted from analysis (as indicated by $N$). We did not ask for demographic information to maximize privacy and encourage participation, so we cannot report on age, gender, geographical distribution, or other demographic factors.
+
+\subsection{Statistical Analysis}
+Ratings were collected on a 5-point Likert scale and treated as approximately continuous. Using R\footnote{R Version 4.5.1 (2025-06-13), lme4 v1.1.37, emmeans v1.11.2.8}, we fit separate linear mixed-effects models ($lme4$; REML) for each dataset with fixed item cell-means  (testing within each item) and a random intercept for participants (normalizing participant bias) ($itemScore \sim 0 + item + (1|Participant)$). Estimated marginal means (EMMs; $emmeans$) were tested against prespecified anchors (3, 3.5, 4, to test if means significantly differed from these values on a 5-point scale) to understand if the values differed significantly from of these values. Inference used Satterthwaite degrees of freedom ($lmerTest$). Because the analysis was exploratory by testing against three different anchors, we controlled the false discovery rate using Benjamini--Hochberg (BH) separately within each data set (C \& G). BH adjustment did not change any statistical decisions relative to raw p-values at $\alpha = .05$; we therefore report BH-adjusted p-values. Analysis scripts and an anonymized dataset are available online\footnote{See Appendix~\ref{app:preliminary-analysis} for public links to analysis scripts and dataset}.
+
+\subsection{Additional Checks}
+\label{subsec:additional-checks}
+The G-set model produced a boundary singular fit: the participant random-intercept variance converged to zero, indicating no detectable between-participant differences after accounting for item means. This is equivalent to a plain linear model for that dataset; fixed-effect estimates and standard errors are unaffected. Indicating participants did not differ systematically in how they rated the general preference items; any variation was item-specific rather than a stable individual tendency.
+
+Residual diagnostics (Q--Q plots, histogram) indicated mild tails/outliers and a slight left skew; given the robustness of Gaussian LMMs to moderate non-normality, we proceeded.
+We also tested whether perceived technical issues with the video (e.g., caused by video cutting a pre-existing shoutcast), \textit{TechnicalIssues}, self-reported skill (\textit{CompetenceSelf}, \textit{CompetenceELO}), viewing frequency (\textit{WatchFrequency}), or prior exposure (\textit{WatchedBefore}) influenced C-set or G-set ratings. No covariates were significant (none of the aforementioned items affect the items of the C-set or G-set) after Benjamini--Hochberg adjustment within dataset (all $p_{BH} \ge .094$). Raw p-values suggested potential interactions for \textit{TechnicalIssues} and \textit{WatchedBefore} in the G-set ($p = .019$ and $p = .038 < \alpha$), but these did not survive BH adjustment ($p_{BH} = .094 > \alpha$). So video quality issues, prior exposure to the specific match, and skill level did not reliably shift what content participants rated as relevant, the ratings reflect content preferences rather than study artifacts.
+
+\begin{table}[h!]
+  \centering
+  \caption{Commentary content items (C-set): Estimated marginal means (EMMs), Satterthwaite degrees of freedom (df), 95\% confidence intervals, and BH-adjusted tests against nulls 3, 3.5, and 4. Each cell shows estimate/statistic (top) and adjusted p-value (bottom). p-values are Benjamini--Hochberg adjusted within the C-set. Values in bold indicate significant differences from the null at $\alpha = .05$.}
+  \label{tab:results-events}
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.8}
+  \begin{tabular}{lccccccc}
+    \toprule
+    Item & \makecell{EMM \\ (SE)} & df & \makecell{95\% CI \\ (Lower -- Upper)} & \makecell{t vs 3 \\ (p)} & \makecell{t vs 3.5 \\ (p)} & \makecell{t vs 4 \\ (p)} \\
+    \midrule
+    BattleEcoKills & \makecell{4.35 \\ (0.13)} & 456 & \makecell{4.09 -- 4.61} & \makecell{\textbf{10.28} \\ < .001} & \makecell{\textbf{6.48} \\ < .001} & \makecell{\textbf{2.67} \\ 0.012} \\
+    IntroLayout\footnote{IntroLayout scores slightly higher than StateAgeUp, but after rounding they report the same values.} & \makecell{4.11 \\ (0.13)} & 456 & \makecell{3.85 -- 4.36} & \makecell{\textbf{8.41} \\ < .001} & \makecell{\textbf{4.61} \\ < .001} & \makecell{0.80 \\ 0.489} \\
+    StateAgeUp & \makecell{4.11 \\ (0.13)} & 456 & \makecell{3.85 -- 4.36} & \makecell{\textbf{8.41} \\ < .001} & \makecell{\textbf{4.61} \\ < .001} & \makecell{0.80 \\ 0.489} \\
+    StateMilTech & \makecell{4.07 \\ (0.13)} & 456 & \makecell{3.81 -- 4.33} & \makecell{\textbf{8.15} \\ < .001} & \makecell{\textbf{4.34} \\ < .001} & \makecell{0.53 \\ 0.651} \\
+    BattleMilitary & \makecell{4.04 \\ (0.13)} & 456 & \makecell{3.78 -- 4.29} & \makecell{\textbf{7.88} \\ < .001} & \makecell{\textbf{4.07} \\ < .001} & \makecell{0.27 \\ 0.826} \\
+    BattleOverwhelm & \makecell{3.98 \\ (0.13)} & 456 & \makecell{3.72 -- 4.24} & \makecell{\textbf{7.48} \\ < .001} & \makecell{\textbf{3.67} \\ < .001} & \makecell{-0.13 \\ 0.914} \\
+    EventScouting & \makecell{3.95 \\ (0.13)} & 456 & \makecell{3.69 -- 4.21} & \makecell{\textbf{7.21} \\ < .001} & \makecell{\textbf{3.41} \\ 0.001} & \makecell{-0.40 \\ 0.738} \\
+    BattleBreakIn & \makecell{3.84 \\ (0.13)} & 456 & \makecell{3.58 -- 4.10} & \makecell{\textbf{6.41} \\ < .001} & \makecell{\textbf{2.60} \\ 0.014} & \makecell{-1.20 \\ 0.304} \\
+    IntroCivs & \makecell{3.81 \\ (0.13)} & 456 & \makecell{3.55 -- 4.07} & \makecell{\textbf{6.14} \\ < .001} & \makecell{\textbf{2.34} \\ 0.028} & \makecell{-1.47 \\ 0.194} \\
+    Knowledge & \makecell{3.61 \\ (0.13)} & 456 & \makecell{3.36 -- 3.87} & \makecell{\textbf{4.67} \\ < .001} & \makecell{0.87 \\ 0.469} & \makecell{\textbf{-2.94} \\ 0.006} \\
+    BattleDelay & \makecell{3.60 \\ (0.13)} & 456 & \makecell{3.34 -- 3.85} & \makecell{\textbf{4.54} \\ < .001} & \makecell{0.73 \\ 0.521} & \makecell{\textbf{-3.07} \\ 0.004} \\
+    EventUncommon & \makecell{3.51 \\ (0.13)} & 456 & \makecell{3.25 -- 3.77} & \makecell{\textbf{3.87} \\ < .001} & \makecell{0.07 \\ 0.947} & \makecell{\textbf{-3.74} \\ < .001} \\
+    IntroEconomy & \makecell{3.37 \\ (0.13)} & 456 & \makecell{3.11 -- 3.63} & \makecell{\textbf{2.80} \\ 0.008} & \makecell{-1.00 \\ 0.396} & \makecell{\textbf{-4.81} \\ < .001} \\
+    IntroPlayers & \makecell{2.86 \\ (0.13)} & 456 & \makecell{2.60 -- 3.12} & \makecell{-1.07 \\ 0.368} & \makecell{\textbf{-4.87} \\ < .001} & \makecell{\textbf{-8.68} \\ < .001} \\
+    Predictions & \makecell{2.51 \\ (0.13)} & 463 & \makecell{2.25 -- 2.77} & \makecell{\textbf{-3.70} \\ < .001} & \makecell{\textbf{-7.48} \\ < .001} & \makecell{\textbf{-11.26} \\ < .001} \\
+    \bottomrule
+  \end{tabular}
+  \renewcommand{\arraystretch}{1}
+  \setlength{\tabcolsep}{6pt}
+\end{table}
+
+\subsection{General Preferences}
+Several G-items are significantly above 3 ("Neutral"), including \textit{PreferFullGames} ($EMM = 4.34$, $p < 0.0001 < \alpha$), \textit{LimitedTime} ($EMM = 3.58$, $p < 0.0001$), \textit{Understanding} ($EMM = 4.18$, $p < 0.0001$), \textit{TechnicalIssues} ($EMM = 3.39$, $p = 0.0069$), \textit{InterestStrategy} ($EMM = 4.64$, $p < 0.0001$), and \textit{InterestSkill} ($EMM = 4.02$, $p < 0.0001$). \textit{SummaryOpinion} is not significantly above neutral ($EMM = 3.18$, $p = 0.2358$), and large battles are not either (\textit{InterestBattles}, $EMM = 2.91$, $p = 0.5652$). Participants strongly prefer full matches but acknowledge time constraints, which opens a use case for summaries, yet they are not inherently enthusiastic about summaries as a format. Content-wise, strategy and skill dominate interest; raw battle action on its own does not stand out. Participants reported good comprehension of the event-driven summary (Understanding well above neutral), suggesting the format was sufficiently coherent even in prototype form. See Table~\ref{tab:results-general}.
+
+\begin{table}[h!]
+  \centering
+  \caption{General questions (G-set): Estimated marginal means (EMMs), Satterthwaite degrees of freedom (df), 95\% confidence intervals, and BH-adjusted tests against nulls 3, 3.5, and 4. p-values are Benjamini--Hochberg adjusted within the G-set.}
+  \label{tab:results-general}
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.8}
+  \begin{tabular}{lccccccc}
+    \toprule
+    Item & \makecell{EMM \\ (SE)} & df & \makecell{95\% CI \\ (Lower -- Upper)} & \makecell{t vs 3 \\ (p)} & \makecell{t vs 3.5 \\ (p)} & \makecell{t vs 4 \\ (p)} \\
+    \midrule
+    PreferFullGames & \makecell{4.34 \\ (0.14)} & 441 & \makecell{4.07 -- 4.61} & \makecell{\textbf{9.79} \\ < .001} & \makecell{\textbf{6.13} \\ < .001} & \makecell{\textbf{2.48} \\ 0.019} \\
+    Understanding & \makecell{4.18 \\ (0.14)} & 441 & \makecell{3.91 -- 4.45} & \makecell{\textbf{8.61} \\ < .001} & \makecell{\textbf{4.96} \\ < .001} & \makecell{1.31 \\ 0.236} \\
+    LimitedTime & \makecell{3.58 \\ (0.14)} & 441 & \makecell{3.31 -- 3.85} & \makecell{\textbf{4.21} \\ < .001} & \makecell{0.59 \\ 0.578} & \makecell{\textbf{-3.03} \\ 0.004} \\
+    TechnicalIssues & \makecell{3.39 \\ (0.14)} & 441 & \makecell{3.12 -- 3.65} & \makecell{\textbf{2.85} \\ 0.007} & \makecell{-0.84 \\ 0.458} & \makecell{\textbf{-4.53} \\ < .001} \\
+    SummaryOpinion & \makecell{3.18 \\ (0.14)} & 441 & \makecell{2.91 -- 3.44} & \makecell{1.29 \\ 0.236} & \makecell{\textbf{-2.39} \\ 0.023} & \makecell{\textbf{-6.08} \\ < .001} \\
+    \hline
+    InterestStrategy & \makecell{4.64 \\ (0.14)} & 441 & \makecell{4.37 -- 4.91} & \makecell{\textbf{12.01} \\ < .001} & \makecell{\textbf{8.35} \\ < .001} & \makecell{\textbf{4.70} \\ < .001} \\
+    InterestSkill & \makecell{4.02 \\ (0.14)} & 441 & \makecell{3.75 -- 4.29} & \makecell{\textbf{7.37} \\ < .001} & \makecell{\textbf{3.75} \\ < .001} & \makecell{0.13 \\ 0.895} \\
+    InterestBattles & \makecell{2.91 \\ (0.14)} & 441 & \makecell{2.65 -- 3.18} & \makecell{-0.65 \\ 0.565} & \makecell{\textbf{-4.33} \\ < .001} & \makecell{\textbf{-8.02} \\ < .001} \\
+    \bottomrule
+  \end{tabular}
+  \renewcommand{\arraystretch}{1}
+  \setlength{\tabcolsep}{6pt}
+\end{table}
+
+\subsection{Events}
+Nearly all C-items are significantly above 3 ("Relevant"), except \textit{IntroPlayers} ($EMM = 2.86$, $p = 0.368$) and \textit{Predictions} ($EMM = 2.51$, $p < 0.001$), where \textit{Predictions} was also significantly below the middle point. Only \textit{BattleEcoKills} exceeds 4 ("Very Relevant"; EMM = 4.35, $p = 0.012$). This indicates that viewers want to hear about almost every event type we tested except for player intros and predictions are unwanted. Among everything we asked about, battles that result in economic unit kills are the single most valued content type. See Table~\ref{tab:results-events}.
+
+24 participants answered the optional open question about missing information. Repeated themes were missing economy/technology information (13), technical limitations (overlay density, disruptive cuts, casting style; 6), and missing win-condition/progress explanations (5). The dominant request for economic and win-condition context directly reinforces the quantitative finding that battle events are most valued when framed by their consequences; viewers want events framed by their consequences: what happened, and why it matters for the match.
+
+\section{Discussion}
+
+Participants preferred full matches but reported limited time, suggesting summaries could be useful if they prioritize what viewers care about most; overall attitudes toward summaries were neutral to slightly positive despite prototype limitations.
+
+\subsection{RQB1: Which events and knowledge updates are most important to include in a summary?}
+
+Ratings suggest a hierarchy: battles that lead to economic unit kills were most important, followed by map layout, state updates, larger battle events, and scouting. This emphasizes the consequences of battles, supported by scouting and state updates, and aligns with the A--E--P+S loop (economy-impacting outcomes matter most).
+
+Introductory patches were mixed: player introductions were not important, while map layout and civilization introductions were. \textit{EventUncommon} (buildings/interesting unit production) was rated lower than expected, likely because the survey item was defined too narrowly, covering only one specific type of uncommon event rather than the full range. State updates (especially age-ups and military technologies) and contextual knowledge were only minimally above neutral. Predictions were rated not relevant; self-reported cutting issues and casting style slightly influenced experience but showed no significant effect on item scores.
+
+\subsection{RQB2: How should different types of content be balanced to maintain viewer interest?}
+
+Viewers prioritized strategic choices and player skill, while large battles were not rated above neutral. However, battle events were rated highly when framed by their strategic/economic consequences; comments also requested brief updates about economy and win conditions at the right moments.
+
+\subsection{RQB3: To what extent can an event-driven summary produce a coherent and understandable narrative?}
+
+Participants reported good understanding, suggesting an event-driven summary can be coherent. Scouting and state updates (especially age-ups and military technologies), together with contextual knowledge (civilizations), help connect actions to consequences.
+
+Technical limitations (cuts and casting style) slightly impacted experience but did not significantly affect item scores; (see Section~\ref{subsec:additional-checks} above). Missing economy and win-condition information was noted (and intentionally omitted here); adding short, well-timed updates should further strengthen coherence. Together, the results suggest coherence is better supported by focusing on impactful events (particularly with economic effects) and supportive state/context updates rather than predictions.
+
+\subsection{Limitations}
+Limitations include the use of a single short, event-specific video that likely framed responses, and the mismatch between our target text-based output and the hand-made video summary used in the study. Recruiting via Reddit may bias toward more engaged/skilled viewers (supported by many reporting an Elo), limiting generalizability.
+Some items may have constrained interpretation (e.g., excluding some question types assumed redundant in the CaptureAge UI from our questionnaire design; \textit{TechnicalIssues}; and a narrow definition of \textit{EventUncommon}). We treated Likert data as continuous and had a relatively small sample; the alternative (ordinal models) and larger samples could better assess effects of skill and other covariates, but we did not have the resources to conduct such analyses. Despite these limits, findings broadly aligned with expectations from the caster analysis and provide an initial basis for design, which we deem sufficient for an exploratory study.
+
+\section{Conclusion and Next Steps}
+The combined domain analysis we started in Chapter~\ref{chap:prelim} supports the development of an event-driven system, consistent with findings from StarCraft II (SC2) shoutcasting \cite{dodge2018} and prior work such as kill streaks in Counter-Strike: Global Offensive \cite{lux2019a, wutti2018}.
+
+If we can detect these events from CaptureAge game data, we can aim to generate coherent summaries. The analysis suggests AoE2 shares patterns with SC2 shoutcasting, and highlights the value of pairing events with state information (A--E--P+S loop) to help explain strategy and skill. The user study suggests the selected events are relevant and summaries can support understanding, though participants were not convinced they improve content consumption; we therefore build a prototype to evaluate battle-based events supported by state updates and light contextual knowledge. We should ensure a clear overview of the map and civilizations at the start, and add brief updates about economy and win conditions at key moments to support coherence. While battles rated high overall, just large battles were not rated above neutral, suggesting we should ensure we contextualize them.
+
+We should be cautious in moving to a purely text-based system, as the analysis and user study were based on video shoutcasts. In the next chapter we design and implement a prototype for fully generated live match updates; in Chapter~\ref{chap:eval} we then evaluate these texts and their engagement qualities.

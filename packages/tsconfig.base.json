@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    // Basic Options
+    "target": "ESNext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "declaration": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+    "esModuleInterop": true,
+
+    // Strict Type-Checking Options
+    "strict": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "strictBuiltinIteratorReturn": true,
+
+    // Additional Checks
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "exactOptionalPropertyTypes": true,
+    "useUnknownInCatchVariables": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
+

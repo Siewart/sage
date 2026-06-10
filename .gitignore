@@ -1,0 +1,60 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build / bundles
+dist/
+build/
+lib/
+out/
+esm/
+cjs/
+*.tsbuildinfo
+coverage/
+
+# Yarn (Berry / PnP)
+.pnp.*
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# VSCode
+.vscode/
+
+# Misc
+.DS_Store
+.env
+.env.local
+.env.*.local
+*.log
+
+# Python
+.venv/
+poetry.lock
+__pycache__/
+.pytest_cache/
+
+
+# Temporary files
+to-process/
+*.Rproj
+.Rproj.user
+
+# Thesis LaTeX build artifacts
+# Ignore the directory's contents but keep the final PDF (see negation below)
+/thesis/latex/.build/*
+!/thesis/latex/.build/main.pdf
+/thesis/latex/*.aux
+/thesis/latex/*.log
+/thesis/latex/*.toc
+/thesis/latex/*.out
+/thesis/latex/*.lof
+/thesis/latex/*.lot
+/thesis/latex/*.fls
+/thesis/latex/*.fdb_latexmk
+/thesis/latex/*.synctex.gz
+

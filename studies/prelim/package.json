@@ -1,0 +1,14 @@
+{
+  "name": "@1001tales/prelim-study",
+  "private": true,
+  "packageManager": "yarn@4.9.3",
+  "scripts": {
+    "lint": "Rscript -e \"lintr::lint_dir('analysis')\"",
+    "format": "Rscript -e \"styler::style_dir('analysis')\"",
+    "dev": "Rscript analysis/run_all.R",
+    "dev:power": "Rscript analysis/run_all.R --with-power",
+    "docker:build": "docker build -t prelim-analysis .",
+    "docker:run": "docker run --rm -v \"$(pwd)\":/work prelim-analysis",
+    "docker:power": "docker run --rm -v \"$(pwd)\":/work prelim-analysis --with-power"
+  }
+}

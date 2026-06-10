@@ -1,0 +1,7 @@
+alpha = 0.05, nsim = 2000
+Target effect: 0.50 points on the 7-point scale
+sd_prev_7pt used: 0.5717992
+Participants needed for >= 80% power:
+  EventStructuring: 8
+  ExpertInsights: 9
+  Interaction: not reached

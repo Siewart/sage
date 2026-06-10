@@ -1,0 +1,43 @@
+{
+  "name": "simplenlg-unwrap",
+  "main": "dist/index",
+  "license": "MPL-2.0",
+  "type": "module",
+  "packageManager": "yarn@4.6.0",
+  "private": true,
+  "scripts": {
+    "run:cli": "node dist/index.js",
+    "run:repl": "node dist/repl.js",
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "clean-build": "yarn clean && yarn build",
+    "test": "yarn node --experimental-vm-modules $(yarn bin jest)",
+    "lint": "eslint src/**/*.ts test/**/*.ts",
+    "format": "prettier --write src test",
+    "format:check": "prettier --check src test"
+  },
+  "dependencies": {
+    "clipanion": "4.0.0-rc.4",
+    "fast-xml-parser": "4.5.1",
+    "simplenlg-core": "workspace:^",
+    "typanion": "3.14.0",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@jest/types": "29.6.3",
+    "@types/jest": "29.5.14",
+    "@types/node": "22.13.4",
+    "eslint": "9.20.1",
+    "globals": "16.0.0",
+    "jest": "29.7.0",
+    "prettier": "3.5.1",
+    "rimraf": "6.0.1",
+    "ts-jest": "29.2.5",
+    "ts-node": "10.9.2",
+    "typescript": "5.7.3"
+  },
+  "bin": {
+    "cli": "dist/index.js",
+    "repl": "dist/repl.js"
+  }
+}

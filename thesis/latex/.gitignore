@@ -1,0 +1,14 @@
+# Ignore LaTeX build artifacts
+.build/*
+*.aux
+*.log
+*.toc
+*.out
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Keep final output
+!.build/main.pdf

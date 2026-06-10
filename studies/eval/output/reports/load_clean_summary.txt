@@ -1,0 +1,7 @@
+Raw rows: 37
+Dropped (header): 2
+Dropped (fake/test): 2
+Evaluations: 132
+Participants: 33
+Rows missing Order: 0
+Withdrawal emails provided: 0

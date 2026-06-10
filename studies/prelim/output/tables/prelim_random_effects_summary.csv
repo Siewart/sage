@@ -1,0 +1,5 @@
+dataset,grp,var1,var2,vcov,sdcor,is_singular,convergence_message
+C,participant_id,(Intercept),NA,0.2411630713847439,0.4910835686364836,FALSE,NA
+C,Residual,NA,NA,0.7426284427028224,0.8617589237732455,FALSE,NA
+G,participant_id,(Intercept),NA,0,0,TRUE,boundary (singular) fit: see help('isSingular')
+G,Residual,NA,NA,1.0483093556401843,1.0238697942805932,TRUE,boundary (singular) fit: see help('isSingular')

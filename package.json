@@ -1,0 +1,26 @@
+{
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "studies/*",
+        "thesis"
+    ],
+    "packageManager": "yarn@4.9.3",
+    "scripts": {
+        "lint": "yarn workspaces foreach -Ap run lint",
+        "format": "yarn workspaces foreach -Ap run format",
+        "typecheck": "yarn workspaces foreach -Ap run typecheck",
+        "test": "yarn workspaces foreach -Ap run test",
+        "build": "yarn workspaces foreach -Apt run build"
+    },
+    "devDependencies": {
+        "@types/node": "24.3.0",
+        "@typescript-eslint/parser": "8.40.0",
+        "eslint": "9.33.0",
+        "prettier": "3.6.2",
+        "typescript": "5.9.2"
+    },
+    "engines": {
+        "node": "24.6.0"
+    }
+}
