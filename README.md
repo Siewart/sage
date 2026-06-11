@@ -73,6 +73,24 @@ Needs a TeX Live install with `latexmk` (and `chktex` / `tex-fmt` for lint and f
 - **R.** Both studies build on `rocker/r-ver:4.5.1`, which fixes the R version. `prelim` pins each package to an explicit version with `remotes::install_version`; `eval` installs from a dated Posit Package Manager snapshot (`2025-08-01`), which pins the whole set at once. The Docker build is the environment the reported results come from.
 - **Data.** `sage-core` ships four matches at one-minute resolution under `packages/sage-core/data/`; the studies ship their cleaned inputs and the output tables they produce. Updated versions of the dataset are hosted on [Hugging Face](https://huggingface.co/datasets/Siewart/sage).
 
+## Citation
+
+If you use this code please cite the thesis using this:
+```
+@mastersthesis{VanWingerden2026,
+  month    = {June},
+  author   = {van Wingerden, S.},
+  year     = {2026},
+  school   = {University of Twente},
+  address  = {Enschede},
+  type     = {Thesis},
+  title    = {One Thousand and One Tales: Automated Age of Empires {II} eSports Reports from Raw Real-time Game Data},
+  url      = {https://purl.utwente.nl/essays/109934},
+}
+```
+
+**APA:** van Wingerden, S. (2026). _One Thousand and One Tales: Automated Age of Empires II eSports Reports from Raw Real-time Game Data_ (Master's thesis, University of Twente, Enschede). https://purl.utwente.nl/essays/109934
+
 ## A note on AI use.
 
 LLMs were used both inside the pipeline (Gemini, as one of the realisers) and as a writing and coding assistant while putting the rest together. Where it matters for a result it is called out in the relevant README or thesis chapter. All design choices and interpretations were human made. For example this README was written by AI, but all contents have been predecided, checked, and edited by a human.
