@@ -20,6 +20,7 @@ COPY packages/simplenlg-unwrap/package.json packages/simplenlg-unwrap/
 COPY studies/eval/package.json studies/eval/
 COPY studies/prelim/package.json studies/prelim/
 COPY thesis/package.json thesis/
+COPY paper/package.json paper/
 
 # Copy Yarn internals (release/plugins/cache)
 COPY .yarn/ .yarn/
