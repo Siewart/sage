@@ -11,6 +11,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@1001tales/paper@workspace:paper":
+  version: 0.0.0-use.local
+  resolution: "@1001tales/paper@workspace:paper"
+  languageName: unknown
+  linkType: soft
+
 "@1001tales/prelim-study@workspace:studies/prelim":
   version: 0.0.0-use.local
   resolution: "@1001tales/prelim-study@workspace:studies/prelim"

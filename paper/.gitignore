@@ -1,0 +1,24 @@
+# LaTeX build artefacts
+.build/
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.blg
+*.bbl
+*.tmp
+
+# Generated PDFs. main.pdf is committed so the built paper is available
+# without a TeX install; pipeline-v2.pdf is a source figure, not generated.
+# A new source figure in PDF form needs its own negation here.
+*.pdf
+!main.pdf
+!pipeline-v2.pdf
+
+# latexdiff output and hand-kept working copies
+*-diff.tex
+*-diff-*.tex
+*-backup.tex
+*-reconstructed.tex

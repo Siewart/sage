@@ -3,7 +3,8 @@
     "workspaces": [
         "packages/*",
         "studies/*",
-        "thesis"
+        "thesis",
+        "paper"
     ],
     "packageManager": "yarn@4.9.3",
     "resolutions": {

@@ -1,6 +1,6 @@
 # 1001 Tales of Competitive Age of Empires II
 
-Everything for thesis on generating live text commentary for Age of Empires II matches: the pipeline that turns exported CaptureAge game data into commentary (`packages/sage-core/`), the R analysis for the two user studies (`studies/`), and the written thesis itself (`thesis/`). The additional datasets can be found on [Hugging Face](https://huggingface.co/datasets/Siewart/sage).
+Everything for thesis on generating live text commentary for Age of Empires II matches: the pipeline that turns exported CaptureAge game data into commentary (`packages/sage-core/`), the R analysis for the two user studies (`studies/`), the INLG paper (`paper/`), and the written thesis itself (`thesis/`). The additional datasets can be found on [Hugging Face](https://huggingface.co/datasets/Siewart/sage).
 
 ## Layout
 
@@ -12,10 +12,11 @@ packages/
 studies/   R analysis for the two studies
   prelim/    preliminary survey - which bits of commentary are worth saying
   eval/      main evaluation - a 2x2 within-subject rating study
+paper/     the INLG 2026 paper (LaTeX)
 thesis/    the thesis (LaTeX)
 ```
 
-Everything is one top-level Yarn workspace (Yarn 4.9.3, Node 24) - the TypeScript packages, the R studies, and the thesis - so `yarn lint` and `yarn format` reach them all from the root. The sage pipeline's reproducible runtime is its Docker image, which pins Node 22 and Yarn 4.6.0, the toolchain it was developed and locked against.
+Everything is one top-level Yarn workspace (Yarn 4.9.3, Node 24) - the TypeScript packages, the R studies, the paper, and the thesis - so `yarn lint` and `yarn format` reach them all from the root. The sage pipeline's reproducible runtime is its Docker image, which pins Node 22 and Yarn 4.6.0, the toolchain it was developed and locked against.
 
 ## Running each part
 
@@ -56,6 +57,18 @@ Rscript analysis/run_all.R
 
 The numbers reported in the thesis are the ones from the Docker images. Running on a different setup can shift the last digit or two of the mixed-model fits (optimizer wobble) without changing any of the conclusions.
 
+### `/paper` LaTeX
+
+```sh
+cd paper
+yarn build        # latexmk -> main.pdf
+yarn dev          # latexmk -pvc, rebuilds on save
+yarn lint         # chktex
+```
+
+The camera-ready for the INLG paper cited below. `main.pdf` is committed, so the
+built paper is there without a TeX install; the other build products are not.
+
 ### `/thesis` LaTeX
 
 ```sh
@@ -72,6 +85,19 @@ Needs a TeX Live install with `latexmk` (and `chktex` / `tex-fmt` for lint and f
 - **Node and Yarn.** The exact Yarn version is pinned in each `packageManager` field and run through Corepack; the Node version sits in `engines`. Installs are immutable (`enableImmutableInstalls: true`), so `yarn install` fails rather than quietly bump a dependency, and the committed `yarn.lock` reproduces the dependency tree exactly. The top-level workspace uses Yarn 4.9.3 and Node 24; the sage pipeline's Docker image pins Yarn 4.6.0 and Node 22 - the toolchain it was developed and locked against.
 - **R.** Both studies build on `rocker/r-ver:4.5.1`, which fixes the R version. `prelim` pins each package to an explicit version with `remotes::install_version`; `eval` installs from a dated Posit Package Manager snapshot (`2025-08-01`), which pins the whole set at once. The Docker build is the environment the reported results come from.
 - **Data.** `sage-core` ships four matches at one-minute resolution under `packages/sage-core/data/`; the studies ship their cleaned inputs and the output tables they produce. Updated versions of the dataset are hosted on [Hugging Face](https://huggingface.co/datasets/Siewart/sage).
+
+## License
+
+The code is MIT (see `LICENSE`), with two exceptions:
+
+- `paper/` is [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) - MIT is a
+  software license and does not fit a written work. The ACL style files and the game
+  screenshot in that directory are excluded; see `paper/LICENSE.md`.
+- `packages/simplenlg-core/` is MPL 2.0, inherited from SimpleNLG upstream (see
+  `packages/simplenlg-core/LICENSE`).
+
+The dataset is released separately to the public domain (CC0), except fields derived
+from game content, which remain subject to Xbox's Game Content Usage Rules.
 
 ## Citation
 
