@@ -75,21 +75,18 @@ Needs a TeX Live install with `latexmk` (and `chktex` / `tex-fmt` for lint and f
 
 ## Citation
 
-If you use this code please cite the thesis using this:
+If you use this code please cite the INLG paper:
 ```
-@mastersthesis{VanWingerden2026,
-  month    = {June},
-  author   = {van Wingerden, S.},
-  year     = {2026},
-  school   = {University of Twente},
-  address  = {Enschede},
-  type     = {Thesis},
-  title    = {One Thousand and One Tales: Automated Age of Empires {II} eSports Reports from Raw Real-time Game Data},
-  url      = {https://purl.utwente.nl/essays/109934},
+@inproceedings{vanWingerden2026sage,
+  author    = {van Wingerden, Siewart and Theune, Mari\"et and Gatti, Lorenzo},
+  title     = {From Full Game State to Live Commentary: A Data-to-Text Pipeline and Corpus for {Age of Empires II}},
+  booktitle = {Proceedings of the International Natural Language Generation Conference (INLG 2026)},
+  year      = {2026},
+  note      = {To appear},
 }
 ```
 
-**APA:** van Wingerden, S. (2026). _One Thousand and One Tales: Automated Age of Empires II eSports Reports from Raw Real-time Game Data_ (Master's thesis, University of Twente, Enschede). https://purl.utwente.nl/essays/109934
+**APA:** van Wingerden, S., Theune, M., & Gatti, L. (2026). _From full game state to live commentary: A data-to-text pipeline and corpus for Age of Empires II_. In Proceedings of the International Natural Language Generation Conference (INLG 2026).
 
 ## A note on AI use.
 
