@@ -5,7 +5,14 @@
 (() => {
 const NS = 'http://www.w3.org/2000/svg', $ = s => document.querySelector(s);
 const E = (p, tag, a = {}, txt) => { const e = document.createElementNS(NS, tag); for (const k in a) if (a[k] != null) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; if (p) p.appendChild(e); return e; };
-const C = { blue: '#2b6cb0', navy: '#1f2a44', ink: '#1d1d1f', cmb: '#b03a48', bld: '#9a6a2f', oth: '#1f8a70', syn: '#b8860b', head: '#e8f0f9', note: '#555555', drop: '#8a8a8a', state: '#5e7391', peek: '#9a9a9a', tl: '#9aa5b8', hl: '#cfe0f5', ei: '#237a49', es: '#7b4fb0', A: '#A2561A', E: '#1A6B60', P: '#7E600A', S: '#11708F' };
+// Palettes follow the page theme (data-theme, else prefers-color-scheme); C is refilled before each render.
+const LIGHT = { blue: '#2b6cb0', navy: '#1f2a44', ink: '#1d1d1f', cmb: '#b03a48', bld: '#9a6a2f', oth: '#1f8a70', syn: '#b8860b', head: '#e8f0f9', note: '#555555', drop: '#8a8a8a', state: '#5e7391', peek: '#9a9a9a', tl: '#9aa5b8', hl: '#cfe0f5', ei: '#237a49', es: '#7b4fb0', A: '#A2561A', E: '#1A6B60', P: '#7E600A', S: '#11708F', paper: '#fff', onAcc: '#fff', bar: '#1f2a44', track: '#e3e6ec', chip: '#d2d4da', dbTop: '#efefef', map: '#eef2e7', mapLine: '#c5cfb8' };
+const DARK = { blue: '#6fa3dd', navy: '#d7dce6', ink: '#eceae4', cmb: '#e0707e', bld: '#c9965a', oth: '#4fc2a0', syn: '#e0b341', head: '#1c2a3d', note: '#b9b6ae', drop: '#8a8a8a', state: '#8ea3c4', peek: '#8a8a8a', tl: '#6f7a8c', hl: '#33507a', ei: '#5fbf8a', es: '#b593e0', A: '#e09a5f', E: '#5cc1b0', P: '#d9b84f', S: '#5cb8da',
+  paper: '#1e2027', onAcc: '#15171c', bar: '#34466e', track: '#34363c', chip: '#3a3d46', dbTop: '#2a2c33', map: '#1f2a1e', mapLine: '#46523d' };
+const C = {};
+const isDark = () => { const r = document.documentElement; return r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; };
+const theme = () => Object.assign(C, isDark() ? DARK : LIGHT);
+theme();
 const PH = 'Philosopher, serif', AS = '"Alegreya Sans", sans-serif', JB = '"JetBrains Mono", monospace';
 const clamp = v => Math.max(0, Math.min(1, v)), ease = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
 // 0 before a, fades in over fi, 1 until b, fades out over fo
@@ -40,37 +47,37 @@ function glyph(kind, s, p) {
   else if (kind === 'square') E(g, 'rect', { x: -s / 2, y: -s / 2, width: s, height: s, fill: C.bld });
   else if (kind === 'tri') E(g, 'path', { d: `M0,${-.45 * s}L${s / 2},${.45 * s}L${-s / 2},${.45 * s}Z`, fill: C.oth });
   else if (kind === 'star') { let d = ''; for (let i = 0; i < 10; i++) { const r = i % 2 ? s * .2 : s * .5, a = -Math.PI / 2 + i * Math.PI / 5; d += (i ? 'L' : 'M') + (r * Math.cos(a)).toFixed(2) + ',' + (r * Math.sin(a) + s * .04).toFixed(2); } E(g, 'path', { d: d + 'Z', fill: C.syn }); }
-  else if (kind === 'estar') { E(g, 'circle', { r: s / 2, fill: '#fff', stroke: C.ei, 'stroke-width': 2.5 }); g.appendChild(glyph('star', s * .7, null)); }
+  else if (kind === 'estar') { E(g, 'circle', { r: s / 2, fill: C.paper, stroke: C.ei, 'stroke-width': 2.5 }); g.appendChild(glyph('star', s * .7, null)); }
   else if (kind === 'cluster' || kind === 'ghost') {
-    E(g, 'circle', { r: s / 2, fill: '#fff', stroke: C.cmb, 'stroke-width': 2.5, 'stroke-dasharray': kind === 'ghost' ? '4 3' : null });
+    E(g, 'circle', { r: s / 2, fill: C.paper, stroke: C.cmb, 'stroke-width': 2.5, 'stroke-dasharray': kind === 'ghost' ? '4 3' : null });
     [[.175, .225], [.566, .225], [.369, .594]].forEach(([a, b]) => E(g, 'circle', { cx: (a + .13) * s - s / 2, cy: (b + .13) * s - s / 2, r: .13 * s, fill: C.cmb }));
   } else if (kind === 'dropped' || kind === 'rejsq') {
-    if (kind === 'dropped') E(g, 'circle', { r: s / 2, fill: '#fff', stroke: C.drop, 'stroke-width': 2.5 }); else E(g, 'rect', { x: -s / 2, y: -s / 2, width: s, height: s, fill: '#fff', stroke: C.drop, 'stroke-width': 2.5 });
+    if (kind === 'dropped') E(g, 'circle', { r: s / 2, fill: C.paper, stroke: C.drop, 'stroke-width': 2.5 }); else E(g, 'rect', { x: -s / 2, y: -s / 2, width: s, height: s, fill: C.paper, stroke: C.drop, 'stroke-width': 2.5 });
     const k = kind === 'dropped' ? s * .35 : s / 2; E(g, 'path', { d: `M${-k},${-k}L${k},${k}M${k},${-k}L${-k},${k}`, stroke: C.drop, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
   } else if (kind === 'doc' || kind === 'readable') {
-    E(g, 'rect', { x: -s / 2, y: -s * .3, width: s, height: s * .6, rx: 3, fill: '#fff', stroke: C.ink, 'stroke-width': 2 });
+    E(g, 'rect', { x: -s / 2, y: -s * .3, width: s, height: s * .6, rx: 3, fill: C.paper, stroke: C.ink, 'stroke-width': 2 });
     E(g, 'text', { 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-family': JB, 'font-weight': 700, 'font-size': s * .3, fill: C.ink }, kind === 'doc' ? '{…}' : '«…»');
   } else if (kind === 'prompt') {
-    E(g, 'rect', { x: -s / 2, y: -s * .22, width: s, height: s * .44, rx: s * .22, fill: '#d2d4da', stroke: C.navy, 'stroke-width': 1.9 });
+    E(g, 'rect', { x: -s / 2, y: -s * .22, width: s, height: s * .44, rx: s * .22, fill: C.chip, stroke: C.navy, 'stroke-width': 1.9 });
     E(g, 'text', { 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-family': AS, 'font-weight': 700, 'font-size': s * .3, fill: C.navy }, '✎');
-  } else if (kind === 'ei' || kind === 'es') E(g, 'circle', { r: s / 2, fill: C[kind], stroke: '#fff', 'stroke-width': 2 });
+  } else if (kind === 'ei' || kind === 'es') E(g, 'circle', { r: s / 2, fill: C[kind], stroke: C.paper, 'stroke-width': 2 });
   return g;
 }
 const place = (g, x, y, sc = 1) => g.setAttribute('transform', `translate(${x},${y}) scale(${sc})`);
 const glyphAt = (p, kind, cx, cy, s) => { const g = glyph(kind, s, p); place(g, cx, cy); return g; };
 function stack(g, x, y, w, h, label) {
   rect(g, x + 12, y + 12, w, h, { fill: C.head, st: C.blue, sw: 1.5 }); rect(g, x + 6, y + 6, w, h, { fill: C.head, st: C.blue, sw: 1.5 });
-  rect(g, x, y, w, h, { fill: '#fff', st: C.blue, sw: 3 }); text(g, x + 4, y + 8, w - 8, 26.2, label, { ff: PH, fs: 20, fw: 700, fill: C.navy });
+  rect(g, x, y, w, h, { fill: C.paper, st: C.blue, sw: 3 }); text(g, x + 4, y + 8, w - 8, 26.2, label, { ff: PH, fs: 20, fw: 700, fill: C.navy });
 }
 function docBox(g, x, y, w, h, s, hlFill) {
-  rect(g, x, y, w, h, { rx: 3, fill: '#fff', st: C.ink, sw: 2 });
+  rect(g, x, y, w, h, { rx: 3, fill: C.paper, st: C.ink, sw: 2 });
   const hl = hlFill ? rect(g, x + 1, y + 1, w - 2, h - 2, { rx: 2, fill: hlFill }) : null; if (hl) hl.setAttribute('opacity', 0);
   text(g, x, y + (h - 20.9) / 2, w, 20.9, s, { ff: JB, fs: 16, fw: 700 }); return hl;
 }
 function db(g, x, y, w, label, fs = 17) {
   const h = w * .44, t = w * .19;
-  rect(g, x, y + t / 2, w, h, { fill: '#fff', st: C.ink, sw: 2 }); ell(g, x, y + h, w, t, { fill: '#fff', st: C.ink, sw: 2 });
-  rect(g, x + 2, y + h - 2, w - 4, t * .58, { fill: '#fff' }); ell(g, x, y, w, t, { fill: '#efefef', st: C.ink, sw: 2 });
+  rect(g, x, y + t / 2, w, h, { fill: C.paper, st: C.ink, sw: 2 }); ell(g, x, y + h, w, t, { fill: C.paper, st: C.ink, sw: 2 });
+  rect(g, x + 2, y + h - 2, w - 4, t * .58, { fill: C.paper }); ell(g, x, y, w, t, { fill: C.dbTop, st: C.ink, sw: 2 });
   text(g, x, y + t, w, h, label, { fs, it: true, lh: 1.1 });
 }
 
@@ -152,9 +159,9 @@ function buildOverview(L) {
     text(sa, x + 8, 1352, 20, 26.2, '∈', { fs: 20, fw: 700, fill: col, al: 'start' }); glyphAt(sa, k, gx, 1366, 12);
   });
   [[717.7, 1354.5], [879.7, 1356.4], [1042.7, 1356.4]].forEach(([x, y]) => text(sa, x, y, 42, 20.9, 'copies', { it: 1, fill: C.note, al: 'start' }));
-  const boxCl = rect(sa, 690, 1390, 150, 120, { fill: '#fff', st: C.blue, sw: 3 }); text(sa, 690, 1396, 150, 26.2, 'Cluster', { ff: PH, fs: 20, fw: 700, fill: C.navy });
-  rect(sa, 852, 1390, 150, 120, { fill: '#fff', st: C.blue, sw: 3 }); text(sa, 852, 1396, 150, 26.2, 'Property Filter', { ff: PH, fs: 20, fw: 700, fill: C.navy });
-  rect(sa, 1014, 1390, 150, 120, { fill: '#fff', st: C.blue, sw: 3 }); text(sa, 1014, 1396, 150, 26.2, 'Passthrough', { ff: PH, fs: 20, fw: 700, fill: C.navy }); text(sa, 1104, 1446, 56, 20.9, 'by type', { it: 1, fill: C.note, al: 'start' });
+  const boxCl = rect(sa, 690, 1390, 150, 120, { fill: C.paper, st: C.blue, sw: 3 }); text(sa, 690, 1396, 150, 26.2, 'Cluster', { ff: PH, fs: 20, fw: 700, fill: C.navy });
+  rect(sa, 852, 1390, 150, 120, { fill: C.paper, st: C.blue, sw: 3 }); text(sa, 852, 1396, 150, 26.2, 'Property Filter', { ff: PH, fs: 20, fw: 700, fill: C.navy });
+  rect(sa, 1014, 1390, 150, 120, { fill: C.paper, st: C.blue, sw: 3 }); text(sa, 1014, 1396, 150, 26.2, 'Passthrough', { ff: PH, fs: 20, fw: 700, fill: C.navy }); text(sa, 1104, 1446, 56, 20.9, 'by type', { it: 1, fill: C.note, al: 'start' });
   glyphAt(sa, 'event', 710, 1442, 14); glyphAt(sa, 'event', 728, 1442, 14); line(sa, svg, [[740, 1442], [772, 1442]], { st: C.ink, sw: 2, arrow: 1 });
   glyphAt(sa, 'dropped', 786, 1442, 18); text(sa, 798, 1432, 42, 20.9, 'noise', { it: 1, fill: C.note, al: 'start' });
   const clGlow = O(E(sa, 'g'), [[3.0, 3.9]]); [735, 795].forEach(x => E(clGlow, 'circle', { cx: x, cy: 1482, r: 22, fill: C.cmb, opacity: .18 }));
@@ -171,7 +178,7 @@ function buildOverview(L) {
   glyphAt(di, 'square', 1232, 1424, 16); glyphAt(di, 'tri', 1256, 1420.1, 18); glyphAt(di, 'cluster', 1246, 1442, 30); line(di, svg, [[1264, 1442], [1290, 1442]], { st: C.ink, sw: 2, arrow: 1 });
   const docEn = docBox(di, 1296, 1422, 76, 40, '{…}', C.hl); text(di, 1202, 1468, 190, 20.9, 'transforms', { it: 1, fill: C.note });
   stack(di, 1430, 1350, 190, 150, 'Event Synthesis');
-  E(di, 'circle', { cx: 1464, cy: 1441, r: 11, fill: '#fff', stroke: C.navy, 'stroke-width': 2.5 }); E(di, 'path', { d: 'M1464,1434V1441L1469,1444', fill: 'none', stroke: C.navy, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
+  E(di, 'circle', { cx: 1464, cy: 1441, r: 11, fill: C.paper, stroke: C.navy, 'stroke-width': 2.5 }); E(di, 'path', { d: 'M1464,1434V1441L1469,1444', fill: 'none', stroke: C.navy, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
   line(di, svg, [[1480, 1442], [1502, 1442]], { st: C.ink, sw: 2, arrow: 1 });
   const starGlow = O(E(di, 'circle', { cx: 1522, cy: 1441, r: 20, fill: C.syn, opacity: .25 }), [[7.8, 8.4]]);
   glyphAt(di, 'star', 1522, 1441, 25); const docSy = docBox(di, 1540, 1422, 70, 40, '{…}', C.hl); text(di, 1430, 1468, 190, 20.9, 'injects time anchors', { it: 1, fill: C.note });
@@ -224,10 +231,10 @@ function buildOverview(L) {
     const g = laneG[k] = E(root, 'g', { class: 'lane' }), col = C[k];
     if (!L.mobile) {
       rect(g, 680, LANE_Y[k], 1644, 54, { rx: 27, fill: col, fo: .08, st: col, sw: 2 }); text(g, 704, LANE_Y[k] + 11, 420, 33.8, LANES[k].name, { ff: PH, fs: 26, fw: 700, fill: col, al: 'start' });
-      for (const sid in LANES[k].hooks) { const [x, w] = PILL[k + '.' + sid]; rect(g, x, LANE_Y[k] + 8, w, 38, { rx: 19, fill: col }); text(g, x, LANE_Y[k] + 16, w, 23.5, LANES[k].hooks[sid], { fs: 18, fw: 700, fill: '#fff' }); }
+      for (const sid in LANES[k].hooks) { const [x, w] = PILL[k + '.' + sid]; rect(g, x, LANE_Y[k] + 8, w, 38, { rx: 19, fill: col }); text(g, x, LANE_Y[k] + 16, w, 23.5, LANES[k].hooks[sid], { fs: 18, fw: 700, fill: C.onAcc }); }
     } else for (const sid in LANES[k].hooks) {
       const y = L.pillY[k + '.' + sid]; rect(g, 20, y, L.W - 40, 38, { rx: 19, fill: col });
-      text(g, 20, y + 8, L.W - 40, 23.5, `${LANES[k].name}: ${LANES[k].hooks[sid]}`, { fs: 18, fw: 700, fill: '#fff' });
+      text(g, 20, y + 8, L.W - 40, 23.5, `${LANES[k].name}: ${LANES[k].hooks[sid]}`, { fs: 18, fw: 700, fill: C.onAcc });
     }
   }
 
@@ -296,7 +303,7 @@ function buildOverview(L) {
 
 /* ---------- stage details (each its own 640 × 440 scene) ---------- */
 const DETAIL = {};
-const card = (g, x, y, w, h, title) => { rect(g, x, y, w, h, { fill: '#fff', st: C.blue, sw: 3 }); if (title) text(g, x, y + 6, w, 26, title, { ff: PH, fs: 20, fw: 700, fill: C.navy }); };
+const card = (g, x, y, w, h, title) => { rect(g, x, y, w, h, { fill: C.paper, st: C.blue, sw: 3 }); if (title) text(g, x, y + 6, w, 26, title, { ff: PH, fs: 20, fw: 700, fill: C.navy }); };
 const fadeAll = (t, T) => 1 - clamp((t - (T - .5)) / .5);
 
 DETAIL.sa = {
@@ -308,12 +315,12 @@ DETAIL.sa = {
     const g = E(svg, 'g');
     text(g, 20, 8, 200, 24, 'game map (top-down)', { it: 1, fs: 17, fill: C.note, al: 'start' });
     const clock = text(g, 250, 8, 100, 24, '16:00', { ff: JB, fs: 17, fw: 700, fill: C.navy, al: 'end' });
-    rect(g, 20, 40, 330, 300, { rx: 12, fill: '#eef2e7', st: '#c5cfb8', sw: 1.5 });
+    rect(g, 20, 40, 330, 300, { rx: 12, fill: C.map, st: C.mapLine, sw: 1.5 });
     for (let i = 1; i < 10; i++) { E(g, 'path', { d: `M${20 + i * 33},42V338`, stroke: '#dde4d2', 'stroke-width': 1 }); E(g, 'path', { d: `M22,${40 + i * 30}H348`, stroke: '#dde4d2', 'stroke-width': 1 }); }
     card(g, 390, 40, 230, 100, 'Cluster'); card(g, 390, 160, 230, 100, 'Property Filter'); card(g, 390, 280, 230, 100, 'Passthrough'); text(g, 530, 329, 80, 22, 'by type', { fs: 16, it: 1, fill: C.note, al: 'start' });
     const boxes = [[390, 40], [390, 160], [390, 280]].map(([x, y]) => { const r = rect(g, x, y, 230, 100, { st: C.blue, sw: 7 }); r.setAttribute('opacity', 0); return r; });
     [90, 210, 330].forEach(y => line(g, svg, [[354, y], [384, y]], { st: C.navy, sw: 2.5, arrow: 1 }));
-    rect(g, 20, 352, 330, 12, { rx: 6, fill: '#e3e6ec' }); const bar = rect(g, 20, 352, 0, 12, { rx: 6, fill: C.cmb });
+    rect(g, 20, 352, 330, 12, { rx: 6, fill: C.track }); const bar = rect(g, 20, 352, 0, 12, { rx: 6, fill: C.cmb });
     text(g, 20, 368, 330, 22, 'quiet for τ = 60 s → release', { fs: 16, it: 1, fill: C.note, al: 'start' });
     text(g, 20, 404, 600, 26, 'ST-DBSCAN  ·  ε = 14 tiles  ·  τ = 60 s  ·  minPts = 10', { ff: JB, fs: 16, fw: 700, fill: C.navy, al: 'start' });
     const A = [130, 165], pts = [[-22, -14], [10, -26], [26, 4], [-6, 8], [-30, 18], [14, 26], [0, -6], [-16, -30], [32, -18], [-2, 30]];
@@ -364,7 +371,7 @@ DETAIL.di = {
     svg.setAttribute('viewBox', '0 0 640 500');
     // Event Synthesis: time anchors, and (Expert Insights) strategy events derived at each anchor
     text(g, 20, 14, 300, 26, 'Event Synthesis', { ff: PH, fs: 20, fw: 700, fill: C.navy, al: 'start' });
-    const clk = E(g, 'g'); E(clk, 'circle', { cx: 34, cy: R1, r: 11, fill: '#fff', stroke: C.navy, 'stroke-width': 2.5 }); E(clk, 'path', { d: `M34,${R1 - 7}V${R1}L39,${R1 + 3}`, fill: 'none', stroke: C.navy, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
+    const clk = E(g, 'g'); E(clk, 'circle', { cx: 34, cy: R1, r: 11, fill: C.paper, stroke: C.navy, 'stroke-width': 2.5 }); E(clk, 'path', { d: `M34,${R1 - 7}V${R1}L39,${R1 + 3}`, fill: 'none', stroke: C.navy, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
     const clkT = text(g, 50, R1 - 12, 120, 24, 'game clock', { fs: 16, it: 1, fill: C.note, al: 'start' });
     const ar = line(g, svg, [[150, R1], [196, R1]], { st: C.ink, sw: 2.5, arrow: 1 });
     const st = glyph('star', 26, g); place(st, 222, R1); const stT = text(g, 242, R1 - 12, 220, 24, 'time anchor · 16:00', { fs: 17, fw: 700, fill: C.syn, al: 'start' });
@@ -379,13 +386,13 @@ DETAIL.di = {
     const cl = E(g, 'g'); glyphAt(cl, 'square', 50, 56 + OY, 18); glyphAt(cl, 'tri', 88, 54 + OY, 20); glyphAt(cl, 'cluster', 70, 80 + OY, 40); text(cl, 10, 104 + OY, 120, 22, 'any event type', { fs: 16, it: 1, fill: C.note });
     line(cl, svg, [[98, 80 + OY], [164, 80 + OY]], { st: C.ink, sw: 2.5, arrow: 1 });
     db(g, 20, 222 + OY, 100, 'snapshot\n16:32', 15);
-    rect(g, 170, 20 + OY, 450, 300, { rx: 6, fill: '#fff', st: C.ink, sw: 2 });
+    rect(g, 170, 20 + OY, 450, 300, { rx: 6, fill: C.paper, st: C.ink, sw: 2 });
     const L = [[null, '{ type: "battle", fightType: "raid",', 4.4], ['A', 'actor: 3 Scouts (Red) kill 1 Villager', 5.4], ['E', 'location: (112, 64)', 6.2], ['E', 'techs: Forging (Red)', 6.8],
       ['P', 'villagers: Red 31 · Blue 28', 8.4], ['S', 'visibleTo: Red ✓ · Blue ✓', 9.2], ['EI', 'strategy: Red is executing a Scout Rush', 10.0], [null, '}', 10.8]];
     const col = { A: C.A, E: C.E, P: C.P, S: C.S, EI: C.ei }, rows = [], q = [];
     L.forEach(([tag, s, t0], i) => {
       const y = 52 + OY + i * 34, r = E(g, 'g');
-      if (tag) { rect(r, 182, y - 12, 30, 24, { rx: 4, fill: col[tag] }); text(r, 182, y - 12, 30, 24, tag, { fs: 14, fw: 700, fill: '#fff' }); }
+      if (tag) { rect(r, 182, y - 12, 30, 24, { rx: 4, fill: col[tag] }); text(r, 182, y - 12, 30, 24, tag, { fs: 14, fw: 700, fill: C.onAcc }); }
       const tx = text(r, tag ? 222 : 186, y - 12, 380, 24, s, { ff: JB, fs: 16, al: 'start' });
       rows.push({ r, t0, lane: tag === 'EI' ? 'ei' : null, tx });
       if (tag && tag !== 'EI') q.push([line(g, svg, [[120, 252 + OY], [146, 252 + OY], [146, y], [178, y]], { st: C.blue, sw: 2.5, dash: 1, arrow: 1 }), t0]);
@@ -417,13 +424,13 @@ DETAIL.dp = {
     const marks = [];
     text(g, 150, 118, 200, 26, 'buffer', { ff: PH, fs: 20, fw: 700, fill: C.navy, al: 'start' });
     rect(g, 150, 150, 330, 120, { rx: 10, fill: C.head, fo: .5, st: C.navy, sw: 2, dash: '7 6' });
-    rect(g, 150, 290, 330, 10, { rx: 5, fill: '#e3e6ec' }); const bar = rect(g, 150, 290, 330, 10, { rx: 5, fill: C.navy });
+    rect(g, 150, 290, 330, 10, { rx: 5, fill: C.track }); const bar = rect(g, 150, 290, 330, 10, { rx: 5, fill: C.navy });
     const barT = text(g, 150, 304, 330, 22, '', { fs: 16, it: 1, fill: C.note, al: 'start' });
     line(g, svg, [[540, 210], [612, 210]], { st: C.navy, sw: 3, arrow: 1 }); text(g, 500, 222, 140, 44, 'to Surface\nRealization', { fs: 16, it: 1, fill: C.note });
     const lab = (kind, s, label, glyphK) => { const k = E(g, 'g'); glyph(kind, s, k); if (glyphK) { const q = glyph(glyphK, 12, k); place(q, -s / 2 - 12, 0); } if (label) text(k, -70, s * .3 + 2, 140, 22, label, { fs: 15, it: 1, fill: C.note }); return k; };
     const intro1 = lab('doc', 70, 'players & civs'), intro2 = lab('doc', 70, 'map');
     const dA = lab('doc', 70, 'battle', 'cluster'), dB = lab('doc', 70, 'Castle', 'square'), dC = lab('doc', 70, 'time anchor', 'star'), dD = lab('doc', 70, 'next battle', 'cluster');
-    const unit = E(g, 'g'); [[12, 12], [6, 6], [0, 0]].forEach(([o, p], i) => E(unit, 'rect', { x: -50 + o, y: -22 + p, width: 100, height: 44, rx: 4, fill: i < 2 ? C.head : '#fff', stroke: i < 2 ? C.blue : C.ink, 'stroke-width': 2 }));
+    const unit = E(g, 'g'); [[12, 12], [6, 6], [0, 0]].forEach(([o, p], i) => E(unit, 'rect', { x: -50 + o, y: -22 + p, width: 100, height: 44, rx: 4, fill: i < 2 ? C.head : C.paper, stroke: i < 2 ? C.blue : C.ink, 'stroke-width': 2 }));
     E(unit, 'text', { 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-family': JB, 'font-weight': 700, 'font-size': 18 }, '{…}'); text(unit, -80, 30, 160, 22, 'content unit', { fs: 15, it: 1, fill: C.note });
     const ghost = glyph('ghost', 30, g); place(ghost, 80, 210); const gl = line(g, svg, [[98, 210], [144, 210]], { st: C.es, sw: 2.5, dash: 1, arrow: 1 }); const gT = text(g, 20, 236, 120, 22, 'peek: open battle', { fs: 15, it: 1, fill: C.es });
     const br = rect(g, 166, 166, 222, 54, { rx: 10, st: C.es, sw: 3.5 }); const brT = text(g, 250, 122, 230, 22, 'grouped parallel events', { fs: 16, fw: 700, fill: C.es, al: 'end' });
@@ -459,7 +466,7 @@ DETAIL.sr = {
   build(svg) {
     const g = E(svg, 'g');
     text(g, 20, 4, 260, 22, '{…} content unit', { fs: 16, it: 1, fill: C.note, al: 'start' }); text(g, 360, 4, 260, 22, '«…» human-readable', { fs: 16, it: 1, fill: C.note, al: 'start' });
-    rect(g, 20, 30, 260, 112, { rx: 6, fill: '#fff', st: C.ink, sw: 2 }); rect(g, 360, 30, 260, 112, { rx: 6, fill: '#fff', st: C.ink, sw: 2 });
+    rect(g, 20, 30, 260, 112, { rx: 6, fill: C.paper, st: C.ink, sw: 2 }); rect(g, 360, 30, 260, 112, { rx: 6, fill: C.paper, st: C.ink, sw: 2 });
     line(g, svg, [[288, 86], [350, 86]], { st: C.navy, sw: 3, arrow: 1 }); text(g, 280, 54, 80, 22, 'Pre-\nProcessor', { fs: 15, fw: 700, fill: C.blue, lh: 1.05 });
     const ids = ['actor: unit 448', 'pos: (112, 64)', 't: 992000 ms'], nm = ['actor: Scout Cavalry', 'pos: (112, 64)', 'time: 16:32'];
     ids.forEach((s, i) => text(g, 32, 40 + i * 32, 240, 24, s, { ff: JB, fs: 15, al: 'start' }));
@@ -474,10 +481,10 @@ DETAIL.sr = {
     const modSt = on.length > 1 ? `url(#${gid})` : on.length ? C[on[0]] : null;
     let cx = 20, cy = 180; const chipEls = chips.map(([s, col, , mod], i) => {
       const w = s.length * 7.9 + 26; if (cx + w > 620) { cx = 20; cy += 38; }
-      const k = E(g, 'g'); rect(k, cx, cy, w, 30, { rx: 15, fill: col, st: mod ? modSt : null, sw: 4 }); text(k, cx, cy + 3, w, 24, s, { fs: 15, fw: 700, fill: '#fff' }); cx += w + 8; return [k, 3.2 + i * .45];
+      const k = E(g, 'g'); rect(k, cx, cy, w, 30, { rx: 15, fill: col, st: mod ? modSt : null, sw: 4 }); text(k, cx, cy + 3, w, 24, s, { fs: 15, fw: 700, fill: C.onAcc }); cx += w + 8; return [k, 3.2 + i * .45];
     });
     const ly = cy + 46; line(g, svg, [[320, cy + 34], [320, ly - 2]], { st: C.navy, sw: 2.5, arrow: 1 });
-    const llm = E(g, 'g'); rect(llm, 120, ly, 400, 34, { rx: 8, fill: C.navy }); text(llm, 120, ly + 5, 400, 24, 'Gemini 2.5 Flash · temperature 1 · fixed seed', { fs: 16, fw: 700, fill: '#fff' });
+    const llm = E(g, 'g'); rect(llm, 120, ly, 400, 34, { rx: 8, fill: C.bar }); text(llm, 120, ly + 5, 400, 24, 'Gemini 2.5 Flash · temperature 1 · fixed seed', { fs: 16, fw: 700, fill: '#fff' });
     const glow = rect(g, 116, ly - 4, 408, 42, { rx: 10, st: C.blue, sw: 4 });
     const oy = ly + 48, fo = E(g, 'foreignObject', { x: 20, y: oy, width: 600, height: 116 });
     svg.setAttribute('viewBox', `0 0 640 ${Math.max(440, oy + 120)}`);
@@ -574,6 +581,6 @@ function init() {
   setPlaying(playing); render(); requestAnimationFrame(tick);
   let rz, w = box().clientWidth; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (Math.abs(box().clientWidth - w) > 4) { w = box().clientWidth; render(); } }, 150); });
 }
-window.drawPipe = () => { if (OVR) render(); };
+window.drawPipe = () => { theme(); if (OVR) render(); if (mode === 'detail') buildDetail(); };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
