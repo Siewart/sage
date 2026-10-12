@@ -114,6 +114,18 @@ If you use this code please cite the INLG paper:
 
 **APA:** van Wingerden, S., Theune, M., & Gatti, L. (2026). _From full game state to live commentary: A data-to-text pipeline and corpus for Age of Empires II_. In Proceedings of the International Natural Language Generation Conference (INLG 2026).
 
+For the dataset itself:
+```
+@dataset{VanWingerden2026sage,
+  author    = {van Wingerden, S.},
+  title     = {{SAGE} Dataset: Age of Empires {II} {DE} Match Analytics},
+  year      = {2026},
+  publisher = {Hugging Face},
+  doi       = {10.57967/hf/10202},
+  url       = {https://huggingface.co/datasets/Siewart/sage},
+}
+```
+
 ## A note on AI use.
 
 LLMs were used both inside the pipeline (Gemini, as one of the realisers) and as a writing and coding assistant while putting the rest together. Where it matters for a result it is called out in the relevant README or thesis chapter. All design choices and interpretations were human made. For example this README was written by AI, but all contents have been predecided, checked, and edited by a human.
