@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAGE · From Full Game State to Live Commentary</title>
+<meta name="description" content="Interactive poster for the INLG 2026 paper: a data-to-text pipeline and full game-state corpus for Age of Empires II, with a viewer study.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0" rel="stylesheet">
+<style>
+:root {
+  --ink: #1D1D1F; --mid: #555555; --grey: #6E6E6E; --line: #E2E2E2; --bg: #F7F5F0; --card: #FFFFFF; --panel: #F5F2EA;
+  --navy: #1F2A44; --gold: #E2B85C;
+  --c1: #2B6CB0; --t1: #E8F0F9; --c2: #C08A1E; --c2t: #8C6210; --t2: #F7EFDD; --c3: #B83A3A; --t3: #F7E6E6;
+  --ei: #237A49; --es: #7B4FB0; --eiT: #E6F2EB; --esT: #EFE8F7; --both: #1F2A44;
+  --a: #A2561A; --e: #1A6B60; --p: #7E600A; --s: #11708F;
+  --cmb: #B03A48; --bld: #9A6A2F; --oth: #1F8A70; --syn: #B8860B;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --veil: linear-gradient(160deg, rgba(16,18,24,.84), rgba(16,18,24,.74)); --glass: rgba(30,32,39,.62); --glassLine: rgba(255,255,255,.10);
+    --ink: #ECEAE4; --mid: #B9B6AE; --grey: #A09D96; --line: #34363C; --bg: #15171C; --card: #1E2027; --panel: #24262E;
+    --t1: #1C2A3D; --t2: #33291A; --t3: #3A2224; --eiT: #17302A; --esT: #2A2238;
+    --c1: #6FA3DD; --c2t: #E2B85C; --c3: #E07A7A; --ei: #5FBF8A; --es: #B593E0; --both: #D7DCE6;
+    --a: #E09A5F; --e: #5CC1B0; --p: #D9B84F; --s: #5CB8DA;
+  }
+}
+:root[data-theme="dark"] {
+  --veil: linear-gradient(160deg, rgba(16,18,24,.84), rgba(16,18,24,.74)); --glass: rgba(30,32,39,.62); --glassLine: rgba(255,255,255,.10);
+  --ink: #ECEAE4; --mid: #B9B6AE; --grey: #A09D96; --line: #34363C; --bg: #15171C; --card: #1E2027; --panel: #24262E;
+  --t1: #1C2A3D; --t2: #33291A; --t3: #3A2224; --eiT: #17302A; --esT: #2A2238;
+  --c1: #6FA3DD; --c2t: #E2B85C; --c3: #E07A7A; --ei: #5FBF8A; --es: #B593E0; --both: #D7DCE6;
+  --a: #E09A5F; --e: #5CC1B0; --p: #D9B84F; --s: #5CB8DA;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+body { margin: 0; background: transparent; color: var(--ink); font: 18px/1.5 "Alegreya Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; }
+.bg { position: fixed; inset: -40px; z-index: -2; background: url(aoe2-bg.jpg) center / cover no-repeat; filter: blur(22px) saturate(1.15); }
+.bg::after { content: ""; position: absolute; inset: 0; background: var(--veil); }
+:root { --veil: linear-gradient(160deg, rgba(247,245,240,.80), rgba(247,245,240,.70)); --glass: rgba(255,255,255,.62); --glassLine: rgba(255,255,255,.75); }
+.ms-svg { width: 1em; height: 1em; fill: currentColor; transform: scale(1.3); display: block; } /* custom four-stage pipeline icon in Material Symbols style */
+.ms { font-family: "Material Symbols Rounded"; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap; direction: ltr; -webkit-font-smoothing: antialiased; font-feature-settings: "liga"; font-variation-settings: "FILL" 1, "wght" 500; }
+h1, h2, h3 { font-family: Philosopher, Georgia, serif; line-height: 1.15; margin: 0 0 .4em; }
+a { color: var(--c1); }
+code, pre, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+/* top bar */
+.topbar { position: sticky; top: 0; z-index: 10; background: rgba(31,42,68,.86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; }
+.topbar .wrap { display: flex; align-items: center; gap: 18px; min-height: 52px; overflow-x: auto; }
+.topbar b { font-family: Philosopher, serif; color: var(--gold); font-size: 20px; white-space: nowrap; }
+.topbar nav { display: flex; gap: 14px; }
+.topbar nav a { color: #C9CFDA; text-decoration: none; white-space: nowrap; font-size: 16px; }
+.topbar nav a:hover, .topbar nav a.on { color: #fff; }
+.topbar button { margin-left: auto; background: none; border: 1px solid #5a6680; color: #C9CFDA; border-radius: 16px; padding: 2px 10px; cursor: pointer; font: inherit; font-size: 14px; }
+/* hero */
+.hero { background: linear-gradient(135deg, rgba(31,42,68,.88) 0%, rgba(42,36,64,.84) 55%, rgba(58,34,48,.84) 100%); backdrop-filter: blur(10px); color: #fff; padding: 44px 0 36px; border-bottom: 3px solid; border-image: linear-gradient(90deg, #2F6FD6, #E0662B) 1; }
+.hero h1 { font-size: clamp(30px, 5vw, 52px); }
+.hero .sub { font-family: Philosopher, serif; font-style: italic; color: var(--gold); font-size: clamp(18px, 2.6vw, 26px); margin-bottom: 14px; }
+.hero .authors { color: #C9CFDA; font-size: 16px; }
+.rq { margin: 22px 0 6px; font-family: Philosopher, serif; font-size: clamp(20px, 3vw, 28px); max-width: 860px; }
+.links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 16px; border: 1px solid rgba(255,255,255,.35); color: #fff; background: rgba(255,255,255,.06); }
+.btn.gold { background: var(--gold); color: #1F2A44; border-color: var(--gold); box-shadow: 0 0 18px rgba(255, 201, 74, .55); }
+.btn.todo { opacity: .7; }
+.social { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; } .social iframe { border: 0; overflow: hidden; } .social img { display: block; border-radius: 6px; }
+section { padding: 40px 0 8px; }
+section > .wrap > h2 { font-size: 34px; display: flex; align-items: center; gap: 12px; }
+.lead { color: var(--mid); max-width: 860px; margin: 0 0 18px; }
+.card { background: var(--glass); border: 1px solid var(--glassLine); border-radius: 18px; padding: 18px; backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); box-shadow: 0 8px 28px rgba(16,24,40,.12); }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 820px) { .grid3, .grid2 { grid-template-columns: 1fr; } }
+.contrib { border-radius: 18px; padding: 16px 18px; text-decoration: none; color: var(--ink); display: flex; gap: 14px; align-items: flex-start; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glassLine); box-shadow: 0 8px 28px rgba(16,24,40,.12); }
+.contrib h3 { font-size: 22px; margin-bottom: 4px; }
+.contrib p { margin: 0; font-size: 16px; color: var(--mid); }
+.icon { flex: 0 0 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 28px; }
+.c1 { background: var(--t1); } .c1 h3 { color: var(--c1); } .c1 .icon, .i1 { background: var(--c1); }
+.c2 { background: var(--t2); } .c2 h3 { color: var(--c2t); } .c2 .icon, .i2 { background: var(--c2); }
+.c3 { background: var(--t3); } .c3 h3 { color: var(--c3); } .c3 .icon, .i3 { background: var(--c3); }
+h2 .icon { flex-basis: 44px; height: 44px; font-size: 26px; }
+/* video */
+.video { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #000; }
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* tabs + toggles */
+.seg { display: inline-flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 14px; }
+.seg button, .chip { font: inherit; font-size: 15px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+.seg button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.chip.ei.on { background: var(--ei); border-color: var(--ei); color: #fff; } .chip.es.on { background: var(--es); border-color: var(--es); color: #fff; }
+select { font: inherit; font-size: 16px; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+/* pipeline */
+#chart { overflow-x: auto; }
+#chart svg { display: block; }
+.pipe-card { padding: 12px; }
+.pipe-svg, .scene-svg { display: block; width: 100%; height: auto; background: #FBFBFD; border-radius: 12px; }
+.pipe-svg .stg { cursor: pointer; transition: opacity .35s; outline: none; }
+.pipe-svg .stg:hover .hd, .pipe-svg .stg:focus-visible .hd { fill: #CFE0F5; }
+.pipe-svg .stg:focus-visible .hit { stroke: #2b6cb0; stroke-width: 4; }
+.pipe-svg.zooming .stg.dim, .pipe-svg.zooming .lane, .pipe-svg.zooming > g > g:first-child { opacity: .12; }
+.pipe-svg .lane { opacity: .15; transition: opacity .25s; } .pipe-svg .lane.on { opacity: 1; }
+#pipeDetail { display: none; outline: none; }
+#pipe.show-detail #pipeOverview { display: none; }
+#pipe.show-detail #pipeDetail { display: block; animation: pdIn .35s ease; }
+@keyframes pdIn { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: none; } }
+.pd-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.pipe-hint { display: inline-flex; align-items: center; gap: 4px; color: var(--gold); font-weight: 700; font-size: 16px; text-shadow: 0 0 12px rgba(255, 201, 74, .65); }
+.pipe-hint .ms { font-size: 18px; animation: nudge 1.4s ease-in-out infinite; } @keyframes nudge { 50% { transform: translateX(-4px); } }
+#pipe.show-detail .pipe-hint { display: none; }
+@media (prefers-reduced-motion: reduce) { .pipe-hint .ms { animation: none; } }
+.pd-head .seg { margin: 0; } .pd-head .seg button { font-size: 14px; padding: 4px 10px; }
+.pd-body { display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 1fr); gap: 18px; align-items: start; }
+.pd-text h3 { margin: 0 0 6px; } .pd-text ol { margin: 0; padding-left: 20px; } .pd-text li { margin: 0 0 6px; opacity: .55; transition: opacity .3s; } .pd-text li.on { opacity: 1; }
+.pd-text pre { font-size: 12.5px; }
+@media (max-width: 860px) { .pd-body { grid-template-columns: minmax(0, 1fr); } }
+.pipe-out { font: 700 19px/1.4 "Alegreya Sans", sans-serif; color: #1D1D1F; }
+.pipe-out .A { color: #A2561A; } .pipe-out .E { color: #1A6B60; } .pipe-out .P { color: #7E600A; } .pipe-out .S { color: #11708F; }
+.pipe-out .caret { color: #2b6cb0; font-weight: 400; animation: blink 1s steps(2) infinite; } @keyframes blink { 50% { opacity: 0; } }
+.pipe-key { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; margin: 10px 2px 0; font-size: 15px; }
+.pipe-key span { display: inline-flex; align-items: center; gap: 6px; } .pipe-key svg { width: 16px; height: 16px; } .pipe-key code { font: 700 13px "JetBrains Mono", monospace; border: 1.5px solid currentColor; border-radius: 3px; padding: 0 3px; }
+pre { background: #1E1E2A; color: #E8E3D3; padding: 12px 14px; border-radius: 10px; overflow-x: auto; font-size: 13.5px; line-height: 1.45; margin: 8px 0 0; }
+.aeps { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 10px 0 12px; align-items: flex-end; }
+.aeps-k { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--grey); margin: 0 0 4px 2px; }
+.aeps-t { display: flex; flex-wrap: wrap; gap: 8px; }
+.aeps-g.reg { border-left: 2px solid var(--line); padding-left: 18px; }
+.aeps button { font: 700 16px Philosopher, serif; padding: 4px 12px; border-radius: 10px; border: 2px solid currentColor; background: var(--card); cursor: pointer; }
+.aeps button.A[aria-selected=true] { background: var(--a); } .aeps button.E[aria-selected=true] { background: var(--e); } .aeps button.P[aria-selected=true] { background: var(--p); } .aeps button.S[aria-selected=true] { background: var(--s); }
+.aeps button[aria-selected=true] { color: var(--card); border-color: transparent; }
+.aeps button.R { display: inline-flex; align-items: center; gap: 4px; color: var(--ink); border-style: dashed; border-radius: 4px; font: italic 600 16px "Alegreya Sans", sans-serif; }
+.aeps button.R .ms { font-size: 18px; font-style: normal; }
+.aeps button.R[aria-selected=true] { background: var(--ink); color: var(--card); border: 2px dashed var(--ink); }
+.realized span, .realized u { transition: color .2s, opacity .2s; }
+.realized span { color: var(--ink); opacity: .4; } .realized[data-k=A] .A, .realized[data-k=E] .E, .realized[data-k=P] .P, .realized[data-k=S] .S { opacity: 1; } .realized u { text-decoration: none; }
+.realized[data-k=A] .A { color: var(--a); } .realized[data-k=E] .E { color: var(--e); } .realized[data-k=P] .P { color: var(--p); } .realized[data-k=S] .S { color: var(--s); }
+.realized[data-k=R] span { color: var(--grey); opacity: 1; font-weight: 400; }
+.realized[data-k=R] u { color: var(--ink); font-weight: 700; font-style: italic; text-decoration: underline wavy var(--ink); text-underline-offset: 5px; text-decoration-thickness: 1.5px; }
+.aeps-info { margin: 10px 0 0; font-size: 16px; } .aeps-info b { font-family: Philosopher, serif; }
+
+.realized { font-weight: 700; font-size: 19px; border: 2px solid var(--c1); padding: 12px; border-radius: 10px; margin-top: 8px; }
+.A { color: var(--a); } .E { color: var(--e); } .P { color: var(--p); } .S { color: var(--s); }
+/* tables */
+table { border-collapse: collapse; width: 100%; font-size: 16px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--grey); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.sig-ei { color: var(--ei); font-weight: 700; } .sig-es { color: var(--es); font-weight: 700; }
+#chart text { fill: var(--ink); font-family: "Alegreya Sans", sans-serif; }
+.outinfo { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.outinfo h3 { margin: 0 0 4px; } .outinfo p { margin: 4px 0; }
+.outinfo .items { margin: 6px 0; padding-left: 20px; } .outinfo .items li { margin: 2px 0; }
+.rel { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin: 10px 0 4px; }
+.rel div { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; }
+.rel dt { font: 700 22px "Philosopher", serif; } .rel dd { margin: 2px 0 0; font-size: 14px; color: var(--grey); }
+.note { font-size: 14px; color: var(--grey); font-style: italic; margin-top: 8px; }
+.finds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; } .finds h3 { margin: 0 0 6px; } .finds p { margin: 0; }
+.refs ol { margin: 0; padding-left: 22px; font-size: 15px; } .refs li { margin: 0 0 6px; } .refs a { overflow-wrap: anywhere; }
+/* texts */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 820px) { .cols { grid-template-columns: 1fr; } }
+.col { max-height: 480px; overflow-y: auto; position: relative; }
+.tv { max-width: 820px; margin: 0 auto 14px; } .tv .note { margin: 6px 2px 0; }
+.tv-start { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 0; background: #11141b; color: #fff; font: 700 18px "Alegreya Sans", sans-serif; cursor: pointer; } .tv-start .ms { font-size: 40px; color: var(--gold); }
+.col h3 { position: sticky; top: 0; background: var(--card); padding: 6px 0; font-size: 20px; }
+.upd { display: block; width: 100%; text-align: left; font: inherit; font-size: 16px; color: inherit; background: none; border: 0; border-bottom: 1px dashed var(--line); padding: 8px 6px; cursor: pointer; border-radius: 6px; }
+.upd .tx { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.upd b { font-family: Philosopher, serif; color: var(--c1); margin-right: 6px; } .upd b .ms { font-size: 15px; vertical-align: -2px; margin-right: 2px; }
+.upd:hover { background: var(--panel); } .upd.open .tx { display: block; } .tv-start[hidden] { display: none; }
+.upd.now { background: var(--panel); box-shadow: inset 3px 0 0 var(--gold); }
+.tag { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 13px; font-weight: 700; color: #fff; vertical-align: middle; }
+.tag.none { background: var(--grey); } .tag.EI { background: var(--ei); } .tag.ES { background: var(--es); } .tag.both { background: var(--both); color: var(--bg); }
+footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<div class="topbar"><div class="wrap">
+  <b>SAGE</b>
+  <nav id="nav">
+    <a href="#watch">Watch</a><a href="#pipeline">Pipeline</a><a href="#texts">Texts</a><a href="#corpus">Dataset</a><a href="#study">Study</a><a href="#conclusion">Findings</a><a href="#bookmark">Cite &amp; refs</a>
+  </nav>
+  <button id="theme" type="button" aria-label="Toggle dark mode">◐ theme</button>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <h1>From Full Game State to Live Commentary</h1>
+  <div class="sub">A Data-to-Text Pipeline and Corpus for Age of Empires II</div>
+  <div class="authors">Siewart van Wingerden¹ · Mariët Theune² · Lorenzo Gatti² — ¹ Studio Platypus · ² Human Media Interaction, University of Twente · INLG 2026, Utrecht</div>
+  <p class="rq">Can a pipeline turn full game state into live commentary that viewers find engaging?</p>
+  <div class="links">
+    <a class="btn gold" href="https://prompttree.link/siewart/sage" title="Coming soon"><span class="ms">smart_toy</span> Set it up in your agent</a>
+    <a class="btn" href="https://github.com/Siewart/sage"><span class="ms">code</span> Code on GitHub</a>
+    <a class="btn" href="https://huggingface.co/datasets/Siewart/sage"><span class="ms">download</span> Dataset on Hugging Face</a>
+    <a class="btn" href="https://discord.gg/53vnjZ7WhS"><span class="ms">forum</span> Discord</a>
+    <a class="btn todo" href="#cite" title="Anthology link follows after the conference"><span class="ms">description</span> Paper (INLG 2026)</a>
+  </div>
+  <div class="social">
+    <iframe src="https://ghbtns.com/github-btn.html?user=Siewart&amp;repo=sage&amp;type=star&amp;count=true&amp;size=large" width="170" height="30" title="Star SAGE on GitHub" loading="lazy"></iframe>
+    <a href="https://huggingface.co/datasets/Siewart/sage" target="_blank" rel="noopener" title="Like the dataset on Hugging Face"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhuggingface.co%2Fapi%2Fdatasets%2FSiewart%2Fsage&amp;query=%24.likes&amp;label=%E2%9D%A4%20Like%20on%20Hugging%20Face&amp;color=FFD21E&amp;labelColor=1F2A44&amp;style=for-the-badge" alt="Like on Hugging Face" height="28"></a>
+  </div>
+</div></header>
+
+<section id="overview"><div class="wrap">
+  <div class="grid3">
+    <a class="contrib c1" href="#pipeline"><span class="icon ms"><svg class="ms-svg" viewBox="0 -960 960 960" aria-hidden="true"><path d="M40 -560q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v160q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44Z"/></svg></span><div><h3>1 · A hybrid pipeline</h3><p>Rule-based content selection, LLM realization, and two engagement modules you can switch on independently.</p></div></a>
+    <a class="contrib c2" href="#corpus"><span class="icon ms">database</span><div><h3>2 · A full game-state corpus</h3><p>3,276 matches of continuous game state, 142 with professional commentary video. CC0.</p></div></a>
+    <a class="contrib c3" href="#study"><span class="icon ms">groups</span><div><h3>3 · A study with real spectators</h3><p>33 active AoE2 spectators rated engagement and quality of the generated commentary.</p></div></a>
+  </div>
+</div></section>
+
+<section id="watch"><div class="wrap">
+  <h2>Watch a match</h2>
+  <p class="lead">Age of Empires II is a real-time strategy game: two players gather resources, advance through four Ages and build armies to raid each other’s economy, on a random map hidden by fog of war. This is the King of the Desert IV grand final, TheViper vs Vinchester, cast by MembTV. This tournament formed the basis for the first dataset in our corpus, which we paired with live video commentary from NOVA.</p>
+  <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/xMoV3P2UcQQ" title="TheViper vs Vinchester — King of the Desert 4 Grand Final (MembTV)" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+  <p class="note">Video: MembTV on YouTube. SAGE reads the game state behind matches like this one and writes minute-by-minute text updates.</p>
+</div></section>
+
+<section id="pipeline"><div class="wrap">
+  <h2><span class="icon i1 ms"><svg class="ms-svg" viewBox="0 -960 960 960" aria-hidden="true"><path d="M40 -560q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v160q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44Z"/></svg></span>The pipeline</h2>
+  <p class="lead">SAGE follows the classic four-stage architecture (Reiter 2007) and runs online, never seeing future events. Watch game events stream past the filters, which take copies, and flow through the four stages into a summary of the recent events. Click a stage to zoom in on what it does. Switch the modules to see which steps they change (coloured borders).</p>
+  <div class="seg"><button class="chip ei on" data-lane="ei" type="button" aria-pressed="true">Expert Insights</button><button class="chip es on" data-lane="es" type="button" aria-pressed="true">Event Structuring</button><button class="chip" id="pipePlay" type="button"></button></div>
+  <div class="card pipe-card" id="pipe">
+    <div class="pd-head"><div id="pipeTabs" class="seg"></div><span class="pipe-hint"><span class="ms" aria-hidden="true">arrow_back</span> Click a stage to see details</span></div>
+    <div id="pipeOverview"></div>
+    <div id="pipeDetail" tabindex="-1">
+      <div class="pd-body">
+        <div id="pipeScene"></div>
+        <div class="pd-text"><h3><span id="pipeDetailTitle"></span> <span class="note" id="pipeDetailSub"></span></h3><ol id="pipeSteps"></ol><pre id="pipeData"></pre></div>
+      </div>
+    </div>
+  </div>
+  <div class="pipe-key note"><b>Key</b>
+    <span><svg viewBox="-10 -10 20 20"><circle r="8" fill="#b03a48"/></svg> combat event</span>
+    <span><svg viewBox="-10 -10 20 20"><rect x="-7" y="-7" width="14" height="14" fill="#9a6a2f"/></svg> entity lifecycle event</span>
+    <span><svg viewBox="-10 -10 20 20"><path d="M0,-8L9,8L-9,8Z" fill="#1f8a70"/></svg> other event</span>
+    <span><svg viewBox="-10 -10 20 20"><path d="M0,-9L2.6,-3.2L9,-2.8L4.2,1.6L5.6,8L0,4.6L-5.6,8L-4.2,1.6L-9,-2.8L-2.6,-3.2Z" fill="#b8860b"/></svg> synthetic event</span>
+    <span><svg viewBox="-12 -12 24 24"><circle r="10" fill="#fff" stroke="#b03a48" stroke-width="2.5"/><circle cx="-3.6" cy="-2.8" r="2.6" fill="#b03a48"/><circle cx="3.6" cy="-2.8" r="2.6" fill="#b03a48"/><circle cy="3.4" r="2.6" fill="#b03a48"/></svg> battle cluster</span>
+    <span><code>{…}</code> internal data</span><span><code>«…»</code> human-readable</span>
+    <span><svg viewBox="0 -10 28 20"><path d="M1,0H27" stroke="#5e7391" stroke-width="2.5" stroke-dasharray="5 4"/></svg> state query</span>
+    <span><svg viewBox="-12 -12 24 24"><circle r="10" fill="#fff" stroke="#237a49" stroke-width="2.5"/><path d="M0,-6.3L1.8,-2.2L6.3,-1.9L2.9,1.1L3.9,5.6L0,3.2L-3.9,5.6L-2.9,1.1L-6.3,-1.9L-1.8,-2.2Z" fill="#b8860b"/></svg> strategy event (Expert Insights)</span>
+    <span><svg viewBox="0 0 28 20"><defs><linearGradient id="keyMod"><stop offset=".5" stop-color="#237a49"/><stop offset=".5" stop-color="#7b4fb0"/></linearGradient></defs><rect x="2" y="2" width="24" height="16" fill="#fff" stroke="url(#keyMod)" stroke-width="3.5"/></svg> step changed by a module (both: split border)</span>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h3>From data to text: A-E-P+S</h3>
+    <p class="lead" style="margin:0">Enrichment adds facts as data, never as text. The parts follow how commentators forage for information (Dodge et al. 2018; Penney et al. 2021): pick one to see which phrases draw on it, or pick the style tab to see how the text is worded.</p>
+    <div class="aeps" role="tablist" aria-label="Parts of the realized text">
+      <div class="aeps-g"><span class="aeps-k">Content · A-E-P+S</span><div class="aeps-t">
+        <button role="tab" data-k="A" class="A">Actuator</button><button role="tab" data-k="E" class="E">Environment</button><button role="tab" data-k="P" class="P">Performance</button><button role="tab" data-k="S" class="S">Sensors</button>
+      </div></div>
+      <div class="aeps-g reg"><span class="aeps-k">Style</span><div class="aeps-t"><button role="tab" data-k="R" class="R"><span class="ms" aria-hidden="true">format_underlined</span>Live-update register</button></div></div>
+    </div>
+    <div class="realized" id="realized" data-k="A"><span class="E">16:32 — With Forging now in, </span><span class="A">Red’s three scouts <u>waste no time — they spot a Villager</u> </span><span class="E">on the forward woodline! </span><span class="P">Red <u>surges ahead with</u> a three-Villager advantage. </span><span class="S">Meanwhile Blue raids Red’s gold mine, unseen by Red.</span></div>
+    <p class="aeps-info" id="aepsInfo" role="tabpanel" aria-live="polite"></p>
+    <p class="note">One minute-by-minute text update (online sports commentary) summarizing the recent events. Adapted from the paper’s example, with the Sensors clause added for illustration.</p>
+  </div>
+</div></section>
+
+
+
+
+<section id="texts"><div class="wrap">
+  <h2>Compare the texts</h2>
+  <p class="lead">The 16 study texts: four KotD IV matches, each generated with neither module, Expert Insights, Event Structuring, or both. Player names were pseudonymized for the study. Click an update to see its moment in the match video.</p>
+  <div class="seg">
+    <label>Match <select id="match"></select></label>
+    <label>Left <select id="left"></select></label>
+    <label>Right <select id="right"></select></label>
+  </div>
+  <div class="tv"><div class="video"><div id="tvFrame"></div><button type="button" class="tv-start" id="tvStart"><span class="ms">play_circle</span> Load the match video</button></div>
+    <p class="note">Match videos cast by MembTV. Each update jumps to where its content starts in the video, aligned from the game clock, so it can be a few seconds off. The casters’ spoken commentary may not match what our generated texts say. While the video plays, the current update is marked in both texts.</p></div>
+  <div class="cols"><div class="card col" id="colL"></div><div class="card col" id="colR"></div></div>
+</div></section>
+
+<section id="corpus"><div class="wrap">
+  <h2><span class="icon i2 ms">database</span>The corpus</h2>
+  <p class="lead">Continuous full game state extracted with CaptureAge, a match-analysis tool that rebuilds a complete match from its replay. Released under CC0 (fields derived from game content excepted).</p>
+  <div class="grid2">
+    <div class="card"><h3>Two sets</h3>
+      <table><thead><tr><th>Metric</th><th class="num">KotD IV</th><th class="num">May 2026</th></tr></thead><tbody>
+        <tr><td>Matches (total / with video)</td><td class="num">176 / 142</td><td class="num">3,100</td></tr>
+        <tr><td>Video: solo / co-cast</td><td class="num">118 / 24</td><td class="num">—</td></tr>
+        <tr><td>Game minutes</td><td class="num">6,919</td><td class="num">112,713</td></tr>
+        <tr><td>Commands issued</td><td class="num">1.09 M</td><td class="num">15.1 M</td></tr>
+        <tr><td>Unique players</td><td class="num">30</td><td class="num">888</td></tr>
+        <tr><td>Player matchups</td><td class="num">42</td><td class="num">2,735</td></tr>
+        <tr><td>Civs picked / total</td><td class="num">31 / 35</td><td class="num">53 / 53</td></tr>
+        <tr><td>Civ matchups</td><td class="num">121</td><td class="num">1,266</td></tr>
+        <tr><td>Maps</td><td class="num">Arabia only</td><td class="num">16 (70% Arabia)</td></tr>
+      </tbody></table>
+      <p class="note">KotD IV: King of the Desert IV tournament. May 2026: anonymized ranked 1v1 ladder matches of the top 1,000 players.</p>
+    </div>
+    <div class="card"><h3>Eleven tables per match</h3>
+      <table><thead><tr><th>Table</th><th>Kind</th><th>Contents</th></tr></thead><tbody id="schema"></tbody></table>
+      <p class="note">Windowed tables are snapshots every 1 s or every 60 s; series are timestamped streams. Shared window, player, entity and string IDs, like a relational database. Apache Arrow or Parquet.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="study"><div class="wrap">
+  <h2><span class="icon i3 ms">groups</span>The study</h2>
+  <p class="lead" id="studyLead"></p>
+  <div class="seg" id="views">
+    <button type="button" data-v="effects" class="on">Module effects (β)</button>
+    <button type="button" data-v="means">Means per set-up</button>
+    <button type="button" data-v="dist">Rating distributions</button>
+    <button type="button" data-v="table">Table</button>
+  </div>
+  <span id="outcomePick" hidden> <label>Outcome <select id="outcome"></select></label></span>
+  <div class="card" id="chart"></div>
+</div></section>
+
+<section id="conclusion"><div class="wrap">
+  <h2><span class="icon i1 ms">flag</span>What we found</h2>
+  <p class="lead">A full pipeline from game state to text, tested with its real audience: 33 active AoE2 spectators. The gains are modest but significant, and engagement is still low overall.</p>
+  <div class="finds">
+    <div class="card"><h3>Expert Insights helps readers follow the strategy</h3><p>With detected strategies, wiki facts and causal explanations, readers enjoyed the competition more (Competitive Nature, β = .20), felt they learned more about playing (Skill Improvement, β = .19) and felt more as if they were playing themselves (Vicarious Sensation, β = .25). The amount of detail also moved closer to “just right” (Detail Level, β = −.24).</p></div>
+    <div class="card"><h3>Event Structuring fixes the order, nothing more</h3><p>Grouping parallel events raised only Logicality (β = .22): the updates came in a more sensible order. Readers still missed why events mattered. Our grouping follows simple heuristics; linking events by cause and effect needs real narrative planning.</p></div>
+    <div class="card"><h3>Readable texts, low engagement</h3><p>Every engagement motivation except Game Knowledge stayed below the scale midpoint (means 2.5 to 3.9 of 7), while the texts read as ordered and fluent (Logicality 5.6, Readability 4.6). The two modules work independently (no significant interaction), and their effects are small next to how much readers differ from each other.</p></div>
+    <div class="card"><h3>Readers want analysis and context</h3><p>Open feedback (96 of 132 ratings) asked for strategic importance and high-level context in a dry, analytical tone, and called the live-update register noise, probably because the updates were read as one text after the match. Trust was low: readers took correct events for hallucinations. One example is Aztec cavalry, normally unobtainable, which the text mentioned without saying how the player got it. Every claim flagged as implausible was a real event in the game data.</p></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Next steps</h3><p>Our study used static text read after the match, a format AoE2 viewers do not know; they watch live, video-backed commentary. Two directions follow, and both can be explored with the released corpus: generating commentary alongside video, using the 142 matches paired with professional commentary, and better ways to express causal links between events together with the context needed to understand them. We also evaluated a single proprietary realizer, which limits reproducibility.</p></div>
+</div></section>
+
+<section id="thanks"><div class="wrap">
+  <h2>Acknowledgements</h2>
+  <p class="lead">We thank CaptureAge for the technology, MembTV and DonDinardoni for the KotD IV matches, and NOVA for the commentary videos.</p>
+</div></section>
+
+<section id="bookmark"><div class="wrap">
+  <div class="card" id="cite"><h3>Cite</h3>
+<pre>@inproceedings{vanwingerden2026sage,
+  title     = {From Full Game State to Live Commentary: A Data-to-Text Pipeline
+               and Corpus for {Age of Empires II}},
+  author    = {van Wingerden, Siewart and Theune, Mari{\"e}t and Gatti, Lorenzo},
+  booktitle = {Proceedings of the 19th International Natural Language Generation Conference},
+  year      = {2026}
+}</pre>
+  </div>
+  <div class="card refs" id="refs" style="margin-top:16px"><h3>References</h3>
+    <ol>
+      <li>Birant, D. &amp; Kut, A. (2007). ST-DBSCAN: An algorithm for clustering spatial–temporal data. <i>Data &amp; Knowledge Engineering</i>, 60(1), 208–221. <a href="https://doi.org/10.1016/j.datak.2006.01.013">doi:10.1016/j.datak.2006.01.013</a></li>
+      <li>Callaway, C. B. &amp; Lester, J. C. (2002). Narrative prose generation. <i>Artificial Intelligence</i>, 139(2), 213–252. <a href="https://doi.org/10.1016/S0004-3702(02)00230-8">doi:10.1016/S0004-3702(02)00230-8</a></li>
+      <li>Dodge, J., Penney, S., Hilderbrand, C., Anderson, A. &amp; Burnett, M. (2018). How the experts do it: Assessing and explaining agent behaviors in real-time strategy games. In <i>Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems</i>, 1–12. <a href="https://doi.org/10.1145/3173574.3174136">doi:10.1145/3173574.3174136</a></li>
+      <li>Lewandowski, M. (2012). The language of online sports commentary in a comparative perspective. <i>Lingua Posnaniensis</i>, 54(1), 65–76. <a href="https://doi.org/10.2478/v10122-012-0006-0">doi:10.2478/v10122-012-0006-0</a></li>
+      <li>Penney, S., Dodge, J., Anderson, A., Hilderbrand, C., Simpson, L. &amp; Burnett, M. (2021). The shoutcasters, the game enthusiasts, and the AI: Foraging for explanations of real-time strategy players. <i>ACM Transactions on Interactive Intelligent Systems</i>, 11(1), 2. <a href="https://doi.org/10.1145/3396047">doi:10.1145/3396047</a></li>
+      <li>Qian, T. Y., Wang, J. J., Zhang, J. J. &amp; Lu, L. Z. (2020). It is in the game: Dimensions of esports online spectator motivation and development of a scale. <i>European Sport Management Quarterly</i>, 20(4), 458–479. <a href="https://doi.org/10.1080/16184742.2019.1630464">doi:10.1080/16184742.2019.1630464</a></li>
+      <li>Reiter, E. (2007). An architecture for data-to-text systems. In <i>Proceedings of the Eleventh European Workshop on Natural Language Generation (ENLG 07)</i>, 97–104. <a href="https://doi.org/10.3115/1610163.1610180">doi:10.3115/1610163.1610180</a></li>
+    </ol>
+  </div>
+</div></section>
+
+<footer><div class="wrap">Interactive poster for INLG 2026. Study data: anonymous ratings released with the paper; texts from the study stimuli. Video © MembTV.</div></footer>
+
+<script src="data.js"></script>
+<script src="pipeline.js"></script>
+<script>
+// A-E-P+S tabs: highlight one part of the realized text and explain it
+{
+  const INFO = {
+    A: '<b class="A">Actuator</b>: the event itself, who acted and what happened (here a raid: 3 Scouts kill 1 Villager).',
+    E: '<b class="E">Environment</b>: where and when it happens, plus persistent facts about the world, such as researched technologies (Forging).',
+    P: '<b class="P">Performance</b>: how the players are doing, such as who leads in Villagers.',
+    S: '<b class="S">Sensors</b>: what each side can see; Red does not see Blue’s raid on its gold mine.',
+    R: '<b>Live-update register</b> (Lewandowski 2012): the writing style set by instructions in the realizer prompt (simple present, copula deletion and spatiotemporal anchoring). The register effects are underlined. Readers in our study flagged it as noise, likely because they read the updates as one offline text.'
+  };
+  const box = document.getElementById('realized'), info = document.getElementById('aepsInfo'), tabs = [...document.querySelectorAll('.aeps button')];
+  const pick = k => { box.dataset.k = k; info.innerHTML = INFO[k]; tabs.forEach(b => { const on = b.dataset.k === k; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; }); };
+  tabs.forEach((b, i) => {
+    b.addEventListener('click', () => pick(b.dataset.k));
+    b.addEventListener('keydown', e => { const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); pick(n.dataset.k); } });
+  });
+  pick('A');
+}
+const D = window.SAGE_DATA, $ = s => document.querySelector(s), NS = 'http://www.w3.org/2000/svg';
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const el = (tag, attrs = {}, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
+const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+const boxW = id => Math.max(720, Math.min(1140, document.querySelector(id).clientWidth - 36));
+
+/* theme */
+$('#theme').onclick = () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) {} drawPipe(); drawChart(); };
+try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+
+
+/* ---------- corpus schema ---------- */
+[['players', 'windowed', 'stockpiles, population, Age'], ['entities', 'windowed', 'every unit and building: owner, position, hit points, action'], ['masters', 'windowed', 'per-owner statistics of each unit and building type'],
+ ['research', 'windowed', 'technologies finished, started, queued'], ['world', 'windowed', 'game clock, market rates'], ['fog-of-war', 'windowed', 'what each player can see'],
+ ['events', 'series', 'the engine’s event stream'], ['commands', 'series', 'the actions each player issued'], ['map', 'record', 'terrain and elevation per tile'], ['settings', 'record', 'lobby configuration'], ['strings', 'dict', 'lookup for the name IDs']]
+  .forEach(([t, k, c]) => { $('#schema').insertAdjacentHTML('beforeend', `<tr><td class="mono">${t}</td><td>${k}</td><td>${c}</td></tr>`); });
+
+/* ---------- study ---------- */
+$('#studyLead').textContent = `${D.participants} active AoE2 spectators (32 watch weekly; self-reported mean rating 1600 Elo) each read four texts, one per module set-up, in a Latin-square design, giving ${D.ratings} rated texts. Seven engagement motivations (adapted from MSES, Qian et al. 2020) and linguistic quality and comprehension (after Callaway & Lester 2002) on 7-point scales; one linear mixed model per outcome. β is the shift from the grand mean M when a module is on.`;
+D.study.forEach((o, i) => $('#outcome').insertAdjacentHTML('beforeend', `<option value="${i}">${o.label}</option>`));
+let view = 'effects';
+document.querySelectorAll('#views button').forEach(b => b.onclick = () => { view = b.dataset.v; document.querySelectorAll('#views button').forEach(x => x.classList.toggle('on', x === b)); $('#outcomePick').hidden = view !== 'dist'; drawChart(); });
+$('#outcome').onchange = drawChart;
+const AG = ['Strongly disagree', 'Strongly agree'];
+// item wording, anchors and reliability from the thesis (evaluation appendix; reliability and ICC tables)
+const OUT = {
+  'Competitive Nature': { what: 'Enjoyment of the competition itself: two players seriously trying to beat each other.', items: ['I enjoyed reading about the competitive gameplay.', 'I enjoyed reading about two players seriously competing against each other.'], a: .93, r: .87, icc: [.728, .009] },
+  'Skill Improvement': { what: 'Reading to get better at the game yourself, by picking up ideas from professionals.', items: ['Reading match updates like this one can help me become a better player.', 'Match updates like this one can help to improve my own play by getting ideas from professional players.'], a: .90, r: .81, icc: [.788, .003] },
+  'Game Knowledge': { what: 'Enjoyment that comes from understanding the game’s strategy and intricacies.', items: ['I feel my understanding of Age of Empires 2 added to my enjoyment of reading the match updates.', 'I liked reading the match updates because I understand the intricacies and strategies.'], a: .87, r: .77, icc: [.717, .010] },
+  'Skill Appreciation': { what: 'Admiring play that goes beyond what the reader could do or think of.', items: ['I liked reading about players going to their limits and show moves I could not typically think of.', 'I liked reading how others can do things in the game that I could never imagine.'], a: .81, r: .68, icc: [.723, .022] },
+  'Entertaining Nature': { what: 'Plain fun: reading the updates as a pleasant way to pass the time.', items: ['Reading the match updates was fun.', 'Reading Age of Empires 2 match updates like this one could be fun to pass the time.'], a: .88, r: .79, icc: [.699, .011] },
+  'Dramatic Nature': { what: 'Excitement and hype: the tension of the match coming through in the text.', items: ['I found reading the match updates very exciting.', 'I felt hyped and excited when I read the match updates.'], a: .93, r: .87, icc: [.651, .020] },
+  'Vicarious Sensation': { what: 'Feeling part of the game: experiencing professional play without playing yourself.', items: ['I felt like I was in the game when it was close or coming down to the final moments.', 'I could experience how professionals play without actually playing myself.'], a: .79, r: .66, icc: [.650, .013] },
+  'Overall Quality': { what: 'The reader’s overall judgement of the text’s quality.', items: ['Overall, how would you rate the quality of the text?'], lo: 'very poor', hi: 'very good', icc: [.408, .000] },
+  'Word Choice': { what: 'Whether the words and phrasing fit the match updates.', items: ['How appropriate were the word choices in the match updates?'], lo: 'very inappropriate', hi: 'very appropriate', icc: [.359, .000] },
+  'Readability': { what: 'How easy the text was to read.', items: ['How hard was it to read the match updates?'], lo: 'extremely difficult', hi: 'extremely easy', icc: [.388, .038] },
+  'Logicality': { what: 'Whether the updates came in a sensible order.', items: ['How often did you feel the live updates were presented out of order?'], lo: 'always out of order', hi: 'never', icc: [.291, .006] },
+  'Detail Level': { what: 'The amount of detail compared with what the reader wanted. Here the middle of the scale is best.', items: ['How would you rate the level of detail in the match updates?'], lo: 'far too much', hi: 'far too little', mid: 'just right', icc: [.448, .050] },
+  'Reading Thoroughness': { what: 'How much of the text was actually read rather than skipped or skimmed.', items: ['How much did you skip or skim in order to get to the parts you found interesting?'], lo: 'skipped nearly all of it', hi: 'skipped nothing (after reversing)', rev: true, icc: [.282, .096] },
+  'Understanding': { what: 'How well the reader could follow how the match played out.', items: ['How well do you understand how the match played out?'], lo: 'not at all', hi: 'completely', icc: [.532, .018] },
+};
+Object.values(OUT).forEach(q => { if (!q.lo) [q.lo, q.hi] = AG.map(x => x.toLowerCase()); });
+const CFG = [['none', 'neither', '--grey'], ['EI', 'Expert Insights', '--ei'], ['ES', 'Event Structuring', '--es'], ['both', 'both', '--both']];
+const fmt = v => (v < 0 ? '−' : '') + Math.abs(v).toFixed(2).replace(/^0/, '');
+function drawChart() {
+  const box = $('#chart'); box.innerHTML = '';
+  if (view === 'table') {
+    let h = '<table><thead><tr><th>Outcome</th><th class="num">M</th><th class="num">EI β [95% CI]</th><th class="num">p</th><th class="num">ES β [95% CI]</th><th class="num">p</th></tr></thead><tbody>';
+    D.study.forEach((o, i) => { if (i === 0 || o.group !== D.study[i - 1].group) h += `<tr><th colspan="6">${o.group === 'engagement' ? 'Engagement (MSES)' : 'Linguistic quality and comprehension'}</th></tr>`;
+      const c = (m, cls) => `<td class="num ${m.p < .05 ? cls : ''}">${fmt(m.b)} [${fmt(m.lo)}, ${fmt(m.hi)}]</td><td class="num ${m.p < .05 ? cls : ''}">${m.p.toFixed(3).replace(/^0/, '')}</td>`;
+      h += `<tr><td>${o.label}</td><td class="num">${o.M.toFixed(2)}</td>${c(o.EI, 'sig-ei')}${c(o.ES, 'sig-es')}</tr>`; });
+    box.innerHTML = h + '</tbody></table><p class="note">7-point scales. Detail Level runs from 1 = far too much to 7 = far too little, so 4 is “just right”. No interaction between the modules was significant.</p>';
+    return;
+  }
+  const rowH = 30, top = 46, groups = ['engagement', 'quality'];
+  if (view === 'effects') {
+    const W = boxW('#chart'), LX = 200, PW = (W - LX - 60) / 2, K = PW / 1.0, H = top + D.study.length * rowH + 40 + 30;
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H }); let y = top;
+    [['EI', 'Expert Insights β', '--ei'], ['ES', 'Event Structuring β', '--es']].forEach(([k, t, c], q) => {
+      const zx = LX + q * (PW + 40) + PW / 2;
+      svg.appendChild(el('text', { x: zx, y: 22, 'text-anchor': 'middle', 'font-size': 19, 'font-weight': 700, fill: css(c) }, t));
+      for (let v = -4; v <= 4; v++) svg.appendChild(el('line', { x1: zx + v / 10 * K, x2: zx + v / 10 * K, y1: top - 6, y2: top + D.study.length * rowH + 16, stroke: v === 0 ? css('--grey') : css('--line'), 'stroke-dasharray': v === 0 ? '5 4' : '', 'stroke-width': v === 0 ? 1.6 : 1 }));
+      [-.4, 0, .4].forEach(v => svg.appendChild(el('text', { x: zx + v * K, y: top + D.study.length * rowH + 34, 'text-anchor': 'middle', 'font-size': 14, fill: css('--grey') }, v === 0 ? '0' : (v > 0 ? '+' : '−') + '.4')));
+    });
+    D.study.forEach((o, i) => {
+      if (i === 7) y += 16;
+      if (i % 2 === 0) svg.insertBefore(el('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: css('--panel'), opacity: .6 }), svg.firstChild);
+      svg.appendChild(el('text', { x: 8, y: y + 5, 'font-size': 16, 'font-weight': (o.EI.p < .05 || o.ES.p < .05) ? 700 : 400 }, o.label));
+      [['EI', '--ei'], ['ES', '--es']].forEach(([k, c], q) => { const m = o[k], zx = LX + q * (PW + 40) + PW / 2, sig = m.p < .05, col = sig ? css(c) : css('--grey');
+        const g = el('g'); g.appendChild(el('title', {}, `${o.label}: β = ${fmt(m.b)} [${fmt(m.lo)}, ${fmt(m.hi)}], p = ${m.p.toFixed(3)}`));
+        g.appendChild(el('line', { x1: zx + m.lo * K, x2: zx + m.hi * K, y1: y, y2: y, stroke: col, 'stroke-width': 3, 'stroke-linecap': 'round' }));
+        g.appendChild(el('circle', { cx: zx + m.b * K, cy: y, r: 6, fill: sig ? col : css('--card'), stroke: col, 'stroke-width': 2 }));
+        svg.appendChild(g); });
+      y += rowH;
+    });
+    box.appendChild(svg); box.insertAdjacentHTML('beforeend', '<p class="note">Lines: 95% CI; filled: p &lt; .05; hover a row for the numbers. For Detail Level, lower is closer to “just right”.</p>');
+  } else if (view === 'means') {
+    const W = boxW('#chart'), LX = 200, X0 = LX, X1 = W - 30, sx = v => X0 + (v - 1) / 6 * (X1 - X0), H = top + D.study.length * rowH + 60;
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H }); let y = top;
+    CFG.forEach(([k, lab, c], j) => { svg.appendChild(el('circle', { cx: LX + j * 150 + 8, cy: 16, r: 7, fill: css(c) })); svg.appendChild(el('text', { x: LX + j * 150 + 22, y: 21, 'font-size': 15 }, lab)); });
+    for (let v = 1; v <= 7; v++) { svg.appendChild(el('line', { x1: sx(v), x2: sx(v), y1: top - 10, y2: top + D.study.length * rowH + 12, stroke: v === 4 ? css('--grey') : css('--line'), 'stroke-dasharray': v === 4 ? '5 4' : '' })); svg.appendChild(el('text', { x: sx(v), y: top + D.study.length * rowH + 32, 'text-anchor': 'middle', 'font-size': 14, fill: css('--grey') }, v)); }
+    D.study.forEach((o, i) => {
+      if (i === 7) y += 16;
+      if (i % 2 === 0) svg.insertBefore(el('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: css('--panel'), opacity: .6 }), svg.firstChild);
+      svg.appendChild(el('text', { x: 8, y: y + 5, 'font-size': 16 }, o.label));
+      CFG.forEach(([k, lab, c], j) => { const m = o.cells[k], cy = y - 7.5 + j * 5; const g = el('g'); g.appendChild(el('title', {}, `${o.label}, ${lab}: M = ${m.mean} (SD ${m.sd}, n = ${m.n})`));
+        g.appendChild(el('circle', { cx: sx(m.mean), cy, r: 5.5, fill: css(c) })); svg.appendChild(g); });
+      y += rowH;
+    });
+    box.appendChild(svg); box.insertAdjacentHTML('beforeend', '<p class="note">Raw mean per set-up (33 ratings each); the dashed line is the scale midpoint. Hover for SD and n.</p>');
+  } else {
+    const o = D.study[+$('#outcome').value || 0], W = Math.max(300, Math.min(1140, $('#chart').clientWidth - 36)), LX = W < 560 ? 122 : 170, sx = v => LX + (v - 1) / 6 * (W - LX - 30), half = o.group === 'engagement';
+    // stacked dot plot: x is the exact score, ratings with the same score stack vertically around the row centre
+    const counts = CFG.map(([k]) => { const n = {}; o.cells[k].values.forEach(v => n[v] = (n[v] || 0) + 1); return n; });
+    const maxN = Math.max(...counts.flatMap(n => Object.values(n))), dy = Math.min(9, 120 / Math.max(1, maxN - 1)), rowH = Math.max(70, (maxN - 1) * dy + 30), H = 30 + CFG.length * rowH + 40;
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H });
+    for (let v = 1; v <= 7; v += half ? .5 : 1) { const whole = v % 1 === 0;
+      svg.appendChild(el('line', { x1: sx(v), x2: sx(v), y1: 20, y2: H - 40, stroke: v === 4 ? css('--grey') : css('--line'), 'stroke-dasharray': v === 4 ? '5 4' : whole ? '' : '2 4', 'stroke-opacity': whole ? 1 : .7 }));
+      if (whole) svg.appendChild(el('text', { x: sx(v), y: H - 16, 'text-anchor': 'middle', 'font-size': 14, fill: css('--grey') }, v)); }
+    CFG.forEach(([k, lab, c], j) => { const cy = 30 + j * rowH + rowH / 2, m = o.cells[k], seen = {};
+      svg.appendChild(el('text', { x: 8, y: cy + 5, 'font-size': W < 560 ? 13 : 17, 'font-weight': 700, fill: css(c) }, lab));
+      [...m.values].sort((a, b) => a - b).forEach(v => { const i = seen[v] = (seen[v] || 0) + 1, n = counts[j][v];
+        const g = el('circle', { cx: sx(v), cy: cy + (i - 1 - (n - 1) / 2) * dy, r: 4.2, fill: css(c), 'fill-opacity': .6 }); g.appendChild(el('title', {}, `${lab}: ${v} (${n} rating${n > 1 ? 's' : ''})`)); svg.appendChild(g); });
+      svg.appendChild(el('line', { x1: sx(m.mean), x2: sx(m.mean), y1: cy - rowH / 2 + 6, y2: cy + rowH / 2 - 6, stroke: css('--ink'), 'stroke-width': 3 }));
+      svg.appendChild(el('text', { x: sx(m.mean) + 6, y: cy - rowH / 2 + 16, 'font-size': 14 }, `M ${m.mean}`)); });
+    box.appendChild(svg);
+    const q = OUT[o.label], pct = v => Math.round(v * 100) + '%';
+    box.insertAdjacentHTML('beforeend', `<p class="note">Each dot is one rated text (${o.cells.none.n} per set-up). Dots with the same score are stacked, so only the horizontal position is the score; the height of a stack shows how many readers gave it. ${half ? 'Scores fall on half-points because each motivation is the average of two questions.' : 'One question, so scores are whole numbers.'}${q.rev ? ' This question is reverse-scored (score = 8 − answer), so higher means more of the text was read.' : ''} The bar marks the mean.</p>
+      <div class="outinfo"><h3>${o.label} <span class="note">${half ? 'engagement motivation · MSES, Qian et al. 2020' : 'linguistic quality · after Callaway &amp; Lester 2002'}</span></h3>
+        <p>${q.what}</p>
+        <ul class="items">${q.items.map(t => `<li>“${t}”</li>`).join('')}</ul>
+        <p class="note" style="font-style:normal">Answer scale: 1 = ${q.lo} … 7 = ${q.hi}${q.mid ? `; 4 = ${q.mid}` : ''}.</p>
+        <dl class="rel">
+          ${half ? `<div><dt>α ${q.a.toFixed(2).replace(/^0/, '')}</dt><dd>Cronbach’s α: how consistently the two questions measure the same thing (0–1; above .80 is usually called good)</dd></div>
+          <div><dt>r ${q.r.toFixed(2).replace(/^0/, '')}</dt><dd>correlation between the two questions</dd></div>` : `<div><dt>1 item</dt><dd>a single question, so internal consistency cannot be estimated</dd></div>`}
+          <div><dt>${pct(q.icc[0])}</dt><dd>of the rating variance lies between participants: some readers rate everything higher than others. The models absorb this with a random intercept per participant.</dd></div>
+          <div><dt>${pct(q.icc[1])}</dt><dd>lies between the 16 matches: ${q.icc[1] < .05 ? 'which match a text described barely moved its ratings' : 'the match described made some difference, still far less than who was reading'}</dd></div>
+        </dl>
+        ${half ? '<p class="note">The seven motivations overlap (correlations between constructs .57–.85; strongest Entertaining–Dramatic .85 and Competitive–Game Knowledge .84). Related, but distinct enough to analyse separately.</p>' : ''}</div>`);
+  }
+}
+
+/* ---------- texts ---------- */
+const CN = { none: 'neither', EI: 'Expert Insights', ES: 'Event Structuring', both: 'both' };
+D.texts.forEach((m, i) => $('#match').insertAdjacentHTML('beforeend', `<option value="${i}">${esc(m.title)}</option>`));
+$('#match').value = Math.max(0, D.texts.findIndex(m => m.title.startsWith('TheViper')));
+['#left', '#right'].forEach((s, j) => Object.entries(CN).forEach(([k, v]) => $(s).insertAdjacentHTML('beforeend', `<option value="${k}" ${(j === 0 ? 'none' : 'both') === k ? 'selected' : ''}>${v}</option>`)));
+function drawTexts() {
+  const m = D.texts[+$('#match').value || 0];
+  [['#colL', $('#left').value], ['#colR', $('#right').value]].forEach(([c, k]) => { const t = m.texts[k];
+    const words = t.updates.reduce((a, u) => a + u.text.split(/\s+/).length, 0);
+    $(c).innerHTML = `<h3><span class="tag ${k}">${CN[k]}</span> <span class="note" style="font-style:normal">${t.updates.length} updates · ${words} words</span></h3>` + t.updates.map(u => `<button type="button" class="upd" data-v="${u.v}" title="Show this moment in the video"><span class="tx"><b><span class="ms" aria-hidden="true">play_arrow</span>${u.t}</b>${esc(u.text)}</span></button>`).join(''); });
+  if (tv.player && tv.player.cueVideoById) tv.player.cueVideoById({ videoId: m.youtube, startSeconds: firstV(m) });
+}
+['#match', '#left', '#right'].forEach(s => $(s).onchange = drawTexts);
+
+/* match video: click an update to seek; the playing moment is marked in both texts */
+const tv = { player: null, want: null };
+const firstV = m => Math.min(...Object.values(m.texts).flatMap(t => t.updates.map(u => u.v)));
+function loadTv(then) {
+  if (tv.player) { if (tv.player.seekTo) then(); else tv.want = then; return; }
+  tv.want = then; $('#tvStart').hidden = true;
+  window.onYouTubeIframeAPIReady = () => {
+    const m = D.texts[+$('#match').value || 0];
+    tv.player = new YT.Player('tvFrame', { host: 'https://www.youtube-nocookie.com', videoId: m.youtube, playerVars: { start: firstV(m), rel: 0, playsinline: 1 },
+      events: { onReady: () => { if (tv.want) tv.want(); tv.want = null; } } });
+  };
+  const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(sc);
+}
+$('#tvStart').onclick = () => loadTv(() => tv.player.playVideo());
+['#colL', '#colR'].forEach(c => $(c).addEventListener('click', e => {
+  const b = e.target.closest('.upd'); if (!b) return;
+  const open = !b.classList.contains('open'); $(c).querySelectorAll('.upd.open').forEach(x => x.classList.remove('open')); b.classList.toggle('open', open);
+  const v = +b.dataset.v; loadTv(() => { tv.player.seekTo(v, true); tv.player.playVideo(); });
+}));
+setInterval(() => {
+  if (!tv.player || !tv.player.getCurrentTime || tv.player.getPlayerState() !== 1) return;
+  const now = tv.player.getCurrentTime() + 1;
+  ['#colL', '#colR'].forEach(c => {
+    const col = $(c), us = [...col.querySelectorAll('.upd')]; let best = null;
+    us.forEach(b => { const v = +b.dataset.v; if (v <= now && (!best || v >= +best.dataset.v)) best = b; });
+    us.forEach(b => b.classList.toggle('now', b === best));
+    if (best && (best.offsetTop < col.scrollTop || best.offsetTop + best.offsetHeight > col.scrollTop + col.clientHeight)) col.scrollTo({ top: best.offsetTop - 60, behavior: 'smooth' });
+  });
+}, 500);
+
+/* nav highlight */
+const secs = [...document.querySelectorAll('section[id]')];
+addEventListener('scroll', () => { const y = scrollY + 90; let cur = ''; secs.forEach(s => { if (s.offsetTop <= y) cur = s.id; }); document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur)); }, { passive: true });
+
+drawChart(); drawTexts();
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { drawChart(); }, 150); });
+</script>
+</body>
+</html>
