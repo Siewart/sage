@@ -78,6 +78,11 @@ section > .wrap > h2 { font-size: 34px; display: flex; align-items: center; gap:
 .contrib { border-radius: 18px; padding: 16px 18px; text-decoration: none; color: var(--ink); display: flex; gap: 14px; align-items: flex-start; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glassLine); box-shadow: 0 8px 28px rgba(16,24,40,.12); }
 .contrib h3 { font-size: 22px; margin-bottom: 4px; }
 .contrib p { margin: 0; font-size: 16px; color: var(--mid); }
+/* wax seals sit centred on each card's left edge; the grid leaves room for the overhang */
+#overview .grid3 { column-gap: 60px; padding-left: 44px; }
+#overview .contrib { position: relative; padding-left: 60px; }
+.contrib .seal { position: absolute; left: 0; top: 50%; width: 88px; height: auto; transform: translate(-50%, -50%); filter: drop-shadow(0 4px 6px rgba(16,24,40,.25)); }
+@media (max-width: 820px) { #overview .grid3 { padding-left: 34px; } #overview .contrib { padding-left: 48px; } .contrib .seal { width: 68px; } }
 .icon { flex: 0 0 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 28px; }
 .c1 { background: var(--t1); } .c1 h3 { color: var(--c1); } .c1 .icon, .i1 { background: var(--c1); }
 .c2 { background: var(--t2); } .c2 h3 { color: var(--c2t); } .c2 .icon, .i2 { background: var(--c2); }
@@ -204,9 +209,9 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
 
 <section id="overview"><div class="wrap">
   <div class="grid3">
-    <a class="contrib c1" href="#pipeline"><span class="icon ms"><svg class="ms-svg" viewBox="0 -960 960 960" aria-hidden="true"><path d="M40 -560q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v160q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44Z"/></svg></span><div><h3>1 · A hybrid pipeline</h3><p>Rule-based content selection, LLM realization, and two engagement modules you can switch on independently.</p></div></a>
-    <a class="contrib c2" href="#corpus"><span class="icon ms">database</span><div><h3>2 · A full game-state corpus</h3><p>3,276 matches of continuous game state, 142 with professional commentary video. CC0.</p></div></a>
-    <a class="contrib c3" href="#study"><span class="icon ms">groups</span><div><h3>3 · A study with real spectators</h3><p>33 active AoE2 spectators rated engagement and quality of the generated commentary.</p></div></a>
+    <a class="contrib c1" href="#pipeline"><img class="seal" src="seal-pipeline.webp" alt="" width="88" height="92"><div><h3>1 · A hybrid pipeline</h3><p>Rule-based content selection, LLM realization, and two engagement modules you can switch on independently.</p></div></a>
+    <a class="contrib c2" href="#corpus"><img class="seal" src="seal-corpus.webp" alt="" width="88" height="92"><div><h3>2 · A full game-state corpus</h3><p>3,276 matches of continuous game state, 142 with professional commentary video. CC0.</p></div></a>
+    <a class="contrib c3" href="#study"><img class="seal" src="seal-study.webp" alt="" width="88" height="92"><div><h3>3 · A study with real spectators</h3><p>33 active AoE2 spectators rated engagement and quality of the generated commentary.</p></div></a>
   </div>
 </div></section>
 
