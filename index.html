@@ -98,6 +98,7 @@ h2 .icon { flex-basis: 44px; height: 44px; font-size: 26px; }
 .seg button, .chip { font: inherit; font-size: 15px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
 .seg button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
 .chip.ei.on { background: var(--ei); border-color: var(--ei); color: #fff; } .chip.es.on { background: var(--es); border-color: var(--es); color: #fff; }
+#pipePlay { display: inline-flex; align-items: center; gap: 4px; } #pipePlay .ms { font-size: 18px; }
 select { font: inherit; font-size: 16px; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
 /* pipeline */
 #chart { overflow-x: auto; }
@@ -120,6 +121,26 @@ select { font: inherit; font-size: 16px; padding: 5px 8px; border-radius: 8px; b
 #pipe.show-detail .pipe-hint { display: none; }
 @media (prefers-reduced-motion: reduce) { .pipe-hint .ms { animation: none; } }
 .pd-head .seg { margin: 0; } .pd-head .seg button { font-size: 14px; padding: 4px 10px; }
+/* on phones the module chips and stage tabs stay under the top bar while the pipeline card is on screen */
+@media (max-width: 760px) {
+  .pipe-mods { position: sticky; top: var(--barH, 52px); z-index: 6; display: flex; margin: 4px -16px 10px; padding: 6px 16px; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .pd-head { position: sticky; top: calc(var(--barH, 52px) + var(--modsH, 46px)); z-index: 5; margin: -12px -12px 10px; padding: 8px 12px; border-radius: 18px 18px 0 0; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  #pipeTabs { flex: 1 1 100%; min-width: 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } #pipeTabs::-webkit-scrollbar { display: none; } #pipeTabs button { flex: none; }
+  .pd-head.stuck { border-radius: 0; } .pd-head.stuck .pipe-hint { display: none; }
+  #pipe { scroll-margin-top: calc(var(--modsH, 46px) + 6px); }
+  /* the same for the A-E-P+S tabs, the match and set-up picker, and the study views */
+  .stick-m { position: sticky; top: var(--barH, 52px); z-index: 6; margin-left: -16px; margin-right: -16px; padding: 6px 16px; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .card > .stick-m { margin-left: -18px; margin-right: -18px; padding: 8px 18px; }
+  .seg.stick-m { display: flex; }
+  /* kept to one or two rows: tab rows scroll sideways, the pickers share a grid */
+  .aeps.stick-m, .study-ctl #views { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .aeps.stick-m::-webkit-scrollbar, .study-ctl #views::-webkit-scrollbar { display: none; }
+  .aeps.stick-m { gap: 14px; } .aeps.stick-m .aeps-g { flex: none; } .aeps.stick-m .aeps-t { flex-wrap: nowrap; gap: 6px; } .aeps.stick-m .aeps-g.reg { padding-left: 14px; } .aeps.stick-m button { font-size: 15px; padding: 3px 10px; }
+  .study-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-bottom: 10px; } .study-ctl #views { display: flex; flex: 1 1 100%; margin: 0; } .study-ctl #views button { flex: none; }
+  #outcomePick:not([hidden]) { display: flex; flex: 1; min-width: 0; } #outcomePick label { display: flex; align-items: center; gap: 6px; min-width: 0; width: 100%; font-size: 15px; } #outcomePick select { flex: 1; min-width: 0; font-size: 15px; padding: 3px 6px; } .study-ctl .toggle { margin-left: 0; }
+  #texts .seg.stick-m { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+  #texts .stick-m label { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 15px; } #texts .stick-m label:first-child { grid-column: 1 / -1; }
+  #texts .stick-m select { flex: 1; min-width: 0; font-size: 15px; padding: 3px 6px; }
+}
 .pd-body { display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 1fr); gap: 18px; align-items: start; }
 .pd-text h3 { margin: 0 0 6px; } .pd-text ol { margin: 0; padding-left: 20px; } .pd-text li { margin: 0 0 6px; opacity: .55; transition: opacity .3s; } .pd-text li.on { opacity: 1; }
 .pd-text pre { font-size: 12.5px; }
@@ -231,7 +252,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
   <div class="grid3">
     <a class="contrib c1" href="#pipeline"><img class="seal" src="seal-pipeline.webp" alt="" width="88" height="92"><div><h3>1 · A hybrid pipeline</h3><p>Rule-based content selection, LLM realization, and two engagement modules that can be switched on independently.</p></div></a>
     <a class="contrib c2" href="#corpus"><img class="seal" src="seal-corpus.webp" alt="" width="88" height="92"><div><h3>2 · A full game-state corpus</h3><p>3,276 matches of continuous game state, 142 with professional commentary video.</p></div></a>
-    <a class="contrib c3" href="#study"><img class="seal" src="seal-study.webp" alt="" width="88" height="92"><div><h3>3 · A study with real spectators</h3><p>33 active AoE2 spectators rated engagement and quality of the generated commentary.</p></div></a>
+    <a class="contrib c3" href="#study"><img class="seal" src="seal-study.webp" alt="" width="88" height="92"><div><h3>3 · A study with active spectators</h3><p>33 active AoE2 spectators rated engagement and quality of the generated commentary.</p></div></a>
   </div>
 </div></section>
 
@@ -245,8 +266,9 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
 <section id="pipeline"><div class="wrap">
   <h2><span class="icon i1 ms"><svg class="ms-svg" viewBox="0 -960 960 960" aria-hidden="true"><path d="M40 -560q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v160q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44Z"/></svg></span>The pipeline</h2>
   <p class="lead">SAGE follows the classic four-stage architecture (Reiter 2007) and runs online, allowing it only to consider current and past knowledge for text generation.</p>
-  <p class="lead">Below we have an animated graph that shows game events stream into the system, and flow through the four stages into a summary of the recent events. Click a stage to zoom in on what it does. Switch the modules to see which steps they change (coloured borders).</p>
-  <div class="seg"><button class="chip ei on" data-lane="ei" type="button" aria-pressed="true">Expert Insights</button><button class="chip es on" data-lane="es" type="button" aria-pressed="true">Event Structuring</button><button class="chip" id="pipePlay" type="button"></button></div>
+  <p class="lead">Below we have an animated graph that shows game events stream into the system, and flow through the four stages into a summary of the recent events. Click a stage to zoom in on what it does. Switch the modules to see which steps they change (colored borders).</p>
+  <div class="pipe-scope">
+  <div class="seg pipe-mods"><button class="chip ei on" data-lane="ei" type="button" aria-pressed="true">Expert Insights</button><button class="chip es on" data-lane="es" type="button" aria-pressed="true">Event Structuring</button><button class="chip" id="pipePlay" type="button"></button></div>
   <div class="card pipe-card" id="pipe">
     <div class="pd-head"><div id="pipeTabs" class="seg"></div><span class="pipe-hint"><span class="ms" aria-hidden="true">arrow_back</span> <span class="hint-t">Click a stage to see details</span></span></div>
     <div id="pipeOverview"></div>
@@ -256,6 +278,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
         <div class="pd-text"><h3><span id="pipeDetailTitle"></span> <span class="note" id="pipeDetailSub"></span></h3><ol id="pipeSteps"></ol><pre id="pipeData"></pre></div>
       </div>
     </div>
+  </div>
   </div>
   <div class="pipe-key note"><b>Key</b>
     <span><svg viewBox="-10 -10 20 20"><circle r="8" fill="#b03a48"/></svg> combat event</span>
@@ -270,8 +293,8 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
   </div>
   <div class="card" style="margin-top:12px">
     <h3>From data to text: A-E-P+S</h3>
-    <p class="lead" style="margin:0">Enrichment adds facts as data, never as text. The parts follow how commentators forage for information (Dodge et al. 2018; Penney et al. 2021): pick one to see which phrases draw on it, or pick the style tab to see how the text is worded.</p>
-    <div class="aeps" role="tablist" aria-label="Parts of the realized text">
+    <p class="lead" style="margin:0">Enrichments add facts as data. The stages of the A-E-P+S system follow how commentators forage for information (Dodge et al. 2018; Penney et al. 2021): pick one to see which phrases draw on it, or pick the style tab to see how the text is worded.</p>
+    <div class="aeps stick-m" role="tablist" aria-label="Parts of the realized text">
       <div class="aeps-g"><span class="aeps-k">Content · A-E-P+S</span><div class="aeps-t">
         <button role="tab" data-k="A" class="A">Actuator</button><button role="tab" data-k="E" class="E">Environment</button><button role="tab" data-k="P" class="P">Performance</button><button role="tab" data-k="S" class="S">Sensors</button>
       </div></div>
@@ -291,7 +314,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
   <h3>Study design</h3>
   <p class="lead">We generated commentary for four King of the Desert IV matches, once with each set-up: neither module, Expert Insights, Event Structuring, or both. That gives 16 texts of 500 to 800 words. Each participant read four of them, seeing every match and every set-up once, in random order. The texts were pseudonymized to reduce rater bias and kept generation mistakes.</p>
   <p class="lead">Pick a match and two set-ups to compare. Click an update to see its moment in the match video.</p>
-  <div class="seg">
+  <div class="seg stick-m">
     <label>Match <select id="match"></select></label>
     <label>Left <select id="left"></select></label>
     <label>Right <select id="right"></select></label>
@@ -321,7 +344,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
     </div>
     <div class="card"><h3>Eleven tables per match</h3>
       <table><thead><tr><th>Table</th><th>Kind</th><th>Contents</th></tr></thead><tbody id="schema"></tbody></table>
-      <p class="note">Windowed tables are snapshots every 1 s or every 60 s; series are timestamped streams. Shared window, player, entity and string IDs, like a relational database. Apache Arrow or Parquet.</p>
+      <p class="note">Windowed tables are snapshots every 1s or every 60s; series are timestamped streams. Shared window, player, entity and string IDs, like a relational database. Apache Arrow or Parquet.</p>
     </div>
   </div>
 </div></section>
@@ -329,6 +352,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
 <section id="study"><div class="wrap">
   <h2><span class="icon i3 ms">groups</span>The study</h2>
   <p class="lead" id="studyLead"></p>
+  <div class="stick-m study-ctl">
   <div class="seg" id="views">
     <button type="button" data-v="effects" class="on">Module effects (β)</button>
     <button type="button" data-v="means">Means per set-up</button>
@@ -337,6 +361,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
   </div>
   <span id="outcomePick" hidden> <label>Outcome <select id="outcome"></select></label></span>
   <label class="toggle" id="sdPick" hidden><input type="checkbox" id="sdOn"> Show ±1 SD</label>
+  </div>
   <div class="card" id="chart"></div>
 </div></section>
 
@@ -344,9 +369,9 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
   <h2><span class="icon i1 ms">flag</span>Findings</h2>
   <p class="lead">We built a full pipeline that turns dense game data into commentary, and tested it with the target audience of 33 active AoE2 spectators. The modules made a modest but significant difference, yet overall engagement stayed low.</p>
   <div class="finds">
-    <div class="card"><h3>Expert Insights helps readers follow the strategy</h3><p>With detected strategies, wiki facts and causal explanations, readers enjoyed the competition more (Competitive Nature, β = .20), felt they learned more about playing (Skill Improvement, β = .19) and felt more as if they were playing themselves (Vicarious Sensation, β = .25). The amount of detail also moved closer to “just right” (Detail Level, β = −.24).</p></div>
-    <div class="card"><h3>Event Structuring fixes the order, nothing more</h3><p>Grouping parallel events raised only Logicality (β = .22): the updates came in a more sensible order. Readers still missed why events were important. Our grouping follows simple heuristics and is a clear candidate for improvement.</p></div>
-    <div class="card"><h3>Readable texts, low engagement</h3><p>Every engagement motivation except Game Knowledge stayed below the scale midpoint (means 2.5 to 3.9 of 7), while the texts read as ordered and fluent (Logicality 5.6, Readability 4.6). The two modules work independently (no significant interaction), and their effects are small next to how much readers differ from each other.</p></div>
+    <div class="card"><h3>Expert Insights makes the strategy more engaging</h3><p>With detected strategies, wiki facts and causal explanations, readers enjoyed the competition more (Competitive Nature, β = .20), felt they learned more about playing (Skill Improvement, β = .19) and felt more as if they were playing themselves (Vicarious Sensation, β = .25). The amount of detail also moved closer to “just right” (Detail Level, β = −.24).</p></div>
+    <div class="card"><h3>Event Structuring only improves the order</h3><p>Grouping parallel events raised only Logicality (β = .22): the updates came in a more sensible order. Readers still missed why events were important. Our grouping follows simple heuristics and is a clear candidate for improvement.</p></div>
+    <div class="card"><h3>Low engagement, adequate quality</h3><p>Every engagement motivation except Game Knowledge stayed below the scale midpoint (means 2.5 to 3.9 of 7), while quality ratings were moderate to good (Logicality 5.6, Readability 4.6). We found no interaction between the modules, and their effects are small next to how much readers differ from each other.</p></div>
     <div class="card"><h3>Readers want analysis and context</h3><p>Open feedback (96 of 132 ratings) asked for strategic importance and high-level context in a dry, analytical tone, and called the live-update register noise, possibly because the updates were read as one text after the match. Trust was limited: readers took correct events for hallucinations. One example is Aztec cavalry, normally unobtainable, which the text mentioned without saying how the player got it.</p></div>
   </div>
   <div class="next"><h3><span class="ms">explore</span>Future directions</h3>
@@ -404,7 +429,10 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
     R: '<b>Live-update register</b> (Lewandowski 2012): the writing style set by instructions in the realizer prompt (simple present, copula deletion and spatiotemporal anchoring). The register effects are underlined. Readers in our study flagged it as noise, likely because they read the updates as one offline text.'
   };
   const box = document.getElementById('realized'), info = document.getElementById('aepsInfo'), tabs = [...document.querySelectorAll('.aeps button')];
-  const pick = k => { box.dataset.k = k; info.innerHTML = INFO[k]; tabs.forEach(b => { const on = b.dataset.k === k; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; }); };
+  const row = document.querySelector('.aeps');
+  const pick = k => { box.dataset.k = k; info.innerHTML = INFO[k]; tabs.forEach(b => { const on = b.dataset.k === k; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1;
+    // on phones the tabs are one scrolling row: keep the selected one in sight
+    if (on && row.scrollWidth > row.clientWidth) row.scrollTo({ left: row.scrollLeft + b.getBoundingClientRect().left - row.getBoundingClientRect().left - (row.clientWidth - b.offsetWidth) / 2, behavior: 'smooth' }); }); };
   tabs.forEach((b, i) => {
     b.addEventListener('click', () => pick(b.dataset.k));
     b.addEventListener('keydown', e => { const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); pick(n.dataset.k); } });
@@ -430,10 +458,10 @@ $('#theme').onclick = () => { const r = document.documentElement, dark = r.datas
   .forEach(([t, k, c]) => { $('#schema').insertAdjacentHTML('beforeend', `<tr><td class="mono">${t}</td><td>${k}</td><td>${c}</td></tr>`); });
 
 /* ---------- study ---------- */
-$('#studyLead').textContent = `${D.participants} active AoE2 spectators (32 watch weekly; self-reported matchmaking rating well above average, mean 1600 Elo) each read four texts, one per module set-up, in a Latin-square design, giving ${D.ratings} rated texts. Seven engagement motivations (adapted from MSES, Qian et al. 2020) and linguistic quality and comprehension (after Callaway & Lester 2002) on 7-point scales; one linear mixed model per outcome. β is the shift from the grand mean M when a module is on.`;
+$('#studyLead').textContent = `${D.participants} active AoE2 spectators (32 watch weekly) each read four texts, one per module set-up, in a Latin-square design, giving ${D.ratings} rated texts. They rated seven engagement motivations (adapted from MSES, Qian et al. 2020) and linguistic quality and comprehension (after Callaway & Lester 2002) on 7-point scales; we fitted one linear mixed model per outcome. β is the shift from the grand mean M when a module is on.`;
 D.study.forEach((o, i) => $('#outcome').insertAdjacentHTML('beforeend', `<option value="${i}">${o.label}</option>`));
 let view = 'effects';
-document.querySelectorAll('#views button').forEach(b => b.onclick = () => { view = b.dataset.v; document.querySelectorAll('#views button').forEach(x => x.classList.toggle('on', x === b)); $('#outcomePick').hidden = view !== 'dist'; $('#sdPick').hidden = view !== 'means' && view !== 'dist'; drawChart(); });
+document.querySelectorAll('#views button').forEach(b => b.onclick = () => { view = b.dataset.v; document.querySelectorAll('#views button').forEach(x => x.classList.toggle('on', x === b)); const vr = $('#views'); if (vr.scrollWidth > vr.clientWidth) vr.scrollTo({ left: vr.scrollLeft + b.getBoundingClientRect().left - vr.getBoundingClientRect().left - (vr.clientWidth - b.offsetWidth) / 2, behavior: 'smooth' }); $('#outcomePick').hidden = view !== 'dist'; $('#sdPick').hidden = view !== 'means' && view !== 'dist'; drawChart(); });
 $('#outcome').onchange = drawChart; $('#sdOn').onchange = drawChart;
 const AG = ['Strongly disagree', 'Strongly agree'];
 // item wording, anchors and reliability from the thesis (evaluation appendix; reliability and ICC tables)
@@ -445,7 +473,7 @@ const OUT = {
   'Entertaining Nature': { what: 'Plain fun: reading the updates as a pleasant way to pass the time.', items: ['Reading the match updates was fun.', 'Reading Age of Empires 2 match updates like this one could be fun to pass the time.'], a: .88, r: .79, icc: [.699, .011] },
   'Dramatic Nature': { what: 'Excitement and hype: the tension of the match coming through in the text.', items: ['I found reading the match updates very exciting.', 'I felt hyped and excited when I read the match updates.'], a: .93, r: .87, icc: [.651, .020] },
   'Vicarious Sensation': { what: 'Feeling part of the game: experiencing professional play without playing yourself.', items: ['I felt like I was in the game when it was close or coming down to the final moments.', 'I could experience how professionals play without actually playing myself.'], a: .79, r: .66, icc: [.650, .013] },
-  'Overall Quality': { what: 'The reader’s overall judgement of the text’s quality.', items: ['Overall, how would you rate the quality of the text?'], lo: 'very poor', hi: 'very good', icc: [.408, .000] },
+  'Overall Quality': { what: 'The reader’s overall judgment of the text’s quality.', items: ['Overall, how would you rate the quality of the text?'], lo: 'very poor', hi: 'very good', icc: [.408, .000] },
   'Word Choice': { what: 'Whether the words and phrasing fit the match updates.', items: ['How appropriate were the word choices in the match updates?'], lo: 'very inappropriate', hi: 'very appropriate', icc: [.359, .000] },
   'Readability': { what: 'How easy the text was to read.', items: ['How hard was it to read the match updates?'], lo: 'extremely difficult', hi: 'extremely easy', icc: [.388, .038] },
   'Logicality': { what: 'Whether the updates came in a sensible order.', items: ['How often did you feel the live updates were presented out of order?'], lo: 'always out of order', hi: 'never', icc: [.291, .006] },
@@ -550,7 +578,7 @@ function drawChart() {
           <div><dt>${pct(q.icc[0])}</dt><dd>of the rating variance lies between participants: some readers rate everything higher than others. The models absorb this with a random intercept per participant.</dd></div>
           <div><dt>${pct(q.icc[1])}</dt><dd>lies between the 16 matches: ${q.icc[1] < .05 ? 'which match a text described barely moved its ratings' : 'the match described made some difference, still far less than who was reading'}</dd></div>
         </dl>
-        ${half ? '<p class="note">The seven motivations overlap (correlations between constructs .57–.85; strongest Entertaining–Dramatic .85 and Competitive–Game Knowledge .84). Related, but distinct enough to analyse separately.</p>' : ''}</div>`);
+        ${half ? '<p class="note">The seven motivations overlap (correlations between constructs .57–.85; strongest Entertaining–Dramatic .85 and Competitive–Game Knowledge .84). Related, but distinct enough to analyze separately.</p>' : ''}</div>`);
   }
 }
 
@@ -607,6 +635,19 @@ drawChart(); drawTexts();
   const h = document.querySelector('.pipe-hint'), tabs = $('#pipeTabs');
   const fit = () => { const below = h.offsetTop > tabs.offsetTop + 4; h.classList.toggle('below', below); h.querySelector('.ms').textContent = below ? 'arrow_upward' : 'arrow_back'; h.querySelector('.hint-t').textContent = below ? 'Click a stage above to see details' : 'Click a stage to see details'; };
   new ResizeObserver(fit).observe(document.querySelector('.pd-head')); fit();
+}
+{ // phones: offsets for the sticky module chips and stage tabs; the hint folds away while the tabs are stuck
+  const root = document.documentElement, bar = $('.topbar'), mods = $('.pipe-mods'), head = $('.pd-head'), hint = $('.pipe-hint');
+  const sizes = () => { root.style.setProperty('--barH', bar.offsetHeight + 'px'); root.style.setProperty('--modsH', mods.offsetHeight + 'px'); };
+  new ResizeObserver(sizes).observe(bar); new ResizeObserver(sizes).observe(mods); sizes();
+  const stick = () => {
+    const sticky = getComputedStyle(head).position === 'sticky', top = bar.offsetHeight + mods.offsetHeight;
+    const stuck = sticky && head.getBoundingClientRect().top <= top + .5 && $('#pipe').getBoundingClientRect().top < top;
+    if (stuck === head.classList.contains('stuck')) return;
+    // keep the content below in place: the folded hint's height moves into the bottom margin
+    const h0 = head.offsetHeight; head.classList.toggle('stuck', stuck); head.style.marginBottom = stuck ? (10 + h0 - head.offsetHeight) + 'px' : '';
+  };
+  addEventListener('scroll', stick, { passive: true }); addEventListener('resize', stick); stick();
 }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { drawChart(); }, 150); });
 </script>

@@ -313,9 +313,9 @@ const fadeAll = (t, T) => 1 - clamp((t - (T - .5)) / .5);
 
 DETAIL.sa = {
   T: 9.5, steps: [[0, 'Events stream in from the game engine: damage, death, entity lifecycle, research.'],
-    [1.0, 'ST-DBSCAN (Birant & Kut 2007) groups damage and death events that lie within ε = 14 tiles and τ = 60 s of each other, once a neighbourhood holds minPts = 10 events. Stray events are noise.'],
-    [2.4, 'Other events do not wait: a property filter keeps constructions such as Castles, Town Centers and Towers, and other events pass through by type, such as research.'],
-    [3.4, 'Only battles wait. Events arrive in order, so once a battle has been quiet for τ it is closed and released: it can be reported live.']],
+    [1.0, 'ST-DBSCAN (Birant & Kut 2007) groups damage and death events that lie within ε = 14 tiles and τ = 60s of each other, once a neighborhood holds minPts = 10 events. Stray events are noise.'],
+    [2.4, 'A property filter keeps constructions such as Castles, Town Centers and Towers; other events, such as research, pass through by type.'],
+    [3.4, 'Battles are held until they have been quiet for τ, then closed and released, so they can still be reported live.']],
   build(svg) {
     const g = E(svg, 'g');
     text(g, 20, 8, 200, 24, 'game map (top-down)', { it: 1, fs: 17, fill: C.note, al: 'start' });
@@ -326,8 +326,8 @@ DETAIL.sa = {
     const boxes = [[390, 40], [390, 160], [390, 280]].map(([x, y]) => { const r = rect(g, x, y, 230, 100, { st: C.blue, sw: 7 }); r.setAttribute('opacity', 0); return r; });
     [90, 210, 330].forEach(y => line(g, svg, [[354, y], [384, y]], { st: C.navy, sw: 2.5, arrow: 1 }));
     rect(g, 20, 352, 330, 12, { rx: 6, fill: C.track }); const bar = rect(g, 20, 352, 0, 12, { rx: 6, fill: C.cmb });
-    text(g, 20, 368, 330, 22, 'quiet for τ = 60 s → release', { fs: 16, it: 1, fill: C.note, al: 'start' });
-    text(g, 20, 404, 600, 26, 'ST-DBSCAN  ·  ε = 14 tiles  ·  τ = 60 s  ·  minPts = 10', { ff: JB, fs: 16, fw: 700, fill: C.navy, al: 'start' });
+    text(g, 20, 368, 330, 22, 'quiet for τ = 60s → release', { fs: 16, it: 1, fill: C.note, al: 'start' });
+    text(g, 20, 404, 600, 26, 'ST-DBSCAN  ·  ε = 14 tiles  ·  τ = 60s  ·  minPts = 10', { ff: JB, fs: 16, fw: 700, fill: C.navy, al: 'start' });
     const A = [130, 165], pts = [[-22, -14], [10, -26], [26, 4], [-6, 8], [-30, 18], [14, 26], [0, -6], [-16, -30], [32, -18], [-2, 30]];
     const circ = E(g, 'circle', { cx: A[0], cy: A[1], r: 50, fill: C.cmb, 'fill-opacity': .06, stroke: C.cmb, 'stroke-width': 2 });
     const eps = text(g, A[0] + 36, A[1] - 66, 150, 22, 'ε = 14 tiles', { fs: 17, fw: 700, fill: C.cmb, al: 'start' });
@@ -458,7 +458,7 @@ DETAIL.dp = {
       at(unit, t < 7.6 ? [330, 210] : mv([330, 210], [560, 210], (t - 7.6) / .9), t < 7.4 ? 0 : t < 8.6 ? clamp((t - 7.4) / .2) : 1 - clamp((t - 8.6) / .3));
       at(dD, mv([210, 40], slotP[0], (t - 8.8) / .5), t < 8.8 ? 0 : f);
       const cd = t < 2.6 ? 0 : t < 7 ? 1 - (t - 2.6) / 4.4 : t < 8.8 ? 0 : 1 - (t - 8.8) / 4.4;
-      bar.setAttribute('width', (330 * clamp(cd)).toFixed(1)); barT.textContent = es ? 'battle cooldown · at most 180 s or 5 events' : 'battle cooldown';
+      bar.setAttribute('width', (330 * clamp(cd)).toFixed(1)); barT.textContent = es ? 'battle cooldown · at most 180s or 5 events' : 'battle cooldown';
       [ghost, gl, gT].forEach(el => el.setAttribute('opacity', es ? env(t, 5.2, 6.6) : 0));
       [br, brT].forEach(el => el.setAttribute('opacity', es ? env(t, 6.0, 7.1) : 0));
     };
@@ -467,7 +467,7 @@ DETAIL.dp = {
 
 DETAIL.sr = {
   T: 16, steps: [[0, 'The Pre-Processor swaps numerical identifiers for names, such as unit IDs for unit names, and game time for human-friendly timestamps.'],
-    [3.2, 'The prompt is assembled: a system instruction and a communicative goal (both depend on the module set-up: border colours), writing-style instructions for the live-update register, module prompts (only for enabled modules: wiki facts with causal explanations, information asymmetry) and the preprocessed JSON. All earlier text is given as prior turns.'],
+    [3.2, 'The prompt is assembled: a system instruction and a communicative goal (both depend on the module set-up: border colors), writing-style instructions for the live-update register, module prompts (only for enabled modules: wiki facts with causal explanations, information asymmetry) and the preprocessed JSON. All earlier text is given as prior turns.'],
     [6.6, 'Gemini 2.5 Flash (temperature 1, fixed seed) realizes one text block per prompt: a summary of the recent events, not live coverage.'],
     [7.4, 'The LLM also turns map coordinates into narrative location anchors, such as “on the forward woodline” (example adapted from the paper).']],
   build(svg) {
@@ -565,7 +565,12 @@ function buildDetail() {
   $('#pipeData').textContent = STAGE_TEXT[cur].data;
   detailUpd(reduced ? D.T - .6 : 0); markStep(reduced ? D.T : 0);
 }
-function markTabs() { $('#pipeTabs').querySelectorAll('button').forEach(b => { const on = b.dataset.stage === (mode === 'detail' ? cur : 'all'); b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); }); }
+function markTabs() {
+  const row = $('#pipeTabs');
+  row.querySelectorAll('button').forEach(b => { const on = b.dataset.stage === (mode === 'detail' ? cur : 'all'); b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
+    // on phones the tabs are one scrolling row: keep the active one in sight
+    if (on && row.scrollWidth > row.clientWidth) row.scrollTo({ left: row.scrollLeft + b.getBoundingClientRect().left - row.getBoundingClientRect().left - (row.clientWidth - b.offsetWidth) / 2, behavior: reduced ? 'auto' : 'smooth' }); });
+}
 function markStep(t) { const D = DETAIL[cur]; let k = 0; D.steps.forEach(([t0], j) => { if (t >= t0) k = j; }); $('#pipeSteps').querySelectorAll('li').forEach((li, j) => li.classList.toggle('on', j === k)); }
 function tick(now) {
   const dt = last == null ? 0 : Math.min(.1, (now - last) / 1000); last = now;
