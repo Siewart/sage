@@ -1,7 +1,8 @@
 /* SAGE interactive pipeline.
    The overview is the poster's system-detail graph, rebuilt from its Penpot geometry (poster units, 72 dpi),
    with tokens flowing between the stages. Clicking a stage zooms in and plays a detail animation.
-   On narrow screens the four stages stack and the connectors wrap across the right/left edge. */
+   On narrow screens the four stages stack top to bottom and the wires between them run down side corridors:
+   data enters the next stage from the top, state queries and the peek keep entering from below. */
 (() => {
 const NS = 'http://www.w3.org/2000/svg', $ = s => document.querySelector(s);
 const E = (p, tag, a = {}, txt) => { const e = document.createElementNS(NS, tag); for (const k in a) if (a[k] != null) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; if (p) p.appendChild(e); return e; };
@@ -95,29 +96,31 @@ const PILL = { 'ei.di': [1202, 438], 'ei.sr': [1970, 344], 'es.dp': [1672, 260],
 const LANE_Y = { ei: 1718, es: 1782 };
 const laneOn = { ei: true, es: true };
 
-// connectors that cross stages: one polyline on desktop, wrapped pieces on mobile ('R'/'L' = past the right/left edge)
+// connectors that cross stages: one polyline on desktop; on mobile one route through the corridors
+// ('vm' points: [stage, x, y] in poster units, or [corridor, stage, y]; corridors A and B run down the right, Lc down the left)
 const X = {
-  cf_en: { st: C.navy, sw: 3, arrow: 1, desk: [[927, 1542], [1260, 1542], [1260, 1513]], mob: [['sa', [[927, 1542], ['R', 1542]]], ['di', [['L', 1542], [1260, 1542], [1260, 1513]]]] },
-  pt_en: { st: C.oth, sw: 3, arrow: 1, desk: [[1089, 1510], [1089, 1564], [1300, 1564], [1300, 1513]], mob: [['sa', [[1089, 1510], [1089, 1564], ['R', 1564]]], ['di', [['L', 1564], [1300, 1564], [1300, 1513]]]] },
-  peek: { st: C.es, sw: 2.5, dash: 1, arrow: 1, lane: 'es', desk: [[740, 1510], [740, 1695], [1720, 1695], [1720, 1513]], mob: [['sa', [[740, 1510], [740, 1600], ['R', 1600]]], ['di', [['L', 1700], ['R', 1700]]], ['dp', [['L', 1700], [1720, 1700], [1720, 1513]]]] },
-  en_pl: { st: C.navy, sw: 3, arrow: 1, desk: [[1298, 1350], [1298, 1322], [1647, 1322], [1647, 1402], [1670, 1402]], mob: [['di', [[1298, 1350], [1298, 1322], ['R', 1322]]], ['dp', [['L', 1322], [1647, 1322], [1647, 1402], [1670, 1402]]]] },
-  sy_pl: { st: C.navy, sw: 3, arrow: 1, desk: [[1632, 1454], [1670, 1454]], mob: [['di', [[1632, 1454], ['R', 1454]]], ['dp', [['L', 1454], [1670, 1454]]]] },
+  cf_en: { st: C.navy, sw: 3, arrow: 1, desk: [[927, 1542], [1260, 1542], [1260, 1513]], vm: [['sa', 927, 1542], ['B', 'sa', 1542], ['B', 'di', 1330], ['di', 1290, 1330], ['di', 1290, 1350]] },
+  pt_en: { st: C.oth, sw: 3, arrow: 1, desk: [[1089, 1510], [1089, 1564], [1300, 1564], [1300, 1513]], vm: [['sa', 1089, 1510], ['sa', 1089, 1564], ['A', 'sa', 1564], ['A', 'di', 1312], ['di', 1240, 1312], ['di', 1240, 1350]] },
+  peek: { st: C.es, sw: 2.5, dash: 1, arrow: 1, lane: 'es', desk: [[740, 1510], [740, 1695], [1720, 1695], [1720, 1513]], vm: [['sa', 740, 1510], ['sa', 740, 1600], ['Lc', 'sa', 1600], ['Lc', 'dp', 1700], ['dp', 1720, 1700], ['dp', 1720, 1513]] },
+  en_pl: { st: C.navy, sw: 3, arrow: 1, desk: [[1298, 1350], [1298, 1322], [1647, 1322], [1647, 1402], [1670, 1402]], vm: [['di', 1298, 1512], ['di', 1298, 1692], ['A', 'di', 1692], ['A', 'dp', 1320], ['dp', 1796, 1320], ['dp', 1796, 1350]] },
+  sy_pl: { st: C.navy, sw: 3, arrow: 1, desk: [[1632, 1454], [1670, 1454]], vm: [['di', 1632, 1454], ['A', 'di', 1454], ['A', 'dp', 1320], ['dp', 1796, 1320], ['dp', 1796, 1350]] },
   st_en: { st: C.state, sw: 2, dash: 1, arrow: 1, desk: [[1510, 1640], [1340, 1640], [1340, 1513]], mob: [['di', [[1510, 1640], [1340, 1640], [1340, 1513]]]] },
   st_sy: { st: C.state, sw: 2, dash: 1, arrow: 1, desk: [[1575, 1595], [1575, 1513]], mob: [['di', [[1575, 1595], [1575, 1513]]]] },
-  st_pl: { st: C.state, sw: 2, dash: 1, arrow: 1, desk: [[1640, 1640], [1840, 1640], [1840, 1513]], mob: [['di', [[1640, 1640], ['R', 1640]]], ['dp', [['L', 1640], [1840, 1640], [1840, 1513]]]] },
-  st_pp: { st: C.state, sw: 2, dash: 1, arrow: 1, desk: [[1840, 1640], [2053, 1640], [2053, 1513]], mob: [['dp', [[1840, 1640], ['R', 1640]]], ['sr', [['L', 1640], [2053, 1640], [2053, 1513]]]] },
-  pl_re: { st: C.navy, sw: 3, arrow: 1, desk: [[1932, 1425], [1968, 1425]], mob: [['dp', [[1932, 1425], ['R', 1425]]], ['sr', [['L', 1425], [1968, 1425]]]] },
+  st_pl: { st: C.state, sw: 2, dash: 1, arrow: 1, desk: [[1640, 1640], [1840, 1640], [1840, 1513]], vm: [['di', 1640, 1640], ['B', 'di', 1640], ['B', 'dp', 1640], ['dp', 1840, 1640], ['dp', 1840, 1513]] },
+  st_pp: { st: C.state, sw: 2, dash: 1, arrow: 1, desk: [[1840, 1640], [2053, 1640], [2053, 1513]], vm: [['B', 'dp', 1640], ['B', 'sr', 1640], ['sr', 2053, 1640], ['sr', 2053, 1513]] },
+  pl_re: { st: C.navy, sw: 3, arrow: 1, desk: [[1932, 1425], [1968, 1425]], vm: [['dp', 1932, 1425], ['A', 'dp', 1425], ['A', 'sr', 1320], ['sr', 2053, 1320], ['sr', 2053, 1350]] },
 };
 
 function makeLayout(mobile) {
   if (!mobile) return { mobile, vb: [670, 1245, 1664, 601], off: { sa: [0, 0], di: [0, 0], dp: [0, 0], sr: [0, 0] }, pillY: {} };
-  const W = 550, off = {}, pillY = {}; let y = 6;
+  // stages centred in a 490-wide column; the left corridor sits before it, the two right corridors after it
+  const X0 = 26, AREA = 490, W = X0 + AREA + 32, off = {}, pillY = {}; let y = 6;
   for (const s of STG) {
-    off[s.id] = [(W - s.w) / 2 - s.x0, y - 1250]; y += s.bottom - 1250;
+    off[s.id] = [X0 + (AREA - s.w) / 2 - s.x0, y - 1250]; y += s.bottom - 1250;
     Object.keys(LANES).forEach(k => { if (LANES[k].hooks[s.id]) { pillY[k + '.' + s.id] = y + 8; y += 48; } });
     y += 40;
   }
-  return { mobile, W, vb: [0, 0, W, y - 30], off, pillY };
+  return { mobile, W, X0, AREA, vb: [0, 0, W, y - 30], off, pillY, cx: { A: X0 + AREA + 12, B: X0 + AREA + 22, Lc: 12 } };
 }
 const mapPt = (L, sid, [x, y]) => {
   const [dx, dy] = L.off[sid];
@@ -125,7 +128,8 @@ const mapPt = (L, sid, [x, y]) => {
 };
 // pieces: [[stageId, pts]] in poster coords → runs in layout coords
 const runs = (L, pieces) => pieces.map(([sid, pts]) => pts.map(p => mapPt(L, sid, p)));
-const conn = (L, key) => L.mobile ? runs(L, X[key].mob) : [X[key].desk.slice()];
+const vpt = (L, p) => p[0] in L.cx ? [L.cx[p[0]], p[2] + L.off[p[1]][1]] : mapPt(L, p[0], [p[1], p[2]]);
+const conn = (L, key) => !L.mobile ? [X[key].desk.slice()] : X[key].vm ? [X[key].vm.map(p => vpt(L, p))] : runs(L, X[key].mob);
 function measure(rs) {
   const segs = []; let tot = 0;
   rs.forEach(r => { for (let i = 1; i < r.length; i++) { const l = Math.hypot(r[i][0] - r[i - 1][0], r[i][1] - r[i - 1][1]); segs.push([r[i - 1], r[i], tot, l]); tot += l; } });
@@ -233,13 +237,13 @@ function buildOverview(L) {
       rect(g, 680, LANE_Y[k], 1644, 54, { rx: 27, fill: col, fo: .08, st: col, sw: 2 }); text(g, 704, LANE_Y[k] + 11, 420, 33.8, LANES[k].name, { ff: PH, fs: 26, fw: 700, fill: col, al: 'start' });
       for (const sid in LANES[k].hooks) { const [x, w] = PILL[k + '.' + sid]; rect(g, x, LANE_Y[k] + 8, w, 38, { rx: 19, fill: col }); text(g, x, LANE_Y[k] + 16, w, 23.5, LANES[k].hooks[sid], { fs: 18, fw: 700, fill: C.onAcc }); }
     } else for (const sid in LANES[k].hooks) {
-      const y = L.pillY[k + '.' + sid]; rect(g, 20, y, L.W - 40, 38, { rx: 19, fill: col });
-      text(g, 20, y + 8, L.W - 40, 23.5, `${LANES[k].name}: ${LANES[k].hooks[sid]}`, { fs: 18, fw: 700, fill: C.onAcc });
+      const y = L.pillY[k + '.' + sid]; rect(g, L.X0, y, L.AREA, 38, { rx: 19, fill: col });
+      text(g, L.X0, y + 8, L.AREA, 23.5, `${LANES[k].name}: ${LANES[k].hooks[sid]}`, { fs: 18, fw: 700, fill: C.onAcc });
     }
   }
 
   /* tokens: kind, size, start, legs [[runs, seconds]] */
-  const lay = (sid, pts) => [pts.map(p => mapPt(L, sid, p))];
+  const lay = (sid, pts) => [pts.map(p => mapPt(L, sid, p))], M = L.mobile;
   const tok = (kind, s, t0, legs, o = {}) => { const g = glyph(kind, s, root); g.setAttribute('opacity', 0); toks.push({ g, t0, legs: legs.map(([r, d]) => [measure(r), d]), fo: o.fo ?? .25, op: o.op ?? 1, lane: o.lane, wrap: o.wrap, lin: o.lin }); };
   // the stream loops with period T; every event runs to the end of the arrow, the matching filter takes a copy as it passes
   // half speed, one event every 0.8 s; the three story events are placed so their copies leave the filters on cue (t0 may wrap)
@@ -252,19 +256,20 @@ function buildOverview(L) {
     story[i] = tb; if (![0, 17, 18].includes(i)) tok(KIND[c], 16, tb, [[lay('sa', [[bx, 1340], [bx, 1420]]), .9]], { fo: .3, wrap: 1 });
   });
   // copies that the story follows: a building passes the filter, one is rejected, an upgrade passes through
-  tok('square', 16, story[18], [[lay('sa', [[927, 1340], [927, 1404]]), .4], [lay('sa', [[927, 1404], [927, 1510], [927, 1542]]), .75], [conn(L, 'cf_en'), 2.0], [lay('di', [[1260, 1513], [1240, 1440]]), .3]]);
+  tok('square', 16, story[18], [[lay('sa', [[927, 1340], [927, 1404]]), .4], [lay('sa', [[927, 1404], [927, 1510], [927, 1542]]), .75], [conn(L, 'cf_en'), 2.0], [lay('di', [M ? [1290, 1350] : [1260, 1513], [1240, 1440]]), .3]]);
   tok('square', 16, story[0], [[lay('sa', [[927, 1340], [927, 1420]]), .4]], { fo: .1 });
   tok('rejsq', 18, story[0] + .4, [[lay('sa', [[927, 1420], [927, 1420]]), .6]], { fo: .4 });
-  tok('tri', 18, story[17], [[lay('sa', [[1089, 1340], [1089, 1404]]), .4], [lay('sa', [[1089, 1404], [1089, 1510]]), .6], [conn(L, 'pt_en'), 1.6], [lay('di', [[1300, 1513], [1262, 1432]]), .3]]);
-  tok('cluster', 28, 4.0, [[lay('sa', [[765, 1460], [765, 1510]]), .3], [lay('sa', [[765, 1510], [765, 1542], [927, 1542]]), .7], [conn(L, 'cf_en'), 2.0], [lay('di', [[1260, 1513], [1250, 1452]]), .3]]);
+  tok('tri', 18, story[17], [[lay('sa', [[1089, 1340], [1089, 1404]]), .4], [lay('sa', [[1089, 1404], [1089, 1510]]), .6], [conn(L, 'pt_en'), 1.6], [lay('di', [M ? [1240, 1350] : [1300, 1513], [1262, 1432]]), .3]]);
+  tok('cluster', 28, 4.0, [[lay('sa', [[765, 1460], [765, 1510]]), .3], [lay('sa', [[765, 1510], [765, 1542], [927, 1542]]), .7], [conn(L, 'cf_en'), 2.0], [lay('di', [M ? [1290, 1350] : [1260, 1513], [1250, 1452]]), .3]]);
   tok('ghost', 24, 6.0, [[conn(L, 'peek'), 3.2]], { op: .75, lane: 'es' });
-  tok('doc', 46, 6.3, [[lay('di', [[1334, 1442], [1298, 1380], [1298, 1350]]), .4], [conn(L, 'en_pl'), 1.6], [lay('dp', [[1670, 1402], [1741, 1401]]), .3]], { fo: .15 });
-  tok('doc', 46, 7.9, [[lay('di', [[1334, 1442], [1298, 1380], [1298, 1350]]), .4], [conn(L, 'en_pl'), 1.6], [lay('dp', [[1670, 1402], [1847, 1401]]), .3]], { fo: .15 });
-  tok('doc', 46, 8.5, [[lay('di', [[1575, 1442], [1632, 1454]]), .25], [conn(L, 'sy_pl'), .4], [lay('dp', [[1670, 1454], [1741, 1437]]), .3]], { fo: .15 });
+  const enOut = M ? [[1334, 1442], [1298, 1480], [1298, 1512]] : [[1334, 1442], [1298, 1380], [1298, 1350]], plIn = M ? [1796, 1350] : null;
+  tok('doc', 46, 6.3, [[lay('di', enOut), .4], [conn(L, 'en_pl'), 1.6], [lay('dp', [plIn || [1670, 1402], [1741, 1401]]), .3]], { fo: .15 });
+  tok('doc', 46, 7.9, [[lay('di', enOut), .4], [conn(L, 'en_pl'), 1.6], [lay('dp', [plIn || [1670, 1402], [1847, 1401]]), .3]], { fo: .15 });
+  tok('doc', 46, 8.5, [[lay('di', [[1575, 1442], [1632, 1454]]), .25], [conn(L, 'sy_pl'), M ? 1.2 : .4], [lay('dp', [plIn || [1670, 1454], [1741, 1437]]), .3]], { fo: .15 });
   // Expert Insights: the strategy detector reads the snapshots and adds a synthetic strategy event
   tok('estar', 26, 9.1, [[lay('di', [[1575, 1520], [1575, 1442]]), .5]], { fo: .2, lane: 'ei' });
-  tok('doc', 46, 9.8, [[lay('di', [[1575, 1442], [1632, 1454]]), .25], [conn(L, 'sy_pl'), .4], [lay('dp', [[1670, 1454], [1741, 1473]]), .3]], { fo: .15, lane: 'ei' });
-  tok('doc', 58, 11.2, [[lay('dp', [[1796, 1440], [1932, 1425]]), .3], [conn(L, 'pl_re'), .35], [lay('sr', [[1968, 1425], [2017, 1401]]), .25]], { fo: .15 });
+  tok('doc', 46, 9.8, [[lay('di', [[1575, 1442], [1632, 1454]]), .25], [conn(L, 'sy_pl'), M ? 1.2 : .4], [lay('dp', [plIn || [1670, 1454], [1741, 1473]]), .3]], { fo: .15, lane: 'ei' });
+  tok('doc', 58, 11.2, [[lay('dp', [[1796, 1440], [1932, 1425]]), .3], [conn(L, 'pl_re'), M ? 1.0 : .35], [lay('sr', [M ? [2053, 1350] : [1968, 1425], [2017, 1401]]), .25]], { fo: .15 });
   tok('prompt', 50, 13.4, [[lay('sr', [[2054, 1474], [2148, 1425]]), .3], [lay('sr', [[2148, 1425], [2200, 1425]]), .25]], { fo: .15 });
 
   // highlights
@@ -525,9 +530,12 @@ function render() {
   if (mode === 'detail') buildDetail();
 }
 function animateVB(svg, from, to, ms, done) {
-  if (reduced) { svg.setAttribute('viewBox', to.join(' ')); done && done(); return; }
-  const t0 = performance.now(); const step = now => { const k = ease(clamp((now - t0) / ms)); svg.setAttribute('viewBox', from.map((v, i) => v + (to[i] - v) * k).join(' ')); if (k < 1) requestAnimationFrame(step); else done && done(); }; requestAnimationFrame(step);
+  const set = vb => { svg.setAttribute('viewBox', vb.join(' ')); svg.style.aspectRatio = `${vb[2]} / ${vb[3]}`; };
+  if (reduced) { set(to); done && done(); return; }
+  const t0 = performance.now(); const step = now => { const k = ease(clamp((now - t0) / ms)); set(from.map((v, i) => v + (to[i] - v) * k)); if (k < 1) requestAnimationFrame(step); else done && done(); }; requestAnimationFrame(step);
 }
+// bring the pipeline card's top into view (below the sticky bar) when it has scrolled away
+function cardIntoView() { const top = box().getBoundingClientRect().top; if (top < 56 || top > innerHeight * .5) box().scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' }); }
 function stageBox(sid) {
   const s = STG.find(q => q.id === sid), L = OVR.L, [dx, dy] = L.off[sid];
   return [s.x0 + dx - 16, 1245 + dy, s.w + 32, (L.mobile ? s.bottom : 1530) - 1235];
@@ -535,12 +543,12 @@ function stageBox(sid) {
 function openStage(sid) {
   cur = sid; mode = 'detail'; markTabs();
   OVR.svg.querySelectorAll('.stg').forEach(g => g.classList.toggle('dim', g.dataset.stage !== sid));
-  OVR.svg.classList.add('zooming');
-  animateVB(OVR.svg, OVR.L.vb, stageBox(sid), 650, () => { buildDetail(); $('#pipe').classList.add('show-detail'); $('#pipeDetail').focus({ preventScroll: true }); });
+  OVR.svg.classList.add('zooming'); cardIntoView();
+  animateVB(OVR.svg, OVR.L.vb, stageBox(sid), 650, () => { buildDetail(); $('#pipe').classList.add('show-detail'); $('#pipeDetail').focus({ preventScroll: true }); cardIntoView(); });
 }
 function closeStage() {
   mode = 'overview'; markTabs(); $('#pipe').classList.remove('show-detail'); const from = stageBox(cur);
-  box().scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+  cardIntoView();
   OVR.svg.querySelectorAll('.stg').forEach(g => g.classList.remove('dim'));
   animateVB(OVR.svg, from, OVR.L.vb, 650, () => OVR.svg.classList.remove('zooming'));
 }

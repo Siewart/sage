@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0" rel="stylesheet">
+<script>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
 :root {
   --ink: #1D1D1F; --mid: #555555; --grey: #6E6E6E; --line: #E2E2E2; --bg: #F7F5F0; --card: #FFFFFF; --panel: #F5F2EA;
@@ -39,8 +40,10 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 64px; }
-body { margin: 0; background: transparent; color: var(--ink); font: 18px/1.5 "Alegreya Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; }
-.bg { position: fixed; inset: -40px; z-index: -2; background: url(aoe2-bg.jpg) center / cover no-repeat; filter: blur(22px) saturate(1.15); }
+body { margin: 0; overflow-x: clip; background: transparent; color: var(--ink); font: 18px/1.5 "Alegreya Sans", system-ui, sans-serif; font-variant-numeric: lining-nums; }
+/* the blurred image bleeds 40px past the edges to hide the blur fringe; the fixed box itself stays inside the viewport */
+.bg { position: fixed; inset: 0; z-index: -2; overflow: hidden; }
+.bg::before { content: ""; position: absolute; inset: -40px; background: url(aoe2-bg.jpg) center / cover no-repeat; filter: blur(22px) saturate(1.15); }
 .bg::after { content: ""; position: absolute; inset: 0; background: var(--veil); }
 :root { --veil: linear-gradient(160deg, rgba(247,245,240,.80), rgba(247,245,240,.70)); --glass: rgba(255,255,255,.62); --glassLine: rgba(255,255,255,.75); }
 .ms-svg { width: 1em; height: 1em; fill: currentColor; transform: scale(1.3); display: block; } /* custom four-stage pipeline icon in Material Symbols style */
@@ -66,7 +69,7 @@ code, pre, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
 .btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 16px; border: 1px solid rgba(255,255,255,.35); color: #fff; background: rgba(255,255,255,.06); }
 .btn.gold { background: var(--gold); color: #1F2A44; border-color: var(--gold); box-shadow: 0 0 18px rgba(255, 201, 74, .55); }
 .btn.todo { opacity: .7; }
-.social { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; } .social iframe { border: 0; overflow: hidden; } .social img { display: block; border-radius: 6px; }
+.social { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 26px; } .social iframe { border: 0; overflow: hidden; } .social img { display: block; border-radius: 6px; }
 section { padding: 40px 0 8px; }
 section > .wrap > h2 { font-size: 34px; display: flex; align-items: center; gap: 12px; }
 .lead { color: var(--mid); max-width: 860px; margin: 0 0 18px; }
@@ -113,6 +116,7 @@ select { font: inherit; font-size: 16px; padding: 5px 8px; border-radius: 8px; b
 .pd-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
 .pipe-hint { display: inline-flex; align-items: center; gap: 4px; color: var(--gold); font-weight: 700; font-size: 16px; text-shadow: 0 0 12px rgba(255, 201, 74, .65); }
 .pipe-hint .ms { font-size: 18px; animation: nudge 1.4s ease-in-out infinite; } @keyframes nudge { 50% { transform: translateX(-4px); } }
+.pipe-hint.below .ms { animation-name: nudgeUp; } @keyframes nudgeUp { 50% { transform: translateY(-4px); } }
 #pipe.show-detail .pipe-hint { display: none; }
 @media (prefers-reduced-motion: reduce) { .pipe-hint .ms { animation: none; } }
 .pd-head .seg { margin: 0; } .pd-head .seg button { font-size: 14px; padding: 4px 10px; }
@@ -159,7 +163,25 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .rel div { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; }
 .rel dt { font: 700 22px "Philosopher", serif; } .rel dd { margin: 2px 0 0; font-size: 14px; color: var(--grey); }
 .note { font-size: 14px; color: var(--grey); font-style: italic; margin-top: 8px; }
-.finds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; } .finds h3 { margin: 0 0 6px; } .finds p { margin: 0; }
+.finds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; } .finds h3 { margin: 0 0 6px; } .finds p { margin: 0; color: var(--mid); }
+@media (max-width: 760px) { .finds { grid-template-columns: 1fr; } }
+/* next steps: a forward-looking strip, set apart from the findings */
+.next { margin-top: 26px; padding: 22px; border-radius: 18px; border: 1.5px dashed var(--gold); background: linear-gradient(135deg, rgba(226,184,92,.14), rgba(226,184,92,.04)); }
+.next > h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; } .next > h3 .ms { color: var(--gold); font-size: 26px; }
+.next > p { margin: 0 0 14px; color: var(--mid); max-width: 860px; }
+.steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 22px; }
+@media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+.step { display: flex; gap: 12px; align-items: flex-start; }
+.step .ms { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; color: var(--navy); background: var(--gold); }
+.step b { display: block; font-family: Philosopher, Georgia, serif; font-size: 18px; } .step span:last-child { color: var(--mid); font-size: 17px; }
+.next .note { margin: 14px 0 0; }
+/* tooltip for chart labels and points */
+.tip { position: fixed; z-index: 50; max-width: 360px; padding: 10px 12px; border-radius: 12px; background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(16,24,40,.22); font-size: 15px; line-height: 1.4; pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity .12s, transform .12s; }
+.tip.on { opacity: 1; transform: none; }
+.tip b { font-family: Philosopher, Georgia, serif; font-size: 16px; } .tip .q { color: var(--mid); font-style: italic; margin-top: 4px; } .tip .sc { color: var(--grey); font-size: 13px; margin-top: 4px; }
+#chart .sd { stroke-opacity: .28; transition: stroke-opacity .12s; } #chart .row:hover .sd { stroke-opacity: 1; }
+#chart .lbl { cursor: help; } #chart .lbl:hover { text-decoration: underline dotted; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; margin-left: 6px; cursor: pointer; } .toggle[hidden] { display: none; }
 .refs ol { margin: 0; padding-left: 22px; font-size: 15px; } .refs li { margin: 0 0 6px; } .refs a { overflow-wrap: anywhere; }
 /* texts */
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -196,19 +218,19 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
     <a class="btn gold" href="https://prompttree.link/siewart/sage" title="Coming soon"><span class="ms">smart_toy</span> Set it up in your agent</a>
     <a class="btn" href="https://github.com/Siewart/sage"><span class="ms">code</span> Code on GitHub</a>
     <a class="btn" href="https://huggingface.co/datasets/Siewart/sage"><span class="ms">download</span> Dataset on Hugging Face</a>
-    <a class="btn" href="https://discord.gg/53vnjZ7WhS"><span class="ms">forum</span> Discord</a>
     <a class="btn todo" href="#cite" title="Anthology link follows after the conference"><span class="ms">description</span> Paper (INLG 2026)</a>
   </div>
   <div class="social">
-    <iframe src="https://ghbtns.com/github-btn.html?user=Siewart&amp;repo=sage&amp;type=star&amp;count=true&amp;size=large" width="170" height="30" title="Star SAGE on GitHub" loading="lazy"></iframe>
+    <a href="https://discord.gg/53vnjZ7WhS" target="_blank" rel="noopener" title="Join the SAGE Discord"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&amp;logoColor=white&amp;labelColor=1F2A44&amp;style=for-the-badge" alt="Join on Discord" height="28"></a>
     <a href="https://huggingface.co/datasets/Siewart/sage" target="_blank" rel="noopener" title="Like the dataset on Hugging Face"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhuggingface.co%2Fapi%2Fdatasets%2FSiewart%2Fsage&amp;query=%24.likes&amp;label=%E2%9D%A4%20Like%20on%20Hugging%20Face&amp;color=FFD21E&amp;labelColor=1F2A44&amp;style=for-the-badge" alt="Like on Hugging Face" height="28"></a>
+    <iframe src="https://ghbtns.com/github-btn.html?user=Siewart&amp;repo=sage&amp;type=star&amp;count=true&amp;size=large" width="170" height="30" title="Star SAGE on GitHub" loading="lazy"></iframe>
   </div>
 </div></header>
 
 <section id="overview"><div class="wrap">
   <div class="grid3">
-    <a class="contrib c1" href="#pipeline"><img class="seal" src="seal-pipeline.webp" alt="" width="88" height="92"><div><h3>1 · A hybrid pipeline</h3><p>Rule-based content selection, LLM realization, and two engagement modules you can switch on independently.</p></div></a>
-    <a class="contrib c2" href="#corpus"><img class="seal" src="seal-corpus.webp" alt="" width="88" height="92"><div><h3>2 · A full game-state corpus</h3><p>3,276 matches of continuous game state, 142 with professional commentary video. CC0.</p></div></a>
+    <a class="contrib c1" href="#pipeline"><img class="seal" src="seal-pipeline.webp" alt="" width="88" height="92"><div><h3>1 · A hybrid pipeline</h3><p>Rule-based content selection, LLM realization, and two engagement modules that can be switched on independently.</p></div></a>
+    <a class="contrib c2" href="#corpus"><img class="seal" src="seal-corpus.webp" alt="" width="88" height="92"><div><h3>2 · A full game-state corpus</h3><p>3,276 matches of continuous game state, 142 with professional commentary video.</p></div></a>
     <a class="contrib c3" href="#study"><img class="seal" src="seal-study.webp" alt="" width="88" height="92"><div><h3>3 · A study with real spectators</h3><p>33 active AoE2 spectators rated engagement and quality of the generated commentary.</p></div></a>
   </div>
 </div></section>
@@ -222,10 +244,11 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
 
 <section id="pipeline"><div class="wrap">
   <h2><span class="icon i1 ms"><svg class="ms-svg" viewBox="0 -960 960 960" aria-hidden="true"><path d="M40 -560q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v50h60v-50q0 -28.88 20.56 -49.44t49.44 -20.56h35q28.88 0 49.44 20.56t20.56 49.44v160q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44v-50h-60v50q0 28.88 -20.56 49.44t-49.44 20.56h-35q-28.88 0 -49.44 -20.56t-20.56 -49.44Z"/></svg></span>The pipeline</h2>
-  <p class="lead">SAGE follows the classic four-stage architecture (Reiter 2007) and runs online, never seeing future events. Watch game events stream past the filters, which take copies, and flow through the four stages into a summary of the recent events. Click a stage to zoom in on what it does. Switch the modules to see which steps they change (coloured borders).</p>
+  <p class="lead">SAGE follows the classic four-stage architecture (Reiter 2007) and runs online, allowing it only to consider current and past knowledge for text generation.</p>
+  <p class="lead">Below we have an animated graph that shows game events stream into the system, and flow through the four stages into a summary of the recent events. Click a stage to zoom in on what it does. Switch the modules to see which steps they change (coloured borders).</p>
   <div class="seg"><button class="chip ei on" data-lane="ei" type="button" aria-pressed="true">Expert Insights</button><button class="chip es on" data-lane="es" type="button" aria-pressed="true">Event Structuring</button><button class="chip" id="pipePlay" type="button"></button></div>
   <div class="card pipe-card" id="pipe">
-    <div class="pd-head"><div id="pipeTabs" class="seg"></div><span class="pipe-hint"><span class="ms" aria-hidden="true">arrow_back</span> Click a stage to see details</span></div>
+    <div class="pd-head"><div id="pipeTabs" class="seg"></div><span class="pipe-hint"><span class="ms" aria-hidden="true">arrow_back</span> <span class="hint-t">Click a stage to see details</span></span></div>
     <div id="pipeOverview"></div>
     <div id="pipeDetail" tabindex="-1">
       <div class="pd-body">
@@ -256,7 +279,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
     </div>
     <div class="realized" id="realized" data-k="A"><span class="E">16:32 — With Forging now in, </span><span class="A">Red’s three scouts <u>waste no time — they spot a Villager</u> </span><span class="E">on the forward woodline! </span><span class="P">Red <u>surges ahead with</u> a three-Villager advantage. </span><span class="S">Meanwhile Blue raids Red’s gold mine, unseen by Red.</span></div>
     <p class="aeps-info" id="aepsInfo" role="tabpanel" aria-live="polite"></p>
-    <p class="note">One minute-by-minute text update (online sports commentary) summarizing the recent events. Adapted from the paper’s example, with the Sensors clause added for illustration.</p>
+    <p class="note">One minute-by-minute text update (online sports commentary) summarizing the recent events.</p>
   </div>
 </div></section>
 
@@ -265,7 +288,9 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
 
 <section id="texts"><div class="wrap">
   <h2>Compare the texts</h2>
-  <p class="lead">The 16 study texts: four KotD IV matches, each generated with neither module, Expert Insights, Event Structuring, or both. Player names were pseudonymized for the study. Click an update to see its moment in the match video.</p>
+  <h3>Study design</h3>
+  <p class="lead">We generated commentary for four King of the Desert IV matches, once with each set-up: neither module, Expert Insights, Event Structuring, or both. That gives 16 texts of 500 to 800 words. Each participant read four of them, seeing every match and every set-up once, in random order. The texts were pseudonymized to reduce rater bias and kept generation mistakes.</p>
+  <p class="lead">Pick a match and two set-ups to compare. Click an update to see its moment in the match video.</p>
   <div class="seg">
     <label>Match <select id="match"></select></label>
     <label>Left <select id="left"></select></label>
@@ -278,7 +303,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
 
 <section id="corpus"><div class="wrap">
   <h2><span class="icon i2 ms">database</span>The corpus</h2>
-  <p class="lead">Continuous full game state extracted with CaptureAge, a match-analysis tool that rebuilds a complete match from its replay. Released under CC0 (fields derived from game content excepted).</p>
+  <p class="lead">Continuous full game state extracted with CaptureAge, a match-analysis tool that rerenders and extracts information from Age of Empires II for esports commentary and player analysis. Released into the public domain under CC0.</p>
   <div class="grid2">
     <div class="card"><h3>Two sets</h3>
       <table><thead><tr><th>Metric</th><th class="num">KotD IV</th><th class="num">May 2026</th></tr></thead><tbody>
@@ -311,19 +336,29 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
     <button type="button" data-v="table">Table</button>
   </div>
   <span id="outcomePick" hidden> <label>Outcome <select id="outcome"></select></label></span>
+  <label class="toggle" id="sdPick" hidden><input type="checkbox" id="sdOn"> Show ±1 SD</label>
   <div class="card" id="chart"></div>
 </div></section>
 
 <section id="conclusion"><div class="wrap">
-  <h2><span class="icon i1 ms">flag</span>What we found</h2>
-  <p class="lead">A full pipeline from game state to text, tested with its real audience: 33 active AoE2 spectators. The gains are modest but significant, and engagement is still low overall.</p>
+  <h2><span class="icon i1 ms">flag</span>Findings</h2>
+  <p class="lead">We built a full pipeline that turns dense game data into commentary, and tested it with the target audience of 33 active AoE2 spectators. The modules made a modest but significant difference, yet overall engagement stayed low.</p>
   <div class="finds">
     <div class="card"><h3>Expert Insights helps readers follow the strategy</h3><p>With detected strategies, wiki facts and causal explanations, readers enjoyed the competition more (Competitive Nature, β = .20), felt they learned more about playing (Skill Improvement, β = .19) and felt more as if they were playing themselves (Vicarious Sensation, β = .25). The amount of detail also moved closer to “just right” (Detail Level, β = −.24).</p></div>
-    <div class="card"><h3>Event Structuring fixes the order, nothing more</h3><p>Grouping parallel events raised only Logicality (β = .22): the updates came in a more sensible order. Readers still missed why events mattered. Our grouping follows simple heuristics; linking events by cause and effect needs real narrative planning.</p></div>
+    <div class="card"><h3>Event Structuring fixes the order, nothing more</h3><p>Grouping parallel events raised only Logicality (β = .22): the updates came in a more sensible order. Readers still missed why events were important. Our grouping follows simple heuristics and is a clear candidate for improvement.</p></div>
     <div class="card"><h3>Readable texts, low engagement</h3><p>Every engagement motivation except Game Knowledge stayed below the scale midpoint (means 2.5 to 3.9 of 7), while the texts read as ordered and fluent (Logicality 5.6, Readability 4.6). The two modules work independently (no significant interaction), and their effects are small next to how much readers differ from each other.</p></div>
-    <div class="card"><h3>Readers want analysis and context</h3><p>Open feedback (96 of 132 ratings) asked for strategic importance and high-level context in a dry, analytical tone, and called the live-update register noise, probably because the updates were read as one text after the match. Trust was low: readers took correct events for hallucinations. One example is Aztec cavalry, normally unobtainable, which the text mentioned without saying how the player got it. Every claim flagged as implausible was a real event in the game data.</p></div>
+    <div class="card"><h3>Readers want analysis and context</h3><p>Open feedback (96 of 132 ratings) asked for strategic importance and high-level context in a dry, analytical tone, and called the live-update register noise, possibly because the updates were read as one text after the match. Trust was limited: readers took correct events for hallucinations. One example is Aztec cavalry, normally unobtainable, which the text mentioned without saying how the player got it.</p></div>
   </div>
-  <div class="card" style="margin-top:14px"><h3>Next steps</h3><p>Our study used static text read after the match, a format AoE2 viewers do not know; they watch live, video-backed commentary. Two directions follow, and both can be explored with the released corpus: generating commentary alongside video, using the 142 matches paired with professional commentary, and better ways to express causal links between events together with the context needed to understand them. We also evaluated a single proprietary realizer, which limits reproducibility.</p></div>
+  <div class="next"><h3><span class="ms">explore</span>Future directions</h3>
+    <p>Our participants saw static text summarizing the match, a format new to AoE2. Instead, they are used to watching live, human-narrated commentary alongside video. The released corpus leaves room for several directions to improve on this baseline.</p>
+    <div class="steps">
+      <div class="step"><span class="ms">live_tv</span><span><b>Commentary alongside video</b><span>Generate text in step with the match, using the 142 matches paired with professional commentary, to serve as training data.</span></span></div>
+      <div class="step"><span class="ms">edit_note</span><span><b>Let the agent shape the narrative</b><span>Include agentic systems in narrative planning, including the queries (and fuzzy rules) they use to gather the information they need.</span></span></div>
+      <div class="step"><span class="ms">hub</span><span><b>Stronger causal links</b><span>Connect events by cause and effect, and add the context readers need to see why an event is important. This should be both prompts with directions on how to explain causality and additional data representing these relations, ideally grounded in deterministic rules derived directly from game data, which is added alongside the corpus.*</span></span></div>
+      <div class="step"><span class="ms">fact_check</span><span><b>Avoid AI slop</b><span>We intentionally added hype to our texts, following Lewandowski (2012). This did not work in our implementation, possibly because AI generates generic slop, or because hype does not suit AoE II. It could also be that AI cannot easily take part in the social motivations found in esports communities (MSES; Qian et al. 2020).</span></span></div>
+    </div>
+    <p class="note">* Data derived from game content falls under Xbox’s Game Content Usage Rules.</p>
+  </div>
 </div></section>
 
 <section id="thanks"><div class="wrap">
@@ -386,7 +421,6 @@ const boxW = id => Math.max(720, Math.min(1140, document.querySelector(id).clien
 /* theme */
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { drawPipe(); drawChart(); });
 $('#theme').onclick = () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) {} drawPipe(); drawChart(); };
-try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 
 
 /* ---------- corpus schema ---------- */
@@ -396,11 +430,11 @@ try { const t = localStorage.getItem('theme'); if (t) document.documentElement.d
   .forEach(([t, k, c]) => { $('#schema').insertAdjacentHTML('beforeend', `<tr><td class="mono">${t}</td><td>${k}</td><td>${c}</td></tr>`); });
 
 /* ---------- study ---------- */
-$('#studyLead').textContent = `${D.participants} active AoE2 spectators (32 watch weekly; self-reported mean rating 1600 Elo) each read four texts, one per module set-up, in a Latin-square design, giving ${D.ratings} rated texts. Seven engagement motivations (adapted from MSES, Qian et al. 2020) and linguistic quality and comprehension (after Callaway & Lester 2002) on 7-point scales; one linear mixed model per outcome. β is the shift from the grand mean M when a module is on.`;
+$('#studyLead').textContent = `${D.participants} active AoE2 spectators (32 watch weekly; self-reported matchmaking rating well above average, mean 1600 Elo) each read four texts, one per module set-up, in a Latin-square design, giving ${D.ratings} rated texts. Seven engagement motivations (adapted from MSES, Qian et al. 2020) and linguistic quality and comprehension (after Callaway & Lester 2002) on 7-point scales; one linear mixed model per outcome. β is the shift from the grand mean M when a module is on.`;
 D.study.forEach((o, i) => $('#outcome').insertAdjacentHTML('beforeend', `<option value="${i}">${o.label}</option>`));
 let view = 'effects';
-document.querySelectorAll('#views button').forEach(b => b.onclick = () => { view = b.dataset.v; document.querySelectorAll('#views button').forEach(x => x.classList.toggle('on', x === b)); $('#outcomePick').hidden = view !== 'dist'; drawChart(); });
-$('#outcome').onchange = drawChart;
+document.querySelectorAll('#views button').forEach(b => b.onclick = () => { view = b.dataset.v; document.querySelectorAll('#views button').forEach(x => x.classList.toggle('on', x === b)); $('#outcomePick').hidden = view !== 'dist'; $('#sdPick').hidden = view !== 'means' && view !== 'dist'; drawChart(); });
+$('#outcome').onchange = drawChart; $('#sdOn').onchange = drawChart;
 const AG = ['Strongly disagree', 'Strongly agree'];
 // item wording, anchors and reliability from the thesis (evaluation appendix; reliability and ICC tables)
 const OUT = {
@@ -422,6 +456,20 @@ const OUT = {
 Object.values(OUT).forEach(q => { if (!q.lo) [q.lo, q.hi] = AG.map(x => x.toLowerCase()); });
 const CFG = [['none', 'neither', '--grey'], ['EI', 'Expert Insights', '--ei'], ['ES', 'Event Structuring', '--es'], ['both', 'both', '--both']];
 const fmt = v => (v < 0 ? '−' : '') + Math.abs(v).toFixed(2).replace(/^0/, '');
+// one shared tooltip: follows the pointer, a tap shows it on touch screens
+const TIP = document.body.appendChild(document.createElement('div')); TIP.className = 'tip'; TIP.setAttribute('role', 'tooltip');
+const tipAt = (x, y) => { const r = TIP.getBoundingClientRect(); TIP.style.left = Math.min(x + 14, innerWidth - r.width - 8) + 'px'; TIP.style.top = (y + 18 + r.height > innerHeight ? y - r.height - 12 : y + 18) + 'px'; };
+const tip = (node, html) => {
+  node.addEventListener('pointerenter', e => { TIP.innerHTML = html; TIP.classList.add('on'); tipAt(e.clientX, e.clientY); });
+  node.addEventListener('pointermove', e => tipAt(e.clientX, e.clientY));
+  node.addEventListener('pointerleave', () => TIP.classList.remove('on'));
+  return node;
+};
+addEventListener('scroll', () => TIP.classList.remove('on'), { passive: true });
+// ±1 SD whisker, clipped to the 1–7 scale
+const sdBar = (sx, m, cy, col, cap = 2.5) => { const g = el('g', { class: 'sd', stroke: col, 'stroke-width': 1.5 }), a = sx(Math.max(1, m.mean - m.sd)), b = sx(Math.min(7, m.mean + m.sd));
+  g.appendChild(el('line', { x1: a, x2: b, y1: cy, y2: cy })); [a, b].forEach(x => g.appendChild(el('line', { x1: x, x2: x, y1: cy - cap, y2: cy + cap }))); return g; };
+const metricTip = label => { const q = OUT[label]; return `<b>${label}</b><div>${q.what}</div><div class="q">${q.items.map(t => `“${t}”`).join('<br>')}</div><div class="sc">1 = ${q.lo} … 7 = ${q.hi}${q.mid ? `; 4 = ${q.mid}` : ''}</div>`; };
 function drawChart() {
   const box = $('#chart'); box.innerHTML = '';
   if (view === 'table') {
@@ -445,9 +493,9 @@ function drawChart() {
     D.study.forEach((o, i) => {
       if (i === 7) y += 16;
       if (i % 2 === 0) svg.insertBefore(el('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: css('--panel'), opacity: .6 }), svg.firstChild);
-      svg.appendChild(el('text', { x: 8, y: y + 5, 'font-size': 16, 'font-weight': (o.EI.p < .05 || o.ES.p < .05) ? 700 : 400 }, o.label));
+      svg.appendChild(tip(el('text', { x: 8, y: y + 5, 'font-size': 16, 'font-weight': (o.EI.p < .05 || o.ES.p < .05) ? 700 : 400, class: 'lbl' }, o.label), metricTip(o.label)));
       [['EI', '--ei'], ['ES', '--es']].forEach(([k, c], q) => { const m = o[k], zx = LX + q * (PW + 40) + PW / 2, sig = m.p < .05, col = sig ? css(c) : css('--grey');
-        const g = el('g'); g.appendChild(el('title', {}, `${o.label}: β = ${fmt(m.b)} [${fmt(m.lo)}, ${fmt(m.hi)}], p = ${m.p.toFixed(3)}`));
+        const g = tip(el('g'), `<b>${o.label}</b><div>${k === 'EI' ? 'Expert Insights' : 'Event Structuring'}: β = ${fmt(m.b)} [${fmt(m.lo)}, ${fmt(m.hi)}], p = ${m.p.toFixed(3)}</div>`);
         g.appendChild(el('line', { x1: zx + m.lo * K, x2: zx + m.hi * K, y1: y, y2: y, stroke: col, 'stroke-width': 3, 'stroke-linecap': 'round' }));
         g.appendChild(el('circle', { cx: zx + m.b * K, cy: y, r: 6, fill: sig ? col : css('--card'), stroke: col, 'stroke-width': 2 }));
         svg.appendChild(g); });
@@ -455,19 +503,22 @@ function drawChart() {
     });
     box.appendChild(svg); box.insertAdjacentHTML('beforeend', '<p class="note">Lines: 95% CI; filled: p &lt; .05; hover a row for the numbers. For Detail Level, lower is closer to “just right”.</p>');
   } else if (view === 'means') {
-    const W = boxW('#chart'), LX = 200, X0 = LX, X1 = W - 30, sx = v => X0 + (v - 1) / 6 * (X1 - X0), H = top + D.study.length * rowH + 60;
+    const W = boxW('#chart'), LX = 200, X0 = LX, X1 = W - 30, sx = v => X0 + (v - 1) / 6 * (X1 - X0), H = top + D.study.length * rowH + 60, sd = $('#sdOn').checked;
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H }); let y = top;
     CFG.forEach(([k, lab, c], j) => { svg.appendChild(el('circle', { cx: LX + j * 150 + 8, cy: 16, r: 7, fill: css(c) })); svg.appendChild(el('text', { x: LX + j * 150 + 22, y: 21, 'font-size': 15 }, lab)); });
     for (let v = 1; v <= 7; v++) { svg.appendChild(el('line', { x1: sx(v), x2: sx(v), y1: top - 10, y2: top + D.study.length * rowH + 12, stroke: v === 4 ? css('--grey') : css('--line'), 'stroke-dasharray': v === 4 ? '5 4' : '' })); svg.appendChild(el('text', { x: sx(v), y: top + D.study.length * rowH + 32, 'text-anchor': 'middle', 'font-size': 14, fill: css('--grey') }, v)); }
     D.study.forEach((o, i) => {
       if (i === 7) y += 16;
       if (i % 2 === 0) svg.insertBefore(el('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: css('--panel'), opacity: .6 }), svg.firstChild);
-      svg.appendChild(el('text', { x: 8, y: y + 5, 'font-size': 16 }, o.label));
-      CFG.forEach(([k, lab, c], j) => { const m = o.cells[k], cy = y - 7.5 + j * 5; const g = el('g'); g.appendChild(el('title', {}, `${o.label}, ${lab}: M = ${m.mean} (SD ${m.sd}, n = ${m.n})`));
-        g.appendChild(el('circle', { cx: sx(m.mean), cy, r: 5.5, fill: css(c) })); svg.appendChild(g); });
+      const row = svg.appendChild(el('g', { class: 'row' })); row.appendChild(el('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: 'transparent' }));
+      row.appendChild(tip(el('text', { x: 8, y: y + 5, 'font-size': 16, class: 'lbl' }, o.label), metricTip(o.label)));
+      if (sd) CFG.forEach(([k, lab, c], j) => row.appendChild(sdBar(sx, o.cells[k], y - 7.5 + j * 5, css(c))));
+      CFG.forEach(([k, lab, c], j) => { const m = o.cells[k], cy = y - 7.5 + j * 5;
+        const g = tip(el('g'), `<b>${o.label}</b><div>${lab}: M = ${m.mean} (SD ${m.sd}, n = ${m.n})</div>`);
+        g.appendChild(el('circle', { cx: sx(m.mean), cy, r: 5.5, fill: css(c) })); row.appendChild(g); });
       y += rowH;
     });
-    box.appendChild(svg); box.insertAdjacentHTML('beforeend', '<p class="note">Raw mean per set-up (33 ratings each); the dashed line is the scale midpoint. Hover for SD and n.</p>');
+    box.appendChild(svg); box.insertAdjacentHTML('beforeend', `<p class="note">Raw mean per set-up (33 ratings each); the dashed line is the scale midpoint.${sd ? ' Whiskers show ±1 SD, cut off at the ends of the scale.' : ''} Hover an outcome for what it measures, or a dot for SD and n.</p>`);
   } else {
     const o = D.study[+$('#outcome').value || 0], W = Math.max(300, Math.min(1140, $('#chart').clientWidth - 36)), LX = W < 560 ? 122 : 170, sx = v => LX + (v - 1) / 6 * (W - LX - 30), half = o.group === 'engagement';
     // stacked dot plot: x is the exact score, ratings with the same score stack vertically around the row centre
@@ -477,12 +528,15 @@ function drawChart() {
     for (let v = 1; v <= 7; v += half ? .5 : 1) { const whole = v % 1 === 0;
       svg.appendChild(el('line', { x1: sx(v), x2: sx(v), y1: 20, y2: H - 40, stroke: v === 4 ? css('--grey') : css('--line'), 'stroke-dasharray': v === 4 ? '5 4' : whole ? '' : '2 4', 'stroke-opacity': whole ? 1 : .7 }));
       if (whole) svg.appendChild(el('text', { x: sx(v), y: H - 16, 'text-anchor': 'middle', 'font-size': 14, fill: css('--grey') }, v)); }
+    const sd = $('#sdOn').checked;
     CFG.forEach(([k, lab, c], j) => { const cy = 30 + j * rowH + rowH / 2, m = o.cells[k], seen = {};
-      svg.appendChild(el('text', { x: 8, y: cy + 5, 'font-size': W < 560 ? 13 : 17, 'font-weight': 700, fill: css(c) }, lab));
+      const row = svg.appendChild(el('g', { class: 'row' })); row.appendChild(el('rect', { x: 0, y: cy - rowH / 2, width: W, height: rowH, fill: 'transparent' }));
+      if (sd) row.appendChild(sdBar(sx, m, cy - rowH / 2 + 24, css(c), 5));
+      row.appendChild(el('text', { x: 8, y: cy + 5, 'font-size': W < 560 ? 13 : 17, 'font-weight': 700, fill: css(c) }, lab));
       [...m.values].sort((a, b) => a - b).forEach(v => { const i = seen[v] = (seen[v] || 0) + 1, n = counts[j][v];
-        const g = el('circle', { cx: sx(v), cy: cy + (i - 1 - (n - 1) / 2) * dy, r: 4.2, fill: css(c), 'fill-opacity': .6 }); g.appendChild(el('title', {}, `${lab}: ${v} (${n} rating${n > 1 ? 's' : ''})`)); svg.appendChild(g); });
-      svg.appendChild(el('line', { x1: sx(m.mean), x2: sx(m.mean), y1: cy - rowH / 2 + 6, y2: cy + rowH / 2 - 6, stroke: css('--ink'), 'stroke-width': 3 }));
-      svg.appendChild(el('text', { x: sx(m.mean) + 6, y: cy - rowH / 2 + 16, 'font-size': 14 }, `M ${m.mean}`)); });
+        const g = el('circle', { cx: sx(v), cy: cy + (i - 1 - (n - 1) / 2) * dy, r: 4.2, fill: css(c), 'fill-opacity': .6 }); g.appendChild(el('title', {}, `${lab}: ${v} (${n} rating${n > 1 ? 's' : ''})`)); row.appendChild(g); });
+      row.appendChild(el('line', { x1: sx(m.mean), x2: sx(m.mean), y1: cy - rowH / 2 + 6, y2: cy + rowH / 2 - 6, stroke: css('--ink'), 'stroke-width': 3 }));
+      row.appendChild(el('text', { x: sx(m.mean) + 6, y: cy - rowH / 2 + 16, 'font-size': 14 }, `M ${m.mean}${sd ? `, SD ${m.sd}` : ''}`)); });
     box.appendChild(svg);
     const q = OUT[o.label], pct = v => Math.round(v * 100) + '%';
     box.insertAdjacentHTML('beforeend', `<p class="note">Each dot is one rated text (${o.cells.none.n} per set-up). Dots with the same score are stacked, so only the horizontal position is the score; the height of a stack shows how many readers gave it. ${half ? 'Scores fall on half-points because each motivation is the average of two questions.' : 'One question, so scores are whole numbers.'}${q.rev ? ' This question is reverse-scored (score = 8 − answer), so higher means more of the text was read.' : ''} The bar marks the mean.</p>
@@ -549,6 +603,11 @@ const secs = [...document.querySelectorAll('section[id]')];
 addEventListener('scroll', () => { const y = scrollY + 90; let cur = ''; secs.forEach(s => { if (s.offsetTop <= y) cur = s.id; }); document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur)); }, { passive: true });
 
 drawChart(); drawTexts();
+{ // the stage hint points at the tabs: left when beside them, up once it wraps underneath
+  const h = document.querySelector('.pipe-hint'), tabs = $('#pipeTabs');
+  const fit = () => { const below = h.offsetTop > tabs.offsetTop + 4; h.classList.toggle('below', below); h.querySelector('.ms').textContent = below ? 'arrow_upward' : 'arrow_back'; h.querySelector('.hint-t').textContent = below ? 'Click a stage above to see details' : 'Click a stage to see details'; };
+  new ResizeObserver(fit).observe(document.querySelector('.pd-head')); fit();
+}
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { drawChart(); }, 150); });
 </script>
 </body>
