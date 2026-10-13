@@ -1,5 +1,7 @@
 # 1001 Tales of Competitive Age of Empires II
 
+[![Discord](https://img.shields.io/badge/Discord-join%20the%20chat-5865F2?logo=discord&logoColor=white)](https://discord.gg/53vnjZ7WhS)
+
 Everything for thesis on generating live text commentary for Age of Empires II matches: the pipeline that turns exported CaptureAge game data into commentary (`packages/sage-core/`), the R analysis for the two user studies (`studies/`), the INLG paper (`paper/`), and the written thesis itself (`thesis/`). The additional datasets can be found on [Hugging Face](https://huggingface.co/datasets/Siewart/sage).
 
 ## Layout
