@@ -369,7 +369,7 @@ DETAIL.di = {
     [2.0, 'With Expert Insights on, a fuzzy-logic strategy detector reads the game state snapshot at each time anchor and adds a synthetic strategy event, such as Red’s “Scout Rush” (Blue may be going for a “Fast Castle”).'],
     [3.6, 'Context Enrichment takes every event type: battle clusters, filtered constructions and passed-through events. Here: a battle.'],
     [4.6, 'It queries the snapshot current at event time (or an earlier cached one).'],
-    [5.4, 'Facts are added as data following A-E-P+S: the Actuator (the event), its Environment (the location, but also other persistent facts about the world, such as researched technologies), Performance (who leads) and Sensors (what each side can see).'],
+    [5.4, 'Facts are added as data following A-E-P+S: the Actuator (the event), its Environment (the location, which the event carries itself, and other persistent facts about the world, such as researched technologies), Performance (who leads) and Sensors (what each side can see).'],
     [10.0, 'With Expert Insights on, the event is linked to the strategy its player is executing (the strategy event above): here Red’s Scout Rush.']],
   build(svg) {
     const g = E(svg, 'g'), R1 = 64, R2 = 118, OY = 170;
@@ -400,7 +400,9 @@ DETAIL.di = {
       if (tag) { rect(r, 182, y - 12, 30, 24, { rx: 4, fill: col[tag] }); text(r, 182, y - 12, 30, 24, tag, { fs: 14, fw: 700, fill: C.onAcc }); }
       const tx = text(r, tag ? 222 : 186, y - 12, 380, 24, s, { ff: JB, fs: 16, al: 'start' });
       rows.push({ r, t0, lane: tag === 'EI' ? 'ei' : null, tx });
-      if (tag && tag !== 'EI') q.push([line(g, svg, [[120, 252 + OY], [146, 252 + OY], [146, y], [178, y]], { st: C.blue, sw: 2.5, dash: 1, arrow: 1 }), t0]);
+      // the location travels with the event itself; the other facts come from the snapshot
+      if (s.startsWith('location')) q.push([line(g, svg, [[136, 80 + OY], [136, y], [178, y]], { st: C.ink, sw: 2.5, dash: 1, arrow: 1 }), t0]);
+      else if (tag && tag !== 'EI') q.push([line(g, svg, [[120, 252 + OY], [146, 252 + OY], [146, y], [178, y]], { st: C.blue, sw: 2.5, dash: 1, arrow: 1 }), t0]);
     });
     // the strategy event feeds the Expert Insights row
     const eiw = line(g, svg, [[500, R2], [630, R2], [630, 52 + OY + 6 * 34], [624, 52 + OY + 6 * 34]], { st: C.ei, sw: 2.5, dash: 1, arrow: 1 });
