@@ -313,7 +313,7 @@ const fadeAll = (t, T) => 1 - clamp((t - (T - .5)) / .5);
 
 DETAIL.sa = {
   T: 9.5, steps: [[0, 'Events stream in from the game engine: damage, death, entity lifecycle, research.'],
-    [1.0, 'ST-DBSCAN (Birant & Kut 2007) groups damage and death events that lie within ε = 14 tiles and τ = 60s of each other, once a neighborhood holds minPts = 10 events. Stray events are noise.'],
+    [1.0, 'ST-DBSCAN (Birant & Kut 2007) groups damage and death events that lie within ε = 14 tiles and τ = 60s of each other, once a neighborhood holds minPts = 10 events. Events that do not cluster within the timeout are labeled as noise.'],
     [2.4, 'A property filter keeps constructions such as Castles, Town Centers and Towers; other events, such as research, pass through by type.'],
     [3.4, 'Battles are held until they have been quiet for τ, then closed and released, so they can still be reported live.']],
   build(svg) {
@@ -367,10 +367,10 @@ DETAIL.sa = {
 DETAIL.di = {
   T: 14, steps: [[0, 'Event Synthesis injects events of its own into the event stream: a time anchor at each full minute of the game clock.'],
     [2.0, 'With Expert Insights on, a fuzzy-logic strategy detector reads the game state snapshot at each time anchor and adds a synthetic strategy event, such as Red’s “Scout Rush” (Blue may be going for a “Fast Castle”).'],
-    [3.6, 'Context Enrichment takes every event type: battle clusters, filtered constructions and passed-through events. Here: a battle.'],
+    [3.6, 'Context Enrichment processes every event type: battle clusters, filtered constructions and passed-through events. The example here follows a battle.'],
     [4.6, 'It queries the snapshot current at event time (or an earlier cached one).'],
-    [5.4, 'Facts are added as data following A-E-P+S: the Actuator (the event), its Environment (the location, which the event carries itself, and other persistent facts about the world, such as researched technologies), Performance (who leads) and Sensors (what each side can see).'],
-    [10.0, 'With Expert Insights on, the event is linked to the strategy its player is executing (the strategy event above): here Red’s Scout Rush.']],
+    [5.4, 'Facts are added as data following A-E-P+S: the Actuator (the event), its Environment (persistent facts about the world, such as researched technologies), Performance (who leads) and Sensors (what each side can see).'],
+    [10.0, 'With Expert Insights on, the event is also linked to the strategy its player is executing, here Red’s Scout Rush (the strategy event above).']],
   build(svg) {
     const g = E(svg, 'g'), R1 = 64, R2 = 118, OY = 170;
     svg.setAttribute('viewBox', '0 0 640 500');
@@ -391,21 +391,40 @@ DETAIL.di = {
     const cl = E(g, 'g'); glyphAt(cl, 'square', 50, 56 + OY, 18); glyphAt(cl, 'tri', 88, 54 + OY, 20); glyphAt(cl, 'cluster', 70, 80 + OY, 40); text(cl, 10, 104 + OY, 120, 22, 'any event type', { fs: 16, it: 1, fill: C.note });
     line(cl, svg, [[98, 80 + OY], [164, 80 + OY]], { st: C.ink, sw: 2.5, arrow: 1 });
     db(g, 20, 222 + OY, 100, 'snapshot\n16:32', 15);
-    rect(g, 170, 20 + OY, 450, 300, { rx: 6, fill: C.paper, st: C.ink, sw: 2 });
-    const L = [[null, '{ type: "battle", fightType: "raid",', 4.4], ['A', 'actor: 3 Scouts (Red) kill 1 Villager', 5.4], ['E', 'location: (112, 64)', 6.2], ['E', 'techs: Forging (Red)', 6.8],
-      ['P', 'villagers: Red 31 · Blue 28', 8.4], ['S', 'visibleTo: Red ✓ · Blue ✓', 9.2], ['EI', 'strategy: Red is executing a Scout Rush', 10.0], [null, '}', 10.8]];
+    // the data holds IDs: players as numbers (drawn as chips in their color), units and techs as master IDs (decoded in the key below the box)
+    const L = [[null, '{ type: "battle", fightType: "raid",', 4.4], [null, 'location: (112, 64),', 4.4],
+      ['A', 'participants: ②{448: 3} ①{83: 1}', 5.4, 'Red’s three Scout Cavalry and one Blue Villager take part'], ['A', 'losses: ①{83: 1}', 5.8, 'Blue loses one Villager'],
+      ['E', 'techs: ②[67]', 6.8, 'Red has researched Forging'], ['P', 'villagers: ②{83: 31} ①{83: 28}', 8.4, 'Red has 31 Villagers, Blue 28'],
+      ['S', 'visibleTo: [①, ②]', 9.2, 'both players can see the fight'], ['EI', 'strategy: ② "Scout Rush Intent"', 10.0, 'Red is going for a Scout Rush'], [null, '}', 10.8]];
+    const bh = 30 + L.length * 34;
+    rect(g, 170, 20 + OY, 450, bh, { rx: 6, fill: C.paper, st: C.ink, sw: 2 });
+    svg.setAttribute('viewBox', `0 0 640 ${20 + OY + bh + 46}`);
     const col = { A: C.A, E: C.E, P: C.P, S: C.S, EI: C.ei }, rows = [], q = [];
-    L.forEach(([tag, s, t0], i) => {
+    // monospace row text where ① and ② become player chips (JetBrains Mono advances 0.6 em per character)
+    const PLAYER = { '①': ['1', '#2f6fdb'], '②': ['2', '#cf3a3a'] };
+    const chipText = (p, x, y, s, fs) => {
+      let shown = '';
+      const chips = [];
+      for (const ch of s) if (PLAYER[ch]) { chips.push([shown.length, ...PLAYER[ch]]); shown += '  '; } else shown += ch;
+      const t = text(p, x, y - 12, 420, 24, shown, { ff: JB, fs, al: 'start' });
+      chips.forEach(([k, n, c]) => { const cx = x + (k + 1) * fs * .6; E(p, 'circle', { cx, cy: y, r: fs * .58, fill: c }); text(p, cx - 10, y - 12, 20, 24, n, { ff: JB, fs: fs * .75, fw: 700, fill: '#fff' }); });
+      return t;
+    };
+    L.forEach(([tag, s, t0, plain], i) => {
       const y = 52 + OY + i * 34, r = E(g, 'g');
+      if (plain) E(r, 'title', {}, plain);
       if (tag) { rect(r, 182, y - 12, 30, 24, { rx: 4, fill: col[tag] }); text(r, 182, y - 12, 30, 24, tag, { fs: 14, fw: 700, fill: C.onAcc }); }
-      const tx = text(r, tag ? 222 : 186, y - 12, 380, 24, s, { ff: JB, fs: 16, al: 'start' });
+      const tx = chipText(r, tag ? 222 : 186, y, s, 16);
       rows.push({ r, t0, lane: tag === 'EI' ? 'ei' : null, tx });
-      // the location travels with the event itself; the other facts come from the snapshot
-      if (s.startsWith('location')) q.push([line(g, svg, [[136, 80 + OY], [136, y], [178, y]], { st: C.ink, sw: 2.5, dash: 1, arrow: 1 }), t0]);
-      else if (tag && tag !== 'EI') q.push([line(g, svg, [[120, 252 + OY], [146, 252 + OY], [146, y], [178, y]], { st: C.blue, sw: 2.5, dash: 1, arrow: 1 }), t0]);
+      // the event's own fields (type, location) are already in the JSON; the tagged facts come from the snapshot
+      if (tag && tag !== 'EI') q.push([line(g, svg, [[120, 252 + OY], [146, 252 + OY], [146, y], [178, y]], { st: C.blue, sw: 2.5, dash: 1, arrow: 1 }), t0]);
     });
+    // key: decodes the IDs above, appears with the first ID row
+    const key = E(g, 'g'); chipText(key, 20, 20 + OY + bh + 22, '① Blue · ② Red · 448 Scout Cavalry · 83 Villager · 67 Forging', 14);
+    rows.push({ r: key, t0: 5.4, lane: null });
     // the strategy event feeds the Expert Insights row
-    const eiw = line(g, svg, [[500, R2], [630, R2], [630, 52 + OY + 6 * 34], [624, 52 + OY + 6 * 34]], { st: C.ei, sw: 2.5, dash: 1, arrow: 1 });
+    const eiY = 52 + OY + L.findIndex(([tag]) => tag === 'EI') * 34;
+    const eiw = line(g, svg, [[500, R2], [630, R2], [630, eiY], [624, eiY]], { st: C.ei, sw: 2.5, dash: 1, arrow: 1 });
     return t => {
       const f = fadeAll(t, this.T);
       [[clk, .3], [clkT, .3], [ar, .7], [st, 1.0], [stT, 1.0], [ar2, 1.4], [d2, 1.7], [d2T, 1.7], [cl, 3.6]].forEach(([el, t0]) => el.setAttribute('opacity', clamp((t - t0) / .3) * f));
@@ -466,16 +485,16 @@ DETAIL.dp = {
 };
 
 DETAIL.sr = {
-  T: 16, steps: [[0, 'The Pre-Processor swaps numerical identifiers for names, such as unit IDs for unit names, and game time for human-friendly timestamps.'],
-    [3.2, 'The prompt is assembled: a system instruction and a communicative goal (both depend on the module set-up: border colors), writing-style instructions for the live-update register, module prompts (only for enabled modules: wiki facts with causal explanations, information asymmetry) and the preprocessed JSON. All earlier text is given as prior turns.'],
-    [6.6, 'Gemini 2.5 Flash (temperature 1, fixed seed) realizes one text block per prompt: a summary of the recent events, not live coverage.'],
-    [7.4, 'The LLM also turns map coordinates into narrative location anchors, such as “on the forward woodline” (example adapted from the paper).']],
+  T: 16, steps: [[0, 'The Realizer’s Pre-Processor swaps numerical identifiers for names, such as unit IDs for unit names, map coordinates for named locations (“Blue’s forward woodline”) and game time for human-friendly timestamps.'],
+    [3.2, 'The prompt is assembled from a system instruction and a communicative goal, which both depend on the module set-up (shown by the border colors), writing-style instructions for the live-update register, a prompt for each enabled module (wiki facts with causal explanations, information asymmetry) and the preprocessed JSON. All earlier text is given as prior turns.'],
+    [6.6, 'Gemini 2.5 Flash realizes one text block per prompt, which summarizes the events since the previous block.'],
+    [7.4, 'The named location from the Pre-Processor ends up in the text as “on the forward woodline” (example adapted from the paper).']],
   build(svg) {
     const g = E(svg, 'g');
     text(g, 20, 4, 260, 22, '{…} content unit', { fs: 16, it: 1, fill: C.note, al: 'start' }); text(g, 360, 4, 260, 22, '«…» human-readable', { fs: 16, it: 1, fill: C.note, al: 'start' });
     rect(g, 20, 30, 260, 112, { rx: 6, fill: C.paper, st: C.ink, sw: 2 }); rect(g, 360, 30, 260, 112, { rx: 6, fill: C.paper, st: C.ink, sw: 2 });
     line(g, svg, [[288, 86], [350, 86]], { st: C.navy, sw: 3, arrow: 1 }); text(g, 280, 54, 80, 22, 'Pre-\nProcessor', { fs: 15, fw: 700, fill: C.blue, lh: 1.05 });
-    const ids = ['actor: unit 448', 'pos: (112, 64)', 't: 992000 ms'], nm = ['actor: Scout Cavalry', 'pos: (112, 64)', 'time: 16:32'];
+    const ids = ['actor: master 448', 'pos: (112, 64)', 't: 992000 ms'], nm = ['actor: Scout Cavalry', 'at: Blue’s forward woodline', 'time: 16:32'];
     ids.forEach((s, i) => text(g, 32, 40 + i * 32, 240, 24, s, { ff: JB, fs: 15, al: 'start' }));
     const right = nm.map((s, i) => text(g, 372, 40 + i * 32, 240, 24, s, { ff: JB, fs: 15, al: 'start', fw: 700, fill: C.navy }));
     const flies = nm.map(() => glyph('readable', 34, g));
