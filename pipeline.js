@@ -391,11 +391,11 @@ DETAIL.di = {
     const cl = E(g, 'g'); glyphAt(cl, 'square', 50, 56 + OY, 18); glyphAt(cl, 'tri', 88, 54 + OY, 20); glyphAt(cl, 'cluster', 70, 80 + OY, 40); text(cl, 10, 104 + OY, 120, 22, 'any event type', { fs: 16, it: 1, fill: C.note });
     line(cl, svg, [[98, 80 + OY], [164, 80 + OY]], { st: C.ink, sw: 2.5, arrow: 1 });
     db(g, 20, 222 + OY, 100, 'snapshot\n16:32', 15);
-    // the data holds IDs: players as numbers (drawn as chips in their color), units and techs as master IDs (decoded in the key below the box)
+    // the data holds IDs: players as numbers (drawn as chips in their color), units and techs as master IDs (decoded in the key below the box and the gloss after each row)
     const L = [[null, '{ type: "battle", fightType: "raid",', 4.4], [null, 'location: (112, 64),', 4.4],
       ['A', 'participants: ②{448: 3} ①{83: 1}', 5.4, 'Red’s three Scout Cavalry and one Blue Villager take part'], ['A', 'losses: ①{83: 1}', 5.8, 'Blue loses one Villager'],
       ['E', 'techs: ②[67]', 6.8, 'Red has researched Forging'], ['P', 'villagers: ②{83: 31} ①{83: 28}', 8.4, 'Red has 31 Villagers, Blue 28'],
-      ['S', 'visibleTo: [①, ②]', 9.2, 'both players can see the fight'], ['EI', 'strategy: ② "Scout Rush Intent"', 10.0, 'Red is going for a Scout Rush'], [null, '}', 10.8]];
+      ['S', 'visibleTo: [①, ②]', 9.2, 'both players can see the fight'], ['EI', 'strategy: ② "scout_rush"', 10.0, 'Red is going for a Scout Rush'], ['EI', 'evidence: {…}', 10.3, 'what the strategy detector based this on'], [null, '}', 10.8]];
     const bh = 30 + L.length * 34;
     rect(g, 170, 20 + OY, 450, bh, { rx: 6, fill: C.paper, st: C.ink, sw: 2 });
     svg.setAttribute('viewBox', `0 0 640 ${20 + OY + bh + 46}`);
@@ -408,13 +408,30 @@ DETAIL.di = {
       for (const ch of s) if (PLAYER[ch]) { chips.push([shown.length, ...PLAYER[ch]]); shown += '  '; } else shown += ch;
       const t = text(p, x, y - 12, 420, 24, shown, { ff: JB, fs, al: 'start' });
       chips.forEach(([k, n, c]) => { const cx = x + (k + 1) * fs * .6; E(p, 'circle', { cx, cy: y, r: fs * .58, fill: c }); text(p, cx - 10, y - 12, 20, 24, n, { ff: JB, fs: fs * .75, fw: 700, fill: '#fff' }); });
-      return t;
+      return [t, x + shown.length * fs * .6];
+    };
+    // plain-language glosses after the JSON rows fade out towards the right border of the box
+    const fid = 'difade' + (++marker.n), defs = svg.querySelector('defs');
+    const fg = E(defs, 'linearGradient', { id: fid + 'g', gradientUnits: 'userSpaceOnUse', x1: 540, y1: 0, x2: 610, y2: 0 });
+    E(fg, 'stop', { offset: 0, 'stop-color': '#fff' }); E(fg, 'stop', { offset: 1, 'stop-color': '#000' });
+    E(E(defs, 'mask', { id: fid, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: 640, height: 1000 }), 'rect', { x: 0, y: 0, width: 640, height: 1000, fill: `url(#${fid}g)` });
+    // hovering a row shows its whole gloss in a small card under the row
+    const tip = E(null, 'g', { 'pointer-events': 'none' }), tipR = rect(tip, 0, 0, 0, 30, { rx: 5, fill: C.paper, st: C.note, sw: 1.5 }), tipT = text(tip, 0, 0, 0, 30, '', { fs: 15, it: 1, fill: C.ink, al: 'start' });
+    const hover = (r, y, x, s) => {
+      E(r, 'rect', { x: 170, y: y - 17, width: 450, height: 34, fill: 'transparent' });
+      r.addEventListener('pointerenter', () => {
+        if (+r.getAttribute('opacity') < .5) return;
+        g.appendChild(tip); tipT.textContent = s;
+        const w = tipT.getComputedTextLength() + 20, tx = Math.max(4, Math.min(x - 10, 612 - w));
+        tipR.setAttribute('x', tx); tipR.setAttribute('y', y + 12); tipR.setAttribute('width', w); tipT.setAttribute('x', tx + 10); tipT.setAttribute('y', y + 27);
+      });
+      r.addEventListener('pointerleave', () => tip.remove());
     };
     L.forEach(([tag, s, t0, plain], i) => {
       const y = 52 + OY + i * 34, r = E(g, 'g');
-      if (plain) E(r, 'title', {}, plain);
       if (tag) { rect(r, 182, y - 12, 30, 24, { rx: 4, fill: col[tag] }); text(r, 182, y - 12, 30, 24, tag, { fs: 14, fw: 700, fill: C.onAcc }); }
-      const tx = chipText(r, tag ? 222 : 186, y, s, 16);
+      const [tx, end] = chipText(r, tag ? 222 : 186, y, s, 16);
+      if (plain) { text(r, end + 12, y - 12, 400, 24, plain, { fs: 15, it: 1, fill: C.note, al: 'start' }).setAttribute('mask', `url(#${fid})`); hover(r, y, end + 12, plain); }
       rows.push({ r, t0, lane: tag === 'EI' ? 'ei' : null, tx });
       // the event's own fields (type, location) are already in the JSON; the tagged facts come from the snapshot
       if (tag && tag !== 'EI') q.push([line(g, svg, [[120, 252 + OY], [146, 252 + OY], [146, y], [178, y]], { st: C.blue, sw: 2.5, dash: 1, arrow: 1 }), t0]);
