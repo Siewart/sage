@@ -65,6 +65,9 @@ code, pre, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
 .hero h1 { font-size: clamp(30px, 5vw, 52px); }
 .hero .sub { font-family: Philosopher, serif; font-style: italic; color: var(--gold); font-size: clamp(18px, 2.6vw, 26px); margin-bottom: 14px; }
 .hero .authors { color: #C9CFDA; font-size: 16px; }
+.hero .logos { float: right; display: flex; flex-direction: column; align-items: flex-end; gap: 16px; margin: 6px 0 12px 24px; }
+.hero .logos img { display: block; height: 20px; width: auto; }
+@media (max-width: 760px) { .hero .logos { float: none; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 0 0 18px; } .hero .logos img { height: 15px; } }
 .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
 .btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 16px; border: 1px solid rgba(255,255,255,.35); color: #fff; background: rgba(255,255,255,.06); }
 .btn.gold { background: var(--gold); color: #1F2A44; border-color: var(--gold); box-shadow: 0 0 18px rgba(255, 201, 74, .55); }
@@ -232,6 +235,7 @@ footer { padding: 30px 0 50px; color: var(--grey); font-size: 15px; }
 </div></div>
 
 <header class="hero"><div class="wrap">
+  <div class="logos"><img src="logo-utwente.png" alt="University of Twente"><img src="logo-studio-platypus.svg" alt="Studio Platypus"></div>
   <h1>From Full Game State to Live Commentary</h1>
   <div class="sub">A Data-to-Text Pipeline and Corpus for Age of Empires II</div>
   <div class="authors">Siewart van Wingerden¹ · Mariët Theune² · Lorenzo Gatti² — ¹ Studio Platypus · ² Human Media Interaction, University of Twente · INLG 2026, Utrecht</div>
