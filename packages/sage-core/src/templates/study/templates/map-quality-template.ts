@@ -1,3 +1,4 @@
+import { prepareHydration } from "../../../events/hydration.js";
 import { createTemplate } from "../../../events/instant-traverser.js";
 import { Context } from "../study-context.js";
 import { initDataSetWithOverrides } from "../study-data-sets.js";
@@ -18,9 +19,12 @@ interface MapQualityEvent {
 
 const isMapQualityEvent = (event: unknown): event is MapQualityEvent => {
   return (
-    typeof event === "object" && event !== null &&
-    "type" in event && event.type === "mapQuality" &&
-    "worldTime" in event && typeof event.worldTime === "number"
+    typeof event === "object" &&
+    event !== null &&
+    "type" in event &&
+    event.type === "mapQuality" &&
+    "worldTime" in event &&
+    typeof event.worldTime === "number"
   );
 };
 
@@ -32,17 +36,22 @@ export function mapQualityTemplate(
     eventInterpreter: (input: { type: string }): MapQualityEvent | null => {
       const syntheticMapQuality: MapQualityEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "mapQuality" as const, worldTime: (input as unknown as { worldTime: number }).worldTime }
+          ? {
+              type: "mapQuality" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+            }
           : null;
       if (isMapQualityEvent(input) || syntheticMapQuality !== null) {
         const baseEvent = syntheticMapQuality ?? (input as MapQualityEvent);
-        const result = enhanceDataForLLM(
-          baseEvent,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
-          true, // resourceData
+        const result = prepareHydration(baseEvent, () =>
+          enhanceDataForLLM(
+            baseEvent,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+            true, // resourceData
+          ),
         );
 
         return result;
@@ -209,17 +218,22 @@ export function mapQualityTemplateLLMBase(
     eventInterpreter: (input: { type: string }): MapQualityEvent | null => {
       const syntheticMapQuality: MapQualityEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "mapQuality" as const, worldTime: (input as unknown as { worldTime: number }).worldTime }
+          ? {
+              type: "mapQuality" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+            }
           : null;
       if (isMapQualityEvent(input) || syntheticMapQuality !== null) {
         const baseEvent = syntheticMapQuality ?? (input as MapQualityEvent);
-        const result = enhanceDataForLLM(
-          baseEvent,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
-          true, // resourceData
+        const result = prepareHydration(baseEvent, () =>
+          enhanceDataForLLM(
+            baseEvent,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+            true, // resourceData
+          ),
         );
 
         return result;
@@ -242,17 +256,22 @@ export function mapQualityTemplateLLMInsights(
     eventInterpreter: (input: { type: string }): MapQualityEvent | null => {
       const syntheticMapQuality: MapQualityEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "mapQuality" as const, worldTime: (input as unknown as { worldTime: number }).worldTime }
+          ? {
+              type: "mapQuality" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+            }
           : null;
       if (isMapQualityEvent(input) || syntheticMapQuality !== null) {
         const baseEvent = syntheticMapQuality ?? (input as MapQualityEvent);
-        const result = enhanceDataForLLM(
-          baseEvent,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
-          true, // resourceData
+        const result = prepareHydration(baseEvent, () =>
+          enhanceDataForLLM(
+            baseEvent,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+            true, // resourceData
+          ),
         );
 
         return result;
@@ -263,10 +282,7 @@ export function mapQualityTemplateLLMInsights(
       classification: "mapQuality",
       value: 1,
     }),
-    eventRealiser: createMapQualityLLMRealiser(
-      mapQualityInsights,
-      context,
-    ),
+    eventRealiser: createMapQualityLLMRealiser(mapQualityInsights, context),
   });
 }
 
@@ -278,17 +294,22 @@ export function mapQualityTemplateLLMEventStructuring(
     eventInterpreter: (input: { type: string }): MapQualityEvent | null => {
       const syntheticMapQuality: MapQualityEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "mapQuality" as const, worldTime: (input as unknown as { worldTime: number }).worldTime }
+          ? {
+              type: "mapQuality" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+            }
           : null;
       if (isMapQualityEvent(input) || syntheticMapQuality !== null) {
         const baseEvent = syntheticMapQuality ?? (input as MapQualityEvent);
-        const result = enhanceDataForLLM(
-          baseEvent,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
-          true, // resourceData
+        const result = prepareHydration(baseEvent, () =>
+          enhanceDataForLLM(
+            baseEvent,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+            true, // resourceData
+          ),
         );
 
         return result;
@@ -314,17 +335,22 @@ export function mapQualityTemplateLLMAll(
     eventInterpreter: (input: { type: string }): MapQualityEvent | null => {
       const syntheticMapQuality: MapQualityEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "mapQuality" as const, worldTime: (input as unknown as { worldTime: number }).worldTime }
+          ? {
+              type: "mapQuality" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+            }
           : null;
       if (isMapQualityEvent(input) || syntheticMapQuality !== null) {
         const baseEvent = syntheticMapQuality ?? (input as MapQualityEvent);
-        const result = enhanceDataForLLM(
-          baseEvent,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
-          true, // resourceData
+        const result = prepareHydration(baseEvent, () =>
+          enhanceDataForLLM(
+            baseEvent,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+            true, // resourceData
+          ),
         );
 
         return result;
@@ -347,17 +373,22 @@ export function mapQualityTemplateLLM(
     eventInterpreter: (input: { type: string }): MapQualityEvent | null => {
       const syntheticMapQuality: MapQualityEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "mapQuality" as const, worldTime: (input as unknown as { worldTime: number }).worldTime }
+          ? {
+              type: "mapQuality" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+            }
           : null;
       if (isMapQualityEvent(input) || syntheticMapQuality !== null) {
         const baseEvent = syntheticMapQuality ?? (input as MapQualityEvent);
-        const result = enhanceDataForLLM(
-          baseEvent,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
-          true, // resourceData
+        const result = prepareHydration(baseEvent, () =>
+          enhanceDataForLLM(
+            baseEvent,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+            true, // resourceData
+          ),
         );
 
         return result;
@@ -368,4 +399,3 @@ export function mapQualityTemplateLLM(
     eventRealiser: createMapQualityLLMRealiser(mapQualityBase, context),
   });
 }
-

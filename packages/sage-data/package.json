@@ -1,0 +1,27 @@
+{
+  "name": "@sage/data",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "build": "tsc --noCheck && cpx \"src/duckdb/*.mjs\" dist/duckdb/",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@duckdb/node-api": "1.5.5-r.4",
+    "arquero": "8.0.1",
+    "@huggingface/hub": "2.17.0",
+    "yauzl": "3.2.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "cpx": "1.5.0",
+    "typescript": "5.9.2",
+    "@types/node": "24.3.0",
+    "@types/yauzl": "2.10.3"
+  }
+}

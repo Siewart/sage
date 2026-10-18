@@ -1,29 +1,21 @@
+import { prepareHydration } from "../../../events/hydration.js";
 import { createTemplate } from "../../../events/instant-traverser.js";
-import {
-  BattlesEvent,
-  BattleEvent,
-  InterpretedBattlesEvent,
-  RawBattleEvent,
-} from "../study-events.js";
+import { BattlesEvent } from "../study-events.js";
 import {
   eventBase,
   eventInsights,
   eventEventStructuring,
   eventAll,
 } from "../../../gemini/prompts.js";
-import { cleanBattlesEvent, enhanceDataForLLM } from "./enhanceData.js";
+import { enhanceDataForLLM } from "./enhanceData.js";
 import { initDataSetWithOverrides } from "../study-data-sets.js";
 import { Context } from "../study-context.js";
 import {
   makeLocationList,
   getNamedLocation,
 } from "../../../aoe2/map-quality.js";
-import {
-  DSDamageInstant,
-  DSDeathInstant,
-} from "../../../aoe2/types/arrow/instants.js";
-import { getEntityInfos } from "../../../aoe2/entity-info.js";
-import { countBy, unique } from "remeda";
+import { summarizeBattle, summarizeOngoingBattle } from "./battle-summary.js";
+export { classifyBattleFacts } from "./battle-summary.js";
 
 const formatTime = (timeMs: number): string => {
   const totalSeconds = Math.floor(timeMs / 1000);
@@ -58,425 +50,87 @@ const getLocationName = (
   }
 };
 
-const hydrateBattleCluster = (
-  rawBattle: RawBattleEvent,
-  context: Context<ReturnType<typeof initDataSetWithOverrides>>,
-): BattleEvent => {
-  const battleEvents = rawBattle.data.filter(
-    (event): event is DSDamageInstant | DSDeathInstant =>
-      event.type === "damage" || event.type === "death",
-  );
-
-  const participants1Map = new Map<
-    number,
-    { joinTime: number; lastAppearance: number }
-  >();
-  const participants2Map = new Map<
-    number,
-    { joinTime: number; lastAppearance: number }
-  >();
-
-  battleEvents.forEach((event) => {
-    if (event.objectPlayerId === 1) {
-      const existing = participants1Map.get(event.objectEntity);
-      participants1Map.set(event.objectEntity, {
-        joinTime: existing
-          ? Math.min(existing.joinTime, event.worldTime)
-          : event.worldTime,
-        lastAppearance: existing
-          ? Math.max(existing.lastAppearance, event.worldTime)
-          : event.worldTime,
-      });
-    }
-    if (event.subjectPlayerId === 1) {
-      const existing = participants1Map.get(event.subjectEntity);
-      participants1Map.set(event.subjectEntity, {
-        joinTime: existing
-          ? Math.min(existing.joinTime, event.worldTime)
-          : event.worldTime,
-        lastAppearance: existing
-          ? Math.max(existing.lastAppearance, event.worldTime)
-          : event.worldTime,
-      });
-    }
-    if (event.objectPlayerId === 2) {
-      const existing = participants2Map.get(event.objectEntity);
-      participants2Map.set(event.objectEntity, {
-        joinTime: existing
-          ? Math.min(existing.joinTime, event.worldTime)
-          : event.worldTime,
-        lastAppearance: existing
-          ? Math.max(existing.lastAppearance, event.worldTime)
-          : event.worldTime,
-      });
-    }
-    if (event.subjectPlayerId === 2) {
-      const existing = participants2Map.get(event.subjectEntity);
-      participants2Map.set(event.subjectEntity, {
-        joinTime: existing
-          ? Math.min(existing.joinTime, event.worldTime)
-          : event.worldTime,
-        lastAppearance: existing
-          ? Math.max(existing.lastAppearance, event.worldTime)
-          : event.worldTime,
-      });
-    }
-  });
-
-  const casualties1 = new Set(
-    battleEvents
-      .filter((d) => d.type === "death" && d.objectPlayerId === 1)
-      .map((d) => d.objectEntity),
-  );
-
-  const casualties2 = new Set(
-    battleEvents
-      .filter((d) => d.type === "death" && d.objectPlayerId === 2)
-      .map((d) => d.objectEntity),
-  );
-
-  const location = getLocationName(context, rawBattle.worldX, rawBattle.worldY);
-
-  return {
-    ...rawBattle,
-    location,
-    player1: {
-      participants: Array.from(participants1Map.entries()).reduce(
-        (acc, [id, timing]) => {
-          const entityInfo = context.queryEntity(id, timing.lastAppearance, {
-            playerId: 1,
-          });
-          const name = entityInfo?.name || "";
-          acc[name] = (acc[name] || 0) + 1;
-          return acc;
-        },
-        {} as { [key: string]: number },
-      ),
-      casualties: Array.from(participants1Map.entries())
-        .filter(([id]) => casualties1.has(id))
-        .reduce(
-          (acc, [id, timing]) => {
-            const entityInfo = context.queryEntity(id, timing.lastAppearance, {
-              playerId: 1,
-            });
-            const name = entityInfo?.name || "";
-            acc[name] = (acc[name] || 0) + 1;
-            return acc;
-          },
-          {} as { [key: string]: number },
-        ),
-      survivors: Array.from(participants1Map.entries())
-        .filter(([id]) => !casualties1.has(id))
-        .reduce(
-          (acc, [id, timing]) => {
-            const entityInfo = context.queryEntity(id, timing.lastAppearance, {
-              playerId: 1,
-            });
-            const name = entityInfo?.name || "";
-            acc[name] = (acc[name] || 0) + 1;
-            return acc;
-          },
-          {} as { [key: string]: number },
-        ),
-      participantsExtended: Array.from(participants1Map.entries()).map(
-        ([id, timing]) => {
-          const q = context.queryEntity(id, timing.lastAppearance, {
-            playerId: 1,
-          });
-          return {
-            name: q?.name || "",
-            entityId: id,
-            refMasterId: q?.refMasterId,
-            joinTime: timing.joinTime,
-            lastAppearance: timing.lastAppearance,
-          };
-        },
-      ),
-      casualtiesExtended: Array.from(participants1Map.entries())
-        .filter(([id]) => casualties1.has(id))
-        .map(([id, timing]) => {
-          const deathEvent = battleEvents.find(
-            (d) =>
-              d.type === "death" &&
-              d.objectEntity === id &&
-              d.objectPlayerId === 1,
-          );
-          const lastAppearance = deathEvent?.worldTime || timing.lastAppearance;
-          const q = context.queryEntity(id, lastAppearance, {
-            playerId: 1,
-          });
-          return {
-            name: q?.name || "",
-            entityId: id,
-            refMasterId: q?.refMasterId,
-            joinTime: timing.joinTime,
-            lastAppearance,
-          };
-        }),
-      survivorsExtended: Array.from(participants1Map.entries())
-        .filter(([id]) => !casualties1.has(id))
-        .map(([id, timing]) => {
-          const q = context.queryEntity(id, timing.lastAppearance, {
-            playerId: 1,
-          });
-          return {
-            name: q?.name || "",
-            entityId: id,
-            refMasterId: q?.refMasterId,
-            joinTime: timing.joinTime,
-            lastAppearance: timing.lastAppearance,
-          };
-        }),
-    },
-    player2: {
-      participants: Array.from(participants2Map.entries()).reduce(
-        (acc, [id, timing]) => {
-          const entityInfo = context.queryEntity(id, timing.lastAppearance, {
-            playerId: 2,
-          });
-          const name = entityInfo?.name || "";
-          acc[name] = (acc[name] || 0) + 1;
-          return acc;
-        },
-        {} as { [key: string]: number },
-      ),
-      casualties: Array.from(participants2Map.entries())
-        .filter(([id]) => casualties2.has(id))
-        .reduce(
-          (acc, [id, timing]) => {
-            const entityInfo = context.queryEntity(id, timing.lastAppearance, {
-              playerId: 2,
-            });
-            const name = entityInfo?.name || "";
-            acc[name] = (acc[name] || 0) + 1;
-            return acc;
-          },
-          {} as { [key: string]: number },
-        ),
-      survivors: Array.from(participants2Map.entries())
-        .filter(([id]) => !casualties2.has(id))
-        .reduce(
-          (acc, [id, timing]) => {
-            const entityInfo = context.queryEntity(id, timing.lastAppearance, {
-              playerId: 2,
-            });
-            const name = entityInfo?.name || "";
-            acc[name] = (acc[name] || 0) + 1;
-            return acc;
-          },
-          {} as { [key: string]: number },
-        ),
-      participantsExtended: Array.from(participants2Map.entries()).map(
-        ([id, timing]) => {
-          const q = context.queryEntity(id, timing.lastAppearance, {
-            playerId: 2,
-          });
-          return {
-            name: q?.name || "",
-            entityId: id,
-            refMasterId: q?.refMasterId,
-            joinTime: timing.joinTime,
-            lastAppearance: timing.lastAppearance,
-          };
-        },
-      ),
-      casualtiesExtended: Array.from(participants2Map.entries())
-        .filter(([id]) => casualties2.has(id))
-        .map(([id, timing]) => {
-          const deathEvent = battleEvents.find(
-            (d) =>
-              d.type === "death" &&
-              d.objectEntity === id &&
-              d.objectPlayerId === 2,
-          );
-          const lastAppearance = deathEvent?.worldTime || timing.lastAppearance;
-          const q = context.queryEntity(id, lastAppearance, {
-            playerId: 2,
-          });
-          return {
-            name: q?.name || "",
-            entityId: id,
-            refMasterId: q?.refMasterId,
-            joinTime: timing.joinTime,
-            lastAppearance,
-          };
-        }),
-      survivorsExtended: Array.from(participants2Map.entries())
-        .filter(([id]) => !casualties2.has(id))
-        .map(([id, timing]) => {
-          const q = context.queryEntity(id, timing.lastAppearance, {
-            playerId: 2,
-          });
-          return {
-            name: q?.name || "",
-            entityId: id,
-            refMasterId: q?.refMasterId,
-            joinTime: timing.joinTime,
-            lastAppearance: timing.lastAppearance,
-          };
-        }),
-    },
-    fightType: "skirmish",
-  };
-};
-
-const hydrateOngoingBattleCluster = (
-  rawBattle: RawBattleEvent,
-  context: Context<ReturnType<typeof initDataSetWithOverrides>>,
-  startTime: number,
-) => {
-  const battleEvents = rawBattle.data.filter(
-    (event): event is DSDamageInstant | DSDeathInstant =>
-      event.type === "damage" || event.type === "death",
-  );
-
-  const entityInfos1 = getEntityInfos(
-    context.getDataSet(),
-    unique([
-      ...battleEvents
-        .filter((d) => d.objectPlayerId === 1)
-        .map((d) => d.objectEntity),
-      ...battleEvents
-        .filter((d) => d.subjectPlayerId === 1)
-        .map((d) => d.subjectEntity),
-    ]),
-    startTime,
-  );
-
-  const entityInfos2 = getEntityInfos(
-    context.getDataSet(),
-    unique([
-      ...battleEvents
-        .filter((d) => d.objectPlayerId === 2)
-        .map((d) => d.objectEntity),
-      ...battleEvents
-        .filter((d) => d.subjectPlayerId === 2)
-        .map((d) => d.subjectEntity),
-    ]),
-    startTime,
-  );
-
-  return {
-    location: getLocationName(context, rawBattle.worldX, rawBattle.worldY),
-    worldX: rawBattle.worldX,
-    worldY: rawBattle.worldY,
-    startTimeMs: rawBattle.startTimeMs,
-    player1: { participants: countBy(entityInfos1, (d) => d.name) },
-    player2: { participants: countBy(entityInfos2, (d) => d.name) },
-  };
-};
-
-const classifyBattle = (battle: BattleEvent) => {
-  const totalParticipants =
-    battle.player1.participantsExtended.length +
-    battle.player2.participantsExtended.length;
-  const totalCasualties =
-    battle.player1.casualtiesExtended.length +
-    battle.player2.casualtiesExtended.length;
-
-  const hasVillagers =
-    Object.keys(battle.player1.participants).includes("Villager") ||
-    Object.keys(battle.player2.participants).includes("Villager");
-
-  if (hasVillagers) {
-    return { classification: "raid", value: 0.9 };
-  } else if (totalParticipants > 15 && totalCasualties > 8) {
-    return { classification: "major battle", value: 0.9 };
-  } else if (totalParticipants < 10 && totalCasualties < 5) {
-    return { classification: "skirmish", value: 0.8 };
-  } else {
-    return { classification: "battle", value: 0.6 };
-  }
-};
-
 const mkInterpreter =
   (
     context: Context<ReturnType<typeof initDataSetWithOverrides>>,
-    expertInsights: boolean = false,
+    expertInsights = false,
   ) =>
   (input: BattlesEvent) => {
-    if (!input || input.type !== "battles") {
-      return null; 
-    }
-
-    if (!input.clusters) {
-      return null;
-    }
-
-    const hydratedClusters = input.clusters.map((battle) =>
-      hydrateBattleCluster(battle, context),
+    if (!input || input.type !== "battles" || !input.clusters) return null;
+    const { startTime, endTime } = input;
+    const finished = input.clusters.map((battle) =>
+      summarizeBattle(battle, context),
     );
-
-    const classifiedClusters = hydratedClusters.map((battle) => {
-      const classification = classifyBattle(battle);
-
-      const survivors1 = battle.player1.participantsExtended.filter(
-        (p) =>
-          !battle.player1.casualtiesExtended.some(
-            (c) => c.entityId === p.entityId,
-          ),
-      );
-      const survivors2 = battle.player2.participantsExtended.filter(
-        (p) =>
-          !battle.player2.casualtiesExtended.some(
-            (c) => c.entityId === p.entityId,
-          ),
-      );
-
-      const survivorsList1 = survivors1.reduce(
-        (acc, s) => {
-          acc[s.name] = (acc[s.name] || 0) + 1;
-          return acc;
-        },
-        {} as { [key: string]: number },
-      );
-
-      const survivorsList2 = survivors2.reduce(
-        (acc, s) => {
-          acc[s.name] = (acc[s.name] || 0) + 1;
-          return acc;
-        },
-        {} as { [key: string]: number },
-      );
-
-      return {
-        ...battle,
-        fightType: classification.classification,
-        player1: {
-          ...battle.player1,
-          survivors: survivorsList1,
-          survivorsExtended: survivors1,
-        },
-        player2: {
-          ...battle.player2,
-          survivors: survivorsList2,
-          survivorsExtended: survivors2,
-        },
-      };
-    });
-
-    const interpretedInput: InterpretedBattlesEvent = {
-      type: "battles",
+    const ongoing = (input.ongoingBattleClusters ?? []).map((battle) =>
+      summarizeOngoingBattle(battle, context, input.startTime),
+    );
+    const facts = {
+      type: input.type,
       worldTime: input.worldTime,
-      clusters: classifiedClusters,
-      ongoingBattles:
-        input.ongoingBattleClusters?.map((cluster) =>
-          hydrateOngoingBattleCluster(cluster, context, input.startTime),
-        ) ?? [],
       startTime: input.startTime,
       endTime: input.endTime,
+      totalDamageEvents: finished.reduce(
+        (sum, battle) => sum + battle.facts.damageEventCount,
+        0,
+      ),
+      totalCasualtiesPlayer1: finished.reduce(
+        (sum, battle) =>
+          sum +
+          Object.values(battle.facts.player1.casualties).reduce(
+            (a, b) => a + b,
+            0,
+          ),
+        0,
+      ),
+      totalCasualtiesPlayer2: finished.reduce(
+        (sum, battle) =>
+          sum +
+          Object.values(battle.facts.player2.casualties).reduce(
+            (a, b) => a + b,
+            0,
+          ),
+        0,
+      ),
+      finishedBattles: finished.map((battle) => battle.facts),
+      ongoingBattles: ongoing.map((battle) => battle.facts),
     };
-
-    const cleaned = cleanBattlesEvent(interpretedInput);
-    const result = enhanceDataForLLM(
-      cleaned,
-      context,
-      input.startTime,
-      input.endTime,
-      expertInsights,
+    const strategies = new Map(
+      [1, 2].map((id) => [id, context.getPlayerStrategy(id)]),
     );
-    return result;
+    const capturedContext = Object.create(context) as typeof context;
+    capturedContext.getPlayerStrategy = (id) => strategies.get(id);
+    return prepareHydration(facts, () =>
+      enhanceDataForLLM(
+        {
+          ...facts,
+          finishedBattles: finished.map((battle) => ({
+            ...battle.hydrate(),
+            location: getLocationName(
+              context,
+              battle.facts.worldX,
+              battle.facts.worldY,
+            ),
+          })),
+          ongoingBattles: ongoing.map((battle) => ({
+            ...battle.hydrate(),
+            location: getLocationName(
+              context,
+              battle.facts.worldX,
+              battle.facts.worldY,
+            ),
+          })),
+        },
+        capturedContext,
+        startTime,
+        endTime,
+        expertInsights,
+      ),
+    );
   };
+
+type RealizedBattles = import("../../../events/hydration.js").Hydrated<
+  NonNullable<ReturnType<ReturnType<typeof mkInterpreter>>>
+>;
 
 const battlesClassifier = (
   input: NonNullable<ReturnType<ReturnType<typeof mkInterpreter>>>,
@@ -501,11 +155,11 @@ const battlesClassifier = (
 };
 
 const realiser = (
-  input: NonNullable<ReturnType<ReturnType<typeof mkInterpreter>>>,
+  input: RealizedBattles,
   classification: { classification: string; value: number },
   _previousResponses: string[],
 ): {
-  dataUsed: NonNullable<ReturnType<ReturnType<typeof mkInterpreter>>>;
+  dataUsed: RealizedBattles;
   text: string;
 } => {
   const { classification: overallType } = classification;
@@ -569,7 +223,7 @@ const createBattlesLLMRealiser = (
   ) => Promise<string | undefined>,
 ) => {
   return async (
-    input: NonNullable<ReturnType<ReturnType<typeof mkInterpreter>>>,
+    input: RealizedBattles,
     _classification: { classification: string; value: number },
     previousResponses: string[],
   ): Promise<{ dataUsed: unknown; text: string }> => {
@@ -637,4 +291,3 @@ export const battlesTemplate = (
     eventClassifier: battlesClassifier,
     eventRealiser: realiser,
   });
-

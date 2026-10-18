@@ -1,0 +1,29 @@
+name: SAGE local inspector
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.13.1"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm --filter @sage/data test
+      - run: pnpm --filter @sage/llm test
+      - run: pnpm --filter @sage/local-service test
+      - run: pnpm --filter sage-core test:data
+        env:
+          SAGE_DATA_DIR: ${{ runner.temp }}/sage-data
+      - run: pnpm test:generate
+        env:
+          DISABLE_LLM: "true"

@@ -3,15 +3,14 @@
   "main": "dist/index",
   "license": "MPL-2.0",
   "type": "module",
-  "packageManager": "yarn@4.6.0",
   "private": true,
   "scripts": {
     "run:cli": "node dist/index.js",
     "run:repl": "node dist/repl.js",
     "clean": "rimraf dist",
     "build": "tsc",
-    "clean-build": "yarn clean && yarn build",
-    "test": "yarn node --experimental-vm-modules $(yarn bin jest)",
+    "clean-build": "pnpm clean && pnpm build",
+    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
     "lint": "eslint src/**/*.ts test/**/*.ts",
     "format": "prettier --write src test",
     "format:check": "prettier --check src test"

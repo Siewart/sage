@@ -381,7 +381,7 @@ export class EnglishFactory implements NLGFactory {
     if (typeof subject === "object" && !(subject instanceof NLGElement)) {
       if ("verbPhrase" in subject) {
         phraseElement = SPhraseSpec.withVerbPhrase(
-          subject.verbPhrase,
+          subject.verbPhrase!,
           this.context,
         );
       } else if ("verb" in subject) {

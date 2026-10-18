@@ -1,32 +1,37 @@
 {
-    "private": true,
-    "workspaces": [
-        "packages/*",
-        "studies/*",
-        "thesis",
-        "paper"
-    ],
-    "packageManager": "yarn@4.9.3",
-    "resolutions": {
-        "strnum": "1.0.5",
-        "esbuild": "0.25.9",
-        "get-tsconfig": "4.10.1"
-    },
-    "scripts": {
-        "lint": "yarn workspaces foreach -Ap run lint",
-        "format": "yarn workspaces foreach -Ap run format",
-        "typecheck": "yarn workspaces foreach -Ap run typecheck",
-        "test": "yarn workspaces foreach -Ap run test",
-        "build": "yarn workspaces foreach -Apt run build"
-    },
-    "devDependencies": {
-        "@types/node": "24.3.0",
-        "@typescript-eslint/parser": "8.40.0",
-        "eslint": "9.33.0",
-        "prettier": "3.6.2",
-        "typescript": "5.9.2"
-    },
-    "engines": {
-        "node": "24.6.0"
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "lint": "turbo run lint --filter=./packages/* --filter=./apps/*",
+    "format": "turbo run format",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "build": "turbo run build --filter=./packages/* --filter=./apps/*",
+    "gen": "pnpm --filter sage-core gen",
+    "test:generate": "pnpm --filter sage-core test:generate",
+    "dev": "node scripts/dev.mjs",
+    "start": "node scripts/dev.mjs --production",
+    "desktop:package": "pnpm --filter @sage/desktop package"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "@typescript-eslint/parser": "8.40.0",
+    "eslint": "9.33.0",
+    "prettier": "3.6.2",
+    "typescript": "5.9.2",
+    "turbo": "^2.5.8",
+    "tsx": "4.20.4"
+  },
+  "engines": {
+    "node": ">=24.13.0 <25",
+    "pnpm": ">=9.15.9"
+  },
+  "name": "sage",
+  "pnpm": {
+    "overrides": {
+      "strnum": "1.0.5",
+      "esbuild": "0.25.9",
+      "get-tsconfig": "4.10.1"
     }
+  }
 }

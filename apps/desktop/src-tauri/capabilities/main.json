@@ -1,0 +1,9 @@
+{
+  "identifier": "main-window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-theme",
+    "dialog:allow-open"
+  ]
+}

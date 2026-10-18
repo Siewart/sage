@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "SAGE",
+  "version": "0.1.0-beta.1",
+  "identifier": "org.sage.commentary",
+  "build": {
+    "beforeBuildCommand": "node scripts/build.mjs",
+    "frontendDist": "../stage/runtime/web",
+    "beforeDevCommand": "node scripts/build.mjs"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "SAGE",
+        "width": 1400,
+        "height": 1000,
+        "minWidth": 760,
+        "minHeight": 640
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost http://127.0.0.1:*; img-src 'self' data:; object-src 'none'; base-uri 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "externalBin": ["binaries/sage-runtime"],
+    "resources": {
+      "../stage/runtime/service.mjs": "runtime/service.mjs",
+      "../stage/runtime/worker.mjs": "runtime/worker.mjs",
+      "../stage/runtime/bootstrap.mjs": "runtime/bootstrap.mjs",
+      "../stage/runtime/duckdb-worker.mjs": "runtime/duckdb-worker.mjs",
+      "../stage/runtime/assets/": "runtime/assets/",
+      "../stage/runtime/node_modules/": "runtime/node_modules/"
+    },
+    "macOS": {
+      "minimumSystemVersion": "13.5",
+      "entitlements": "Entitlements.plist"
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      },
+      "webviewInstallMode": {
+        "type": "offlineInstaller",
+        "silent": true
+      }
+    },
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": false
+      }
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

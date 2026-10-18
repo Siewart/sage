@@ -1,3 +1,4 @@
+import { prepareHydration } from "../../../events/hydration.js";
 import { createTemplate } from "../../../events/instant-traverser.js";
 import { Context } from "../study-context.js";
 import { initDataSetWithOverrides } from "../study-data-sets.js";
@@ -20,10 +21,14 @@ interface IntroductionEvent {
 
 const isIntroductionEvent = (event: unknown): event is IntroductionEvent => {
   return (
-    typeof event === "object" && event !== null &&
-    "type" in event && event.type === "introduction" &&
-    "worldTime" in event && typeof event.worldTime === "number" &&
-    "minute" in event && typeof event.minute === "number"
+    typeof event === "object" &&
+    event !== null &&
+    "type" in event &&
+    event.type === "introduction" &&
+    "worldTime" in event &&
+    typeof event.worldTime === "number" &&
+    "minute" in event &&
+    typeof event.minute === "number"
   );
 };
 
@@ -35,16 +40,22 @@ export function introTemplate(
     eventInterpreter: (input: { type: string }): IntroductionEvent | null => {
       const syntheticIntro: IntroductionEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "introduction" as const, worldTime: (input as unknown as { worldTime: number }).worldTime, minute: 0 }
+          ? {
+              type: "introduction" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+              minute: 0,
+            }
           : null;
       if (isIntroductionEvent(input) || syntheticIntro !== null) {
         const event = syntheticIntro ?? (input as IntroductionEvent);
-        const result = enhanceDataForLLM(
-          event,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
+        const result = prepareHydration(event, () =>
+          enhanceDataForLLM(
+            event,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+          ),
         );
         return result;
       }
@@ -208,16 +219,22 @@ export function introTemplateLLMBase(
     eventInterpreter: (input: { type: string }): IntroductionEvent | null => {
       const syntheticIntro: IntroductionEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "introduction" as const, worldTime: (input as unknown as { worldTime: number }).worldTime, minute: 0 }
+          ? {
+              type: "introduction" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+              minute: 0,
+            }
           : null;
       if (isIntroductionEvent(input) || syntheticIntro !== null) {
         const event = syntheticIntro ?? (input as IntroductionEvent);
-        const result = enhanceDataForLLM(
-          event,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
+        const result = prepareHydration(event, () =>
+          enhanceDataForLLM(
+            event,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+          ),
         );
         return result;
       }
@@ -239,16 +256,22 @@ export function introTemplateLLMInsights(
     eventInterpreter: (input: { type: string }): IntroductionEvent | null => {
       const syntheticIntro: IntroductionEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "introduction" as const, worldTime: (input as unknown as { worldTime: number }).worldTime, minute: 0 }
+          ? {
+              type: "introduction" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+              minute: 0,
+            }
           : null;
       if (isIntroductionEvent(input) || syntheticIntro !== null) {
         const event = syntheticIntro ?? (input as IntroductionEvent);
-        const result = enhanceDataForLLM(
-          event,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
+        const result = prepareHydration(event, () =>
+          enhanceDataForLLM(
+            event,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+          ),
         );
         return result;
       }
@@ -258,11 +281,7 @@ export function introTemplateLLMInsights(
       classification: "intro",
       value: 1,
     }),
-    eventRealiser: createLLMRealiser(
-      introductionBaseInsights,
-      context,
-      true,
-    ),
+    eventRealiser: createLLMRealiser(introductionBaseInsights, context, true),
   });
 }
 
@@ -274,16 +293,22 @@ export function introTemplateLLMEventStructuring(
     eventInterpreter: (input: { type: string }): IntroductionEvent | null => {
       const syntheticIntro: IntroductionEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "introduction" as const, worldTime: (input as unknown as { worldTime: number }).worldTime, minute: 0 }
+          ? {
+              type: "introduction" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+              minute: 0,
+            }
           : null;
       if (isIntroductionEvent(input) || syntheticIntro !== null) {
         const event = syntheticIntro ?? (input as IntroductionEvent);
-        const result = enhanceDataForLLM(
-          event,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
+        const result = prepareHydration(event, () =>
+          enhanceDataForLLM(
+            event,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+          ),
         );
         return result;
       }
@@ -309,16 +334,22 @@ export function introTemplateLLMAll(
     eventInterpreter: (input: { type: string }): IntroductionEvent | null => {
       const syntheticIntro: IntroductionEvent | null =
         input.type === "tick" && (input as { minute?: number }).minute === 0
-          ? { type: "introduction" as const, worldTime: (input as unknown as { worldTime: number }).worldTime, minute: 0 }
+          ? {
+              type: "introduction" as const,
+              worldTime: (input as unknown as { worldTime: number }).worldTime,
+              minute: 0,
+            }
           : null;
       if (isIntroductionEvent(input) || syntheticIntro !== null) {
         const event = syntheticIntro ?? (input as IntroductionEvent);
-        const result = enhanceDataForLLM(
-          event,
-          context,
-          context.getDataSet().descriptor.metadata.binTimes[0]![0],
-          undefined,
-          expertInsights,
+        const result = prepareHydration(event, () =>
+          enhanceDataForLLM(
+            event,
+            context,
+            context.getDataSet().descriptor.metadata.binTimes[0]![0],
+            undefined,
+            expertInsights,
+          ),
         );
         return result;
       }
@@ -331,4 +362,3 @@ export function introTemplateLLMAll(
     eventRealiser: createLLMRealiser(introductionBaseAll, context, true),
   });
 }
-

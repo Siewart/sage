@@ -1,7 +1,15 @@
+import { execution } from "@sage/contracts/execution";
+import {
+  environmentProvider,
+  environmentKey,
+  validateProvider,
+} from "@sage/llm";
+import { providerSchema } from "@sage/contracts";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { Cli, Command, Option } from "clipanion";
+import { DATA_COMMANDS } from "./data/commands.js";
 
 import { doFromDataSet } from "./study/utils.js";
 import {
@@ -12,7 +20,10 @@ import {
   makeDataSetFromPath,
 } from "./study/init.js";
 
-const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const PKG_ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
 
 function findDescriptors(target: string): string[] {
   const stat = fs.statSync(target, { throwIfNoEntry: false });
@@ -44,16 +55,37 @@ class GenerateCommand extends Command {
       given, all descriptor.json files found recursively inside it are processed.
     `,
     examples: [
-      ["Run all module configs on a single dataset", "generate data/my-game/descriptor.json"],
+      [
+        "Run all module configs on a single dataset",
+        "generate data/my-game/descriptor.json",
+      ],
       ["Run all datasets in the data/ folder", "generate data/"],
-      ["Run only the base module on a folder of datasets", "generate data/ --module base"],
+      [
+        "Run only the base module on a folder of datasets",
+        "generate data/ --module base",
+      ],
     ],
   });
 
   data = Option.String({ required: true, name: "DATA" });
 
   module = Option.String("--module", "all", {
-    description: "Module config: all | base | eventStructuring | expertInsights",
+    description:
+      "Module config: all | base | eventStructuring | expertInsights",
+  });
+
+  provider = Option.String("--provider", {
+    description: "templates | gemini | anthropic | openai",
+  });
+  model = Option.String("--model", {
+    description: "Explicit provider model identifier",
+  });
+  baseUrl = Option.String("--base-url", {
+    description: "OpenAI-compatible endpoint (including /v1)",
+  });
+  backend = Option.String("--backend", "duckdb", {
+    description:
+      "Data backend: arquero (Arrow under data/) or duckdb (Parquet)",
   });
 
   anonymize = Option.Boolean("--anonymize", true, {
@@ -62,33 +94,59 @@ class GenerateCommand extends Command {
   });
 
   async execute() {
+    const defaults = environmentProvider();
+    const provider = providerSchema.parse({
+      kind: this.provider ?? defaults.kind,
+      model: this.model ?? defaults.model,
+      baseUrl: this.baseUrl ?? defaults.baseUrl,
+    });
+    const apiKey = environmentKey(provider.kind);
+    validateProvider(provider, apiKey);
+    return execution.run({ provider, ...(apiKey ? { apiKey } : {}) }, () =>
+      this.generate(),
+    );
+  }
+  async generate() {
     process.chdir(PKG_ROOT);
     fs.mkdirSync("reports", { recursive: true });
 
     const moduleArg = this.module as ModuleConfig | "all";
-    const validModules: (ModuleConfig | "all")[] = ["all", "base", "eventStructuring", "expertInsights"];
+    const validModules: (ModuleConfig | "all")[] = [
+      "all",
+      "base",
+      "eventStructuring",
+      "expertInsights",
+    ];
     if (!validModules.includes(moduleArg)) {
-      this.context.stderr.write(`Error: --module must be one of: ${validModules.join(", ")}\n`);
+      this.context.stderr.write(
+        `Error: --module must be one of: ${validModules.join(", ")}\n`,
+      );
       return 1;
     }
 
     const descriptors = findDescriptors(path.resolve(PKG_ROOT, this.data));
     if (descriptors.length === 0) {
-      this.context.stderr.write(`No descriptor.json files found at: ${this.data}\n`);
+      this.context.stderr.write(
+        `No descriptor.json files found at: ${this.data}\n`,
+      );
       return 1;
     }
 
-    const modules = moduleArg === "all"
-      ? MODULE_CONFIGS
-      : MODULE_CONFIGS.filter((m) => m.config === moduleArg);
+    const modules =
+      moduleArg === "all"
+        ? MODULE_CONFIGS
+        : MODULE_CONFIGS.filter((m) => m.config === moduleArg);
 
     for (const descriptorPath of descriptors) {
       const cfg = DATASET_CONFIGS.find(
         (c) => path.resolve(PKG_ROOT, c.descriptorPath) === descriptorPath,
       );
+      const backend = this.backend === "duckdb" ? "duckdb" : "arquero";
       const dataSet = cfg
-        ? makeDataSet(cfg, this.anonymize)
-        : (makeDataSetFromPath(descriptorPath) as ReturnType<typeof makeDataSet>);
+        ? makeDataSet(cfg, this.anonymize, backend)
+        : (makeDataSetFromPath(descriptorPath, backend) as ReturnType<
+            typeof makeDataSet
+          >);
       const label = dataSet.name;
 
       if (!cfg) {
@@ -97,10 +155,16 @@ class GenerateCommand extends Command {
         );
       }
 
-      for (const mod of modules) {
-        const id = cfg ? `${cfg.key}${mod.id}` : mod.id;
-        this.context.stdout.write(`Generating ${label} — ${mod.config} (${id})...\n`);
-        await doFromDataSet(dataSet, id, mod.config);
+      try {
+        for (const mod of modules) {
+          const id = cfg ? `${cfg.key}${mod.id}` : mod.id;
+          this.context.stdout.write(
+            `Generating ${label} — ${mod.config} (${id})...\n`,
+          );
+          await doFromDataSet(dataSet, id, mod.config);
+        }
+      } finally {
+        dataSet.query.close();
       }
     }
 
@@ -110,9 +174,10 @@ class GenerateCommand extends Command {
 
 const cli = new Cli({
   binaryLabel: "sage-core",
-  binaryName: "yarn gen",
+  binaryName: "pnpm gen",
   binaryVersion: "0.0.0",
 });
 
 cli.register(GenerateCommand);
+for (const command of DATA_COMMANDS) cli.register(command);
 cli.runExit(process.argv.slice(2));

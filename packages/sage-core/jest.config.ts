@@ -2,6 +2,7 @@ import type { Config } from "jest";
 
 const jestConfig: Config = {
   preset: "ts-jest/presets/js-with-ts-esm",
+  watchman: false,
   testEnvironment: "node",
   extensionsToTreatAsEsm: [".ts"],
   moduleNameMapper: {

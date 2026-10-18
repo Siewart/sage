@@ -1,6 +1,10 @@
+import { prepareHydration } from "../../../events/hydration.js";
 import { createTemplate } from "../../../events/instant-traverser.js";
 import { Context, PlayerStrategy } from "../study-context.js";
-import { detectStrategies, GameState } from "../../../fuzzy/strategy-detector.js";
+import {
+  detectStrategies,
+  GameState,
+} from "../../../fuzzy/strategy-detector.js";
 import { strategyDetectors } from "../../../fuzzy/strategies.js";
 import {
   eventBase,
@@ -33,7 +37,7 @@ interface StrategyDetectionTickInput {
 
 const eventInterpreter =
   (context: Context<ReturnType<typeof initDataSetWithOverrides>>) =>
-  (input: { type: string }): StrategyEventOutput | null => {
+  (input: { type: string }) => {
     if (input.type === "strategyDetectionTick") {
       const i = input as StrategyDetectionTickInput;
       const detectedStrategy = detectPlayerStrategy(
@@ -50,19 +54,25 @@ const eventInterpreter =
       // track strategy evolution state in context for future detections.
       context.updatePlayerStrategy(i.playerId, detectedStrategy);
 
-      return {
-        type: "strategyUpdate",
+      const facts = {
+        type: "strategyUpdate" as const,
         playerId: i.playerId,
         minute: i.minute,
         worldTime: i.worldTime,
         strategy: detectedStrategy,
-        playerName: getPlayerName(context, i.playerId),
       };
+      return prepareHydration(facts, () => ({
+        ...facts,
+        playerName: getPlayerName(context, i.playerId),
+      }));
     }
 
     if (input.type === "strategyUpdate") {
       const i = input as StrategyEventInput;
-      return { ...i, playerName: getPlayerName(context, i.playerId) };
+      return prepareHydration(i, () => ({
+        ...i,
+        playerName: getPlayerName(context, i.playerId),
+      }));
     }
     return null;
   };
@@ -91,7 +101,7 @@ export function strategyTemplate(
   return createTemplate({
     eventInterpreter: eventInterpreter(context),
 
-    eventClassifier: (input: StrategyEventOutput) => {
+    eventClassifier: (input: StrategyEventInput) => {
       const { minute, worldTime } = input;
       const timeInMinutes = worldTime / 60000;
       const hasMatchingDetectors = strategyDetectors.some((detector) => {
@@ -182,7 +192,7 @@ function detectPlayerStrategy(
   currentMinute: number,
 ): PlayerStrategy | null {
   const dataSet = context.getDataSet();
-  const extractor = new GameStateExtractor(dataSet);
+  const extractor = new GameStateExtractor(dataSet, "ids");
 
   try {
     const gameState: GameState = {
@@ -229,7 +239,7 @@ export function strategyTemplateLLMBase(
 ) {
   return createTemplate({
     eventInterpreter: eventInterpreter(context),
-    eventClassifier: (input: StrategyEventOutput) => {
+    eventClassifier: (input: StrategyEventInput) => {
       const { minute, worldTime } = input;
       const timeInMinutes = worldTime / 60000;
       const hasMatchingDetectors = strategyDetectors.some((detector) => {
@@ -259,7 +269,7 @@ export function strategyTemplateLLMInsights(
 ) {
   return createTemplate({
     eventInterpreter: eventInterpreter(context),
-    eventClassifier: (input: StrategyEventOutput) => {
+    eventClassifier: (input: StrategyEventInput) => {
       const { minute, worldTime } = input;
       const timeInMinutes = worldTime / 60000;
       const hasMatchingDetectors = strategyDetectors.some((detector) => {
@@ -289,7 +299,7 @@ export function strategyTemplateLLMEventStructuring(
 ) {
   return createTemplate({
     eventInterpreter: eventInterpreter(context),
-    eventClassifier: (input: StrategyEventOutput) => {
+    eventClassifier: (input: StrategyEventInput) => {
       const { minute, worldTime } = input;
       const timeInMinutes = worldTime / 60000;
       const hasMatchingDetectors = strategyDetectors.some((detector) => {
@@ -319,7 +329,7 @@ export function strategyTemplateLLMAll(
 ) {
   return createTemplate({
     eventInterpreter: eventInterpreter(context),
-    eventClassifier: (input: StrategyEventOutput) => {
+    eventClassifier: (input: StrategyEventInput) => {
       const { minute, worldTime } = input;
       const timeInMinutes = worldTime / 60000;
       const hasMatchingDetectors = strategyDetectors.some((detector) => {
@@ -343,4 +353,3 @@ export function strategyTemplateLLMAll(
     eventRealiser: createStrategyLLMRealiser(eventAll),
   });
 }
-

@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "node:path";
 
 import {
   createEnhancedBattleAnalysisSystem,
@@ -54,9 +55,11 @@ export function generateMarkdownReport(
       // }
     });
   }
-  fs.writeFileSync(`./reports/${name}.md`, markdown);
+  const directory = process.env["SAGE_REPORT_DIR"] ?? "reports";
+  fs.mkdirSync(directory, { recursive: true });
+  fs.writeFileSync(path.join(directory, `${name}.md`), markdown);
   fs.writeFileSync(
-    `./reports/${name}-data.json`,
+    path.join(directory, `${name}-data.json`),
     JSON.stringify(narratives.usedData, null, 2),
   );
   console.log(`\nReport generated: ./reports/${name}`);

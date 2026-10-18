@@ -1,11 +1,19 @@
 import { DataSet } from "../../src/utility/data-set.js";
+import type { BackendKind } from "../../src/data/types.js";
 import { mapQuality } from "../../src/aoe2/map-quality.js";
-import { addGameInfoParams, addPlayerParams } from "../../src/aoe2/player-info.js";
+import {
+  addGameInfoParams,
+  addPlayerParams,
+} from "../../src/aoe2/player-info.js";
 import { playerData } from "../../src/aoe2/expert-insights/player-data.js";
 import { civilizationData } from "../../src/aoe2/expert-insights/civilization-data.js";
 
 export type PlayerKey = keyof typeof playerData;
-export type ModuleConfig = "all" | "base" | "eventStructuring" | "expertInsights";
+export type ModuleConfig =
+  | "all"
+  | "base"
+  | "eventStructuring"
+  | "expertInsights";
 
 export interface DatasetConfig {
   key: "T1" | "T2" | "T3" | "T4";
@@ -48,21 +56,42 @@ export const MODULE_CONFIGS: { id: string; config: ModuleConfig }[] = [
   { id: "M4", config: "expertInsights" },
 ];
 
-export function makeDataSetFromPath(descriptorPath: string) {
-  const ds = mapQuality(addPlayerParams(addGameInfoParams(new DataSet(descriptorPath))));
+export function makeDataSetFromPath(
+  descriptorPath: string,
+  backend: BackendKind = "duckdb",
+) {
+  const ds = mapQuality(
+    addPlayerParams(
+      addGameInfoParams(new DataSet(descriptorPath, {}, {}, { backend })),
+    ),
+  );
   return ds.addParams("expertInsights", (_dt) => ({
     playerTrivia: {} as Record<number, (typeof playerData)[PlayerKey]>,
     civilizationInfo: {
       [ds.derivedParams.players[0]?.civilizationName ?? "unknown"]:
-        civilizationData[ds.derivedParams.players[0]?.civilizationId as keyof typeof civilizationData],
+        civilizationData[
+          ds.derivedParams.players[0]
+            ?.civilizationId as keyof typeof civilizationData
+        ],
       [ds.derivedParams.players[1]?.civilizationName ?? "unknown"]:
-        civilizationData[ds.derivedParams.players[1]?.civilizationId as keyof typeof civilizationData],
+        civilizationData[
+          ds.derivedParams.players[1]
+            ?.civilizationId as keyof typeof civilizationData
+        ],
     },
   }));
 }
 
-export function makeDataSet(cfg: DatasetConfig, anonymize: boolean = true) {
-  const ds = mapQuality(addPlayerParams(addGameInfoParams(new DataSet(cfg.descriptorPath))));
+export function makeDataSet(
+  cfg: DatasetConfig,
+  anonymize: boolean = true,
+  backend: BackendKind = "duckdb",
+) {
+  const ds = mapQuality(
+    addPlayerParams(
+      addGameInfoParams(new DataSet(cfg.descriptorPath, {}, {}, { backend })),
+    ),
+  );
   if (anonymize) {
     ds.derivedParams.players.forEach((player, i) => {
       const key = cfg.players[i];
@@ -76,9 +105,15 @@ export function makeDataSet(cfg: DatasetConfig, anonymize: boolean = true) {
     },
     civilizationInfo: {
       [ds.derivedParams.players[0]!.civilizationName]:
-        civilizationData[ds.derivedParams.players[0]!.civilizationId as keyof typeof civilizationData]!,
+        civilizationData[
+          ds.derivedParams.players[0]!
+            .civilizationId as keyof typeof civilizationData
+        ]!,
       [ds.derivedParams.players[1]!.civilizationName]:
-        civilizationData[ds.derivedParams.players[1]!.civilizationId as keyof typeof civilizationData]!,
+        civilizationData[
+          ds.derivedParams.players[1]!
+            .civilizationId as keyof typeof civilizationData
+        ]!,
     },
   }));
 }

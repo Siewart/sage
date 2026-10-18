@@ -1,0 +1,40 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "lint": {},
+    "format": {
+      "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "@sage/contracts#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "@sage/llm#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "@sage/local-service#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "@sage/ui#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    }
+  }
+}

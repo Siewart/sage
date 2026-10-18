@@ -5,6 +5,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "declaration": false,
-    "noEmitOnError": false
+    "noEmitOnError": false,
+    "resolveJsonModule": true
   }
 }

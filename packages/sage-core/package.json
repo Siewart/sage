@@ -1,16 +1,17 @@
 {
   "name": "sage-core",
   "version": "0.0.0",
-  "packageManager": "yarn@4.6.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc --noCheck && cpx \"../simplenlg-core/src/**/*.xml\" dist/simplenlg-core/src/ && cpx \"../simplenlg-core/LexAccessCopyright.MD\" dist/simplenlg-core/",
-    "gen": "tsx gen/cli.ts",
+    "gen": "node --import tsx gen/cli.ts",
     "format": "prettier --write src gen test",
     "format:check": "prettier --check src gen test",
-    "test:generate": "yarn node --experimental-vm-modules $(yarn bin jest) --runInBand",
-    "test:generate:t1": "yarn node --experimental-vm-modules $(yarn bin jest) --runInBand -t \"T1\""
+    "test:generate": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand test/generate",
+    "test:generate:t1": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand -t \"T1\" test/generate",
+    "test:data": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --runInBand --watchman=false --silent test/data",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@apache-arrow/ts": "20.0.0",
@@ -20,7 +21,11 @@
     "dotenv": "16.5.0",
     "fast-xml-parser": "4.5.1",
     "remeda": "2.23.1",
-    "zod": "3.25.48"
+    "zod": "3.25.76",
+    "simplenlg-core": "workspace:*",
+    "@sage/data": "workspace:*",
+    "@sage/contracts": "workspace:*",
+    "@sage/llm": "workspace:*"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

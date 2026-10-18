@@ -1,4 +1,6 @@
-import { Struct } from "arquero/dist/types/table/types.js";
+import { execution } from "@sage/contracts/execution";
+import { usesModel } from "@sage/llm";
+import type { GenerationObserver } from "@sage/contracts";
 import {
   createEndToEndSystem,
   NLGSystem,
@@ -67,15 +69,17 @@ import { deferTemplate } from "./templates/defer.js";
 
 export interface EnhancedStudySystemConfig {
   useGeminiAI?: boolean;
+  debugEarlyHydration?: boolean;
   moduleConfig: "base" | "eventStructuring" | "expertInsights" | "all";
   timeoutMs?: number;
+  analysisIntervalMs?: number;
 }
-
 
 const DEFAULT_CONFIG: EnhancedStudySystemConfig = {
   useGeminiAI: process.env["DISABLE_LLM"] === "false",
   moduleConfig: "all",
   timeoutMs: 60000,
+  analysisIntervalMs: 60000,
 };
 
 // Combine the instant parser, signal analyzers and templates together for one match.
@@ -99,7 +103,7 @@ export class EnhancedStudySystem {
   ) {
     this.name = `${dataSet.descriptor.name} - ${configName}`;
     this.inputData = inputData;
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.config = { ...DEFAULT_CONFIG, useGeminiAI: usesModel(), ...config };
     this.dataSet = dataSet; // already carries mapQuality
     this.baseContext = new BaseContext(this.dataSet);
 
@@ -125,7 +129,11 @@ export class EnhancedStudySystem {
     });
 
     // Add ticks every 1 minute for strategy detection
-    for (let time = minTime; time <= maxTime; time += 60000) {
+    for (
+      let time = minTime;
+      time <= maxTime;
+      time += this.config.analysisIntervalMs ?? 60000
+    ) {
       // Every 1 minute
       const minute = Math.floor(time / 60000);
       if (minute === 0) continue; // Skip minute 0 tick, already added
@@ -343,12 +351,18 @@ export class EnhancedStudySystem {
     }
   }
 
-  async generateAnalysis(): Promise<{
+  async generateAnalysis(observer?: GenerationObserver): Promise<{
     currentOutput: string[];
     usedData: unknown[];
   }> {
     const tStart = process.hrtime.bigint();
-    const allNarratives = await this.nlgSystem.generateText();
+    const allNarratives = await execution.run(
+      {
+        ...execution.getStore(),
+        debugEarlyHydration: this.config.debugEarlyHydration ?? false,
+      },
+      () => this.nlgSystem.generateText(observer),
+    );
     const durationMs = Number(process.hrtime.bigint() - tStart) / 1_000_000;
     console.log(
       `generated ${allNarratives.currentOutput.length} sections in ${durationMs.toFixed(1)}ms`,
@@ -357,11 +371,11 @@ export class EnhancedStudySystem {
     return allNarratives;
   }
 
-  async generateText(): Promise<{
+  async generateText(observer?: GenerationObserver): Promise<{
     currentOutput: string[];
     usedData: unknown[];
   }> {
-    return await this.generateAnalysis();
+    return await this.generateAnalysis(observer);
   }
 
   get context() {
@@ -380,14 +394,11 @@ export function createEnhancedBattleAnalysisSystem(
   dataSet: ReturnType<typeof initDataSetWithOverrides>,
   config: Partial<EnhancedStudySystemConfig> = {},
 ) {
-  const damageDeathEvents = dataSet.t.events
-    .filter(
-      (d: Struct) =>
-        (d["sage:modelType"] === "damage" || d["sage:modelType"] === "death") &&
-        d["objectPlayerId"] > 0 &&
-        d["subjectPlayerId"] > 0,
-    )
-    .select(
+  const damageDeathEvents = dataSet.query.events({
+    modelTypes: ["damage", "death"],
+    requireObjectPlayer: true,
+    requireSubjectPlayer: true,
+    columns: [
       "sage:modelType",
       "worldTime",
       "worldX",
@@ -397,8 +408,8 @@ export function createEnhancedBattleAnalysisSystem(
       "subjectPlayerId",
       "objectEntity",
       "subjectEntity",
-    )
-    .objects() as Array<{
+    ],
+  }) as Array<{
     "sage:modelType": "damage" | "death";
     worldTime: number;
     worldX: number;
@@ -410,14 +421,11 @@ export function createEnhancedBattleAnalysisSystem(
     subjectEntity: number;
   }>;
 
-  const buildingEvents = dataSet.t.events
-    .filter(
-      (d: Struct) =>
-        d["sage:modelType"] === "lifeCycle" &&
-        (d["tag"] === "underConstruction" || d["tag"] === "constructed") &&
-        d["subjectPlayerId"] > 0,
-    )
-    .select(
+  const buildingEvents = dataSet.query.events({
+    modelTypes: ["lifeCycle"],
+    tags: ["underConstruction", "constructed"],
+    requireSubjectPlayer: true,
+    columns: [
       "sage:modelType",
       "tag",
       "worldTime",
@@ -426,8 +434,8 @@ export function createEnhancedBattleAnalysisSystem(
       "worldZ",
       "subjectPlayerId",
       "subjectEntity",
-    )
-    .objects() as Array<{
+    ],
+  }) as Array<{
     "sage:modelType": "lifeCycle";
     tag: "underConstruction" | "constructed";
     worldTime: number;
@@ -472,4 +480,3 @@ export function createEnhancedBattleAnalysisSystem(
     config,
   );
 }
-

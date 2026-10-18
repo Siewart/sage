@@ -1,0 +1,27 @@
+{
+  "name": "@sage/local-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --import tsx src/index.ts",
+    "start": "node --import tsx src/index.ts",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@sage/contracts": "workspace:*",
+    "@sage/data": "workspace:*",
+    "sage-core": "workspace:*",
+    "@trpc/server": "^11.0.0",
+    "zod": "3.25.76",
+    "tsx": "4.20.4",
+    "@sage/llm": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "typescript": "5.9.2",
+    "@trpc/client": "^11.0.0"
+  }
+}

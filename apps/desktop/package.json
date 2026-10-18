@@ -1,0 +1,19 @@
+{
+  "name": "@sage/desktop",
+  "version": "0.1.0-beta.1",
+  "private": true,
+  "type": "module",
+  "description": "SAGE desktop application",
+  "author": "SAGE contributors",
+  "scripts": {
+    "assemble": "node scripts/build.mjs",
+    "package": "node scripts/package-local.mjs",
+    "test:packaging": "node --test scripts/privacy.test.mjs",
+    "start": "tauri dev",
+    "check:rust": "cargo check --manifest-path src-tauri/Cargo.toml"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9",
+    "@tauri-apps/cli": "2.12.3"
+  }
+}

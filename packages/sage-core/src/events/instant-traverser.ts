@@ -1,3 +1,11 @@
+import { hydrateForRealization, type Hydrated } from "./hydration.js";
+import {
+  snapshot,
+  type GenerationObserver,
+  type TraceStage,
+} from "@sage/contracts";
+import { execution } from "@sage/contracts/execution";
+
 type Traversible<TimeKey extends string> = {
   [K in TimeKey]: number;
 };
@@ -24,6 +32,10 @@ class InstantAnalyzer<
   const InstantTypeKey extends string,
   const EventType extends Interpretable<"type">,
 > {
+  currentTime = 0;
+  currentSource: unknown;
+  currentAnalyzer = "";
+
   constructor(
     private data: Generator<InstantInput>,
     private instantParsers: ReadonlyArray<
@@ -33,7 +45,12 @@ class InstantAnalyzer<
 
   *nextEvent(): Generator<EventType, void> {
     for (const item of this.data) {
+      this.currentTime = Number(
+        (item as Record<string, unknown>)["worldTime"] ?? 0,
+      );
+      this.currentSource = item;
       for (const parser of this.instantParsers) {
+        this.currentAnalyzer = parser.name || "anonymous analyzer";
         const result = parser(item);
         if (result !== null && result !== undefined) {
           yield* result;
@@ -54,14 +71,26 @@ export function createTemplate<
     interpretedEvent: NonNullable<InterpreterOutput>,
   ) => ClassificationOutput;
   eventRealiser: (
-    interpretedEvent: NonNullable<InterpreterOutput>,
+    interpretedEvent: Hydrated<NonNullable<InterpreterOutput>>,
     classification: ClassificationOutput,
     previousResponses: string[],
   ) =>
     | { dataUsed: any; text: string }
     | Promise<{ dataUsed: any; text: string }>;
 }) {
-  return template;
+  return {
+    ...template,
+    eventRealiser: (
+      input: NonNullable<InterpreterOutput>,
+      classification: ClassificationOutput,
+      previousResponses: string[],
+    ) =>
+      template.eventRealiser(
+        hydrateForRealization(input),
+        classification,
+        previousResponses,
+      ),
+  };
 }
 
 export function* generatorFromArray<const T extends readonly any[]>(
@@ -128,7 +157,6 @@ export function createEndToEndSystem<
   inputData: Generator<InstantTypes[number], void, unknown>;
 };
 
-
 export function createEndToEndSystem<
   const InstantTypes extends readonly Analyzable<"worldTime", "type">[],
   const Analyzers extends readonly ((
@@ -147,11 +175,7 @@ export function createEndToEndSystem<
       any
     >;
   },
->(
-  inputData: InstantTypes,
-  analyzers: Analyzers,
-  templates: Templates,
-) {
+>(inputData: InstantTypes, analyzers: Analyzers, templates: Templates) {
   let generator: Generator<InstantTypes[number], void, unknown>;
 
   if (inputData instanceof Array) {
@@ -182,51 +206,126 @@ export class NLGSystem {
     private templates: Record<string, Template<any, any, any>>,
   ) {}
 
-  async generateText() {
+  async generateText(observer?: GenerationObserver) {
     const currentOutput: string[] = [];
     const usedData: unknown[] = [];
     let deferredData: unknown[] = [];
+    const started = performance.now();
+    let counter = 0;
+    let lastCommentary = -Infinity;
     for (const event of this.analyzer.nextEvent()) {
-      // take the event and run it through all templates
-      for (const template of Object.values(this.templates)) {
-        const interpretedEvent = template.eventInterpreter(event);
-        if (interpretedEvent !== null && interpretedEvent !== undefined) {
-          const classification = template.eventClassifier(interpretedEvent);
-          const realisedText = template.eventRealiser(
-            deferredData.length > 0
-              ? { ...interpretedEvent, deferredData }
-              : interpretedEvent,
-            classification,
-            currentOutput,
-          );
-
-          if (realisedText instanceof Promise) {
-            const res = await realisedText;
-            const text = res.text;
-            currentOutput.push(text);
-            // if (text instanceof Object) {
-            usedData.push(res.dataUsed);
-            if (text.includes("<DEFER>")) {
-              console.log(`Skipping empty output for deferred entry`);
-              deferredData.push(res.dataUsed);
-            } else {
-              deferredData = [];
-            }
-            // }
-          } else {
-            currentOutput.push(realisedText.text);
-            usedData.push(realisedText.dataUsed);
-            if (realisedText.text.includes("<DEFER>")) {
-              console.log(`Skipping empty output for deferred entry`);
-              deferredData.push(realisedText.dataUsed);
-            } else {
-              deferredData = [];
-            }
-          }
+      const gameTimeMs = this.analyzer.currentTime;
+      observer?.onProgress?.(gameTimeMs);
+      for (const [name, template] of Object.entries(this.templates)) {
+        const interpreted = template.eventInterpreter(event);
+        if (interpreted === null || interpreted === undefined) continue;
+        const id = `r-${++counter}`;
+        const step = (stage: TraceStage, data: unknown) =>
+          observer?.onStep?.(id, {
+            stage,
+            data: snapshot(data),
+            elapsedMs: performance.now() - started,
+          });
+        step("source", {
+          gameTimeMs,
+          input: this.analyzer.currentSource,
+          sourceFile: "instant-traverser.ts",
+        });
+        step("analysis", { analyzer: this.analyzer.currentAnalyzer, event });
+        step("interpretation", { template: name, interpreted });
+        const classification = template.eventClassifier(interpreted);
+        step("classification", classification);
+        if (
+          (observer?.commentaryIntervalMs ?? 0) > 0 &&
+          gameTimeMs - lastCommentary < observer!.commentaryIntervalMs!
+        ) {
+          step("skipped", {
+            reason: "commentary interval",
+            gameTimeMs,
+            template: name,
+          });
+          observer?.onRealization?.({
+            id,
+            template: name,
+            gameTimeMs,
+            text: "",
+            deferred: false,
+            decision: "skipped",
+            elapsedMs: performance.now() - started,
+            realizeMs: 0,
+          });
+          continue;
         }
+        const input = deferredData.length
+          ? { ...interpreted, deferredData }
+          : interpreted;
+        step("planning", {
+          input,
+          deferredCount: deferredData.length,
+          previousResponses: currentOutput,
+        });
+        const realizeStarted = performance.now();
+        try {
+          const result = await execution.run(
+            { ...execution.getStore(), realizationId: id, emit: step },
+            async () => {
+              const hydrated = hydrateForRealization(input);
+              step("hydration", {
+                mode: execution.getStore()?.debugEarlyHydration
+                  ? "early-debug"
+                  : "realization",
+                input: hydrated,
+              });
+              return template.eventRealiser(
+                hydrated,
+                classification,
+                currentOutput,
+              );
+            },
+          );
+          currentOutput.push(result.text);
+          usedData.push(result.dataUsed);
+          const deferred = result.text.includes("<DEFER>");
+          if (deferred) deferredData.push(result.dataUsed);
+          else {
+            deferredData = [];
+            lastCommentary = gameTimeMs;
+          }
+          step(deferred ? "deferred" : "realization", {
+            dataUsed: result.dataUsed,
+            text: result.text,
+          });
+          observer?.onRealization?.({
+            id,
+            template: name,
+            gameTimeMs,
+            text: result.text,
+            deferred,
+            elapsedMs: performance.now() - started,
+            realizeMs: performance.now() - realizeStarted,
+          });
+        } catch (error) {
+          step("error", {
+            message:
+              error instanceof Error ? error.message : "Realization failed",
+          });
+          observer?.onRealization?.({
+            id,
+            template: name,
+            gameTimeMs,
+            text: "",
+            deferred: false,
+            decision: "failed",
+            elapsedMs: performance.now() - started,
+            realizeMs: performance.now() - realizeStarted,
+          });
+          throw error;
+        }
+        // An observed run yields so IPC/progress and cancellation stay responsive.
+        if (observer)
+          await new Promise<void>((resolve) => setImmediate(resolve));
       }
     }
     return { currentOutput, usedData };
   }
 }
-

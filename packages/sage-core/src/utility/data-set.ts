@@ -3,6 +3,10 @@ import * as fs from "fs";
 import * as path from "path";
 import * as aq from "arquero";
 import { z } from "zod";
+import { ArqueroQuery } from "../data/arquero-query.js";
+import { openDuckDbMatch } from "../data/duckdb/open.js";
+import { withReferenceNames } from "../aoe2/unit-reference.js";
+import type { BackendKind, SageQuery } from "../data/types.js";
 import {
   classToId,
   idToCiv,
@@ -86,10 +90,24 @@ export class DataSet<
 
   readonly descriptor: z.infer<typeof schema>;
 
+  /**
+   * The pipeline's data access point.
+   *
+   * Everything downstream queries through this rather than reaching into
+   * `baseTables`, so a match can be served from the Arrow files loaded here or
+   * from Parquet via DuckDB without any call site knowing which. See
+   * `src/data/types.ts`.
+   */
+  readonly query: SageQuery;
+
   constructor(
     descriptor: string,
     derivedParams: P = {} as P,
     derivedTables: TablesFrom<D> = {} as TablesFrom<D>,
+    options: {
+      backend?: BackendKind | undefined;
+      cacheDir?: string | undefined;
+    } = {},
   ) {
     if (!fs.existsSync(descriptor)) {
       throw new Error(`File not found: ${path.resolve(descriptor)}`);
@@ -101,6 +119,16 @@ export class DataSet<
     this.name = this.descriptor.name;
 
     this.baseTables = {} as typeof this.baseTables;
+
+    if (options.backend !== "arquero") {
+      // DuckDB reads the match straight from Parquet; loading the Arrow files
+      // into memory as well would defeat the point of using it.
+      this.query = withReferenceNames(
+        openDuckDbMatch(descriptor, { cacheDir: options.cacheDir }),
+      );
+      return;
+    }
+
     const initialParams = {
       h: {
         masterToId,
@@ -181,10 +209,22 @@ export class DataSet<
       table.params(initialParams);
       this.baseTables[record.type as keyof typeof this.baseTables] = table;
     }
+
+    this.query = withReferenceNames(
+      new ArqueroQuery(
+        this as unknown as ConstructorParameters<typeof ArqueroQuery>[0],
+      ),
+    );
   }
 
   parseDescriptor = (descriptor: string) => {
-    return schema.parse(JSON.parse(fs.readFileSync(descriptor, "utf-8")));
+    const raw = JSON.parse(fs.readFileSync(descriptor, "utf-8"));
+    if (!raw.binned && raw.windowed) raw.binned = raw.windowed;
+    for (const table of raw.binned ?? []) {
+      if (table.binWidth === undefined)
+        table.binWidth = table.windowWidth ?? 1000;
+    }
+    return schema.parse(raw);
   };
 
   addParams = <N extends string, P>(paramName: N, f: (d: typeof this) => P) => {
@@ -208,10 +248,7 @@ export class DataSet<
     return this as DataSet<T, B, P, D & TablesFrom<TablesOf<[TableOf<X>]>>>;
   }
 
-  timeToWindow = (time: number) =>
-    this.descriptor.metadata.binTimes.findIndex(
-      (b) => b[0] <= time && b[1] >= time,
-    );
+  timeToWindow = (time: number) => this.query.timeToWindow(time);
 
   binToTimes = (bin: number) => {
     const binTime = this.descriptor.metadata.binTimes[bin];
@@ -229,61 +266,29 @@ const relativeFromDescriptor = (descriptor: string, relative: string) => {
   return path.join(path.dirname(descriptor), relative);
 };
 
-const schema = z.object({
-  name: z.string(),
-  dictionaries: z.tuple([
-    z.object({
-      type: z.literal("strings"),
-      path: z.string(),
-    }),
-  ]),
-  binned: z.tuple([
-    z.object({
-      type: z.literal("players"),
-      binWidth: z.number(),
-      path: z.string(),
-    }),
-    z.object({
-      type: z.literal("researchStates"),
-      binWidth: z.number(),
-      path: z.string(),
-    }),
-    z.object({
-      type: z.literal("entities"),
-      binWidth: z.number(),
-      path: z.string(),
-    }),
-    z.object({
-      type: z.literal("masters"),
-      binWidth: z.number(),
-      path: z.string(),
-    }),
-    z.object({
-      type: z.literal("world"),
-      binWidth: z.number(),
-      path: z.string(),
-    }),
-  ]),
-  series: z.tuple([
-    z.object({
-      type: z.literal("events"),
-      path: z.string(),
-    }),
-  ]),
-  records: z.tuple([
-    z.object({
-      type: z.literal("settings"),
-      path: z.string(),
-    }),
-    z.object({
-      type: z.literal("map"),
-      path: z.string(),
-    }),
-  ]),
-  metadata: z.object({
-    civStringIdOffset: z.number(),
-    colorStringIdOffset: z.number(),
-    binTimes: z.array(z.tuple([z.number(), z.number()])),
-  }),
+const fileEntry = z.object({
+  type: z.string(),
+  path: z.string(),
 });
 
+const binnedEntry = fileEntry.extend({ binWidth: z.number() });
+
+const schema = z
+  .object({
+    name: z.string(),
+    dictionaries: z.array(fileEntry).default([]),
+    binned: z.array(binnedEntry).optional(),
+    windowed: z.array(binnedEntry).optional(),
+    series: z.array(fileEntry).default([]),
+    records: z.array(fileEntry).default([]),
+    metadata: z.object({
+      civStringIdOffset: z.number(),
+      colorStringIdOffset: z.number(),
+      binTimes: z.array(z.tuple([z.number(), z.number()])),
+    }),
+  })
+  // One name downstream, whichever the file uses.
+  .transform((descriptor) => ({
+    ...descriptor,
+    binned: descriptor.binned ?? descriptor.windowed ?? [],
+  }));

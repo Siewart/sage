@@ -3,7 +3,6 @@ import { Context } from "../study-context.js";
 import { initDataSetWithOverrides } from "../study-data-sets.js";
 import { GameStateExtractor } from "../../../gamestate-extractor.js";
 import { idToAge } from "../../../aoe2/ids.js";
-import { InterpretedBattlesEvent } from "../study-events.js";
 
 export function getPlayerGameState(
   context: Context<ReturnType<typeof initDataSetWithOverrides>>,
@@ -186,102 +185,11 @@ function getMapInfo(
   }
 
   return {
-    mapName: "Arabia", // TODO: get from data set
-    mapWidth: 120,
-    mapHeight: 120,
+    mapName: context.getDataSet().derivedParams.gameInfo.mapName,
+    mapWidth: context.getDataSet().derivedParams.gameInfo.mapWidth,
+    mapHeight: context.getDataSet().derivedParams.gameInfo.mapHeight,
     player1: resourceData ? getPlayerMapResources(0) : undefined,
     player2: resourceData ? getPlayerMapResources(1) : undefined,
-  };
-}
-
-export function cleanBattlesEvent(battlesEvent: InterpretedBattlesEvent): Omit<
-  InterpretedBattlesEvent,
-  "clusters"
-> & {
-  totalDamageEvents: number;
-  totalCasualtiesPlayer1: number;
-  totalCasualtiesPlayer2: number;
-  finishedBattles: (Omit<
-    InterpretedBattlesEvent["clusters"][number],
-    "data" | "player1" | "player2"
-  > & {
-    player1: Omit<
-      InterpretedBattlesEvent["clusters"][number]["player1"],
-      "participantsExtended" | "casualtiesExtended" | "survivorsExtended"
-    >;
-    player2: Omit<
-      InterpretedBattlesEvent["clusters"][number]["player2"],
-      "participantsExtended" | "casualtiesExtended" | "survivorsExtended"
-    >;
-  })[];
-} {
-  const { clusters, ...rest } = battlesEvent;
-  return {
-    totalDamageEvents: clusters.reduce(
-      (sum, cluster) => sum + cluster.data.length,
-      0,
-    ),
-    totalCasualtiesPlayer1: clusters.reduce(
-      (sum, cluster) =>
-        sum +
-        Object.values(cluster.player1.casualties).reduce((a, b) => a + b, 0),
-      0,
-    ),
-    totalCasualtiesPlayer2: clusters.reduce(
-      (sum, cluster) =>
-        sum +
-        Object.values(cluster.player2.casualties).reduce((a, b) => a + b, 0),
-      0,
-    ),
-    finishedBattles: clusters.map((cluster) => {
-      const { data: _data, player1, player2, ...clusterRest } = cluster;
-      const {
-        participantsExtended: _p1ParticipantsExtended,
-        casualtiesExtended: _p1CasualtiesExtended,
-        survivorsExtended: _p1SurvivorsExtended,
-        ...player1Rest
-      } = player1;
-      const {
-        participantsExtended: _p2ParticipantsExtended,
-        casualtiesExtended: _p2CasualtiesExtended,
-        survivorsExtended: _p2SurvivorsExtended,
-        ...player2Rest
-      } = player2;
-      return {
-        ...clusterRest,
-        player1: removeInvalidEntries(player1Rest),
-        player2: removeInvalidEntries(player2Rest),
-      };
-    }),
-    ...rest,
-  };
-}
-
-function removeInvalidEntries(entry: {
-  participants: {
-    [key: string]: number;
-  };
-  casualties: {
-    [key: string]: number;
-  };
-  survivors: {
-    [key: string]: number;
-  };
-}) {
-  function clean(obj: { [key: string]: number }) {
-    const result: { [key: string]: number } = {};
-    for (const [key, value] of Object.entries(obj)) {
-      if (key !== "" && key !== "Flare") {
-        // Flare is a special case (and is technically localized)
-        result[key] = value;
-      }
-    }
-    return result;
-  }
-  return {
-    participants: clean(entry.participants),
-    casualties: clean(entry.casualties),
-    survivors: clean(entry.survivors),
   };
 }
 
@@ -294,4 +202,3 @@ export function cleanResourceEntry<T extends { ids: number[] }>(
 }
 
 // TODO: Add position coordinates AND position name to resources and events
-

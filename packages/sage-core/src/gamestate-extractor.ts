@@ -1,18 +1,20 @@
-import { escape } from "arquero";
-import { Struct } from "arquero/dist/types/table/types.js";
-import type { ColumnTable } from "arquero";
 import {
   masterToId,
   techToId,
   ageToId,
   researchStateToId,
   masterGroups,
-  buildingGroups,
   unitMasterIds,
   buildingMasterIds,
+  buildingLikeMasterIds,
 } from "./aoe2/ids.js";
+import type { SageQuery } from "./data/types.js";
 
 export interface GameState {
+  identityKeys?: {
+    masters: Record<number, string>;
+    technologies: Record<number, string>;
+  };
   timeMs: number;
   unitCounts: {
     [unitType: string]: { countTotal: number; countForward: number };
@@ -43,59 +45,97 @@ export interface GameState {
 }
 
 export interface DataSetLike {
-  t: {
-    entities: ColumnTable;
-    masters: ColumnTable;
-    strings: ColumnTable;
-    researchStates: ColumnTable;
-    players: ColumnTable;
-  };
+  query: SageQuery;
   timeToWindow: (timeMs: number) => number;
   derivedParams?: {
     players?: Array<{ playerId: number; startX: number; startY: number }>;
-    [key: string]: any; 
+    [key: string]: any;
   };
   name?: string;
 }
 
+const UNIT_MASTER_IDS = [...unitMasterIds];
+const BUILDING_MASTER_IDS = [...buildingLikeMasterIds];
+
+// Compile existing semantic rule labels once; event/game-state rows keep numeric keys.
+const ruleDictionaries = new WeakMap<
+  SageQuery,
+  {
+    canonical: Map<number, number>;
+    masters: Record<number, string>;
+    technologies: Record<number, string>;
+  }
+>();
+function ruleDictionary(query: SageQuery) {
+  const cached = ruleDictionaries.get(query);
+  if (cached) return cached;
+  const byName = new Map<string, number>();
+  const canonical = new Map<number, number>();
+  for (const row of query.strings({})) {
+    const name = String(row["string"]),
+      id = Number(row["id"]);
+    if (!byName.has(name)) byName.set(name, id);
+    canonical.set(id, byName.get(name)!);
+  }
+  const compile = (catalog: Record<string, number>) =>
+    Object.fromEntries(
+      Object.entries(catalog)
+        .filter(([name]) => byName.has(name))
+        .map(([name, id]) => [id, `string:${byName.get(name)}`]),
+    );
+  const result = {
+    canonical,
+    masters: compile(masterToId),
+    technologies: compile(techToId),
+  };
+  ruleDictionaries.set(query, result);
+  return result;
+}
+
 export class GameStateExtractor {
-  constructor(private dataSet: DataSetLike) {}
+  private masterKeys: Record<number, string> = {};
+  private technologyKeys: Record<number, string> = {};
+  constructor(
+    private dataSet: DataSetLike,
+    private labels: "names" | "ids" = "names",
+  ) {}
 
   extractGameState(timeMs: number, playerId: number): GameState {
     const windowId = this.dataSet.timeToWindow(timeMs);
 
-    // Pre-filter the entities table once for this windowId and playerId
-    const filteredEntities = this.dataSet.t.entities.filter(
-      escape(
-        (d: Struct) =>
-          d["sage:binId"] === windowId && d["ownerId"] === playerId,
-      ),
-    );
-
-    // Pre-filter research states
-    const filteredResearch = this.dataSet.t.researchStates.filter(
-      escape(
-        (d: Struct) =>
-          d["sage:binId"] === windowId && d["playerId"] === playerId,
-      ),
-    );
-
-    const unitCounts = this.extractUnitCounts(filteredEntities, playerId);
-    const buildingCounts = this.extractBuildingCounts(
-      filteredEntities,
+    this.masterKeys =
+      this.labels === "ids"
+        ? Object.fromEntries(
+            this.dataSet.query
+              .masters({ bin: windowId, playerId, columns: ["id", "stringId"] })
+              .map((row) => [
+                Number(row["id"]),
+                `string:${ruleDictionary(this.dataSet.query).canonical.get(Number(row["stringId"])) ?? row["stringId"]}`,
+              ]),
+          )
+        : {};
+    this.technologyKeys = {};
+    const unitCounts = this.extractUnitCounts(windowId, playerId);
+    const buildingCounts = this.extractBuildingCounts(windowId, playerId);
+    const technologies = this.extractTechnologies(windowId, playerId);
+    const villagerDistribution = this.extractVillagerDistribution(
+      windowId,
       playerId,
     );
-    const technologies = this.extractTechnologies(filteredResearch);
-    const villagerDistribution = this.extractVillagerDistribution(
-      filteredEntities,
-      windowId,
-    );
-    const age = this.extractAge(filteredResearch);
+    const age = this.extractAge(windowId, playerId);
     const { totalMilitaryUnits, totalEcoUnits, score } =
       this.extractPlayerTotals(windowId, playerId);
 
     return {
       timeMs,
+      ...(this.labels === "ids"
+        ? {
+            identityKeys: {
+              masters: ruleDictionary(this.dataSet.query).masters,
+              technologies: ruleDictionary(this.dataSet.query).technologies,
+            },
+          }
+        : {}),
       unitCounts,
       buildingCounts,
       technologies,
@@ -107,21 +147,16 @@ export class GameStateExtractor {
     } satisfies GameState;
   }
 
-  private extractUnitCounts(filteredEntities: ColumnTable, playerId: number) {
-    const units = filteredEntities
-      .filter(escape((d: Struct) => this.isUnit(d["refMasterId"])))
-      .lookup(
-        this.dataSet.t.masters,
-        [
-          ["refMasterId", "sage:binId", "ownerId"],
-          ["id", "sage:binId", "playerId"],
-        ],
-        ["stringId"],
-      )
-      .lookup(this.dataSet.t.strings, ["stringId", "id"], ["string"])
-      .select("string", "refMasterId", "worldX", "worldY")
-      .objects() as Array<{
-      string: string;
+  private extractUnitCounts(windowId: number, playerId: number) {
+    const units = this.dataSet.query[
+      this.labels === "ids" ? "entities" : "namedEntities"
+    ]({
+      bin: windowId,
+      ownerId: playerId,
+      masterIds: UNIT_MASTER_IDS,
+      columns: ["refMasterId", "worldX", "worldY"],
+    }) as Array<{
+      name: string;
       refMasterId: number;
       worldX: number;
       worldY: number;
@@ -133,7 +168,10 @@ export class GameStateExtractor {
     } = {};
 
     for (const unit of units) {
-      const unitName = unit.string || `Unit_${unit.refMasterId}`;
+      const unitName =
+        this.labels === "ids"
+          ? (this.masterKeys[unit.refMasterId] ?? `unknown:${unit.refMasterId}`)
+          : unit.name || `Unit_${unit.refMasterId}`;
 
       if (!unitCounts[unitName]) {
         unitCounts[unitName] = { countTotal: 0, countForward: 0 };
@@ -149,24 +187,16 @@ export class GameStateExtractor {
     return unitCounts;
   }
 
-  private extractBuildingCounts(
-    filteredEntities: ColumnTable,
-    playerId: number,
-  ) {
-    const buildings = filteredEntities
-      .filter(escape((d: Struct) => this.isBuilding(d["refMasterId"])))
-      .lookup(
-        this.dataSet.t.masters,
-        [
-          ["refMasterId", "sage:binId", "ownerId"],
-          ["id", "sage:binId", "playerId"],
-        ],
-        ["stringId"],
-      )
-      .lookup(this.dataSet.t.strings, ["stringId", "id"], ["string"])
-      .select("string", "refMasterId", "worldX", "worldY")
-      .objects() as Array<{
-      string: string;
+  private extractBuildingCounts(windowId: number, playerId: number) {
+    const buildings = this.dataSet.query[
+      this.labels === "ids" ? "entities" : "namedEntities"
+    ]({
+      bin: windowId,
+      ownerId: playerId,
+      masterIds: BUILDING_MASTER_IDS,
+      columns: ["refMasterId", "worldX", "worldY"],
+    }) as Array<{
+      name: string;
       refMasterId: number;
       worldX: number;
       worldY: number;
@@ -179,7 +209,10 @@ export class GameStateExtractor {
 
     for (const building of buildings) {
       const buildingName =
-        building.string || `Building_${building.refMasterId}`;
+        this.labels === "ids"
+          ? (this.masterKeys[building.refMasterId] ??
+            `unknown:${building.refMasterId}`)
+          : building.name || `Building_${building.refMasterId}`;
 
       if (!buildingCounts[buildingName]) {
         buildingCounts[buildingName] = { countTotal: 0, countForward: 0 };
@@ -195,13 +228,16 @@ export class GameStateExtractor {
     return buildingCounts;
   }
 
-  private extractTechnologies(filteredResearch: ColumnTable) {
-    const techs = filteredResearch
-      .lookup(this.dataSet.t.strings, ["stringId", "id"], ["string"])
-      .select("string", "researchId", "state")
-      .objects() as Array<{
-      string: string;
+  private extractTechnologies(windowId: number, playerId: number) {
+    const techs = this.dataSet.query[
+      this.labels === "ids" ? "researchStates" : "namedResearchStates"
+    ]({
+      bin: windowId,
+      playerId,
+    }) as Array<{
+      name: string;
       researchId: number;
+      stringId: number;
       state: number;
     }>;
 
@@ -215,28 +251,31 @@ export class GameStateExtractor {
     } = {};
 
     for (const tech of techs) {
-      const techName = tech.string || `Tech_${tech.researchId}`;
+      if (this.labels === "ids")
+        this.technologyKeys[tech.researchId] =
+          `string:${ruleDictionary(this.dataSet.query).canonical.get(tech.stringId) ?? tech.stringId}`;
+      const techName =
+        this.labels === "ids"
+          ? this.technologyKeys[tech.researchId]!
+          : tech.name || `Tech_${tech.researchId}`;
       technologies[techName] = this.mapResearchState(tech.state);
     }
 
     return technologies;
   }
 
-  private extractVillagerDistribution(
-    filteredEntities: ColumnTable,
-    windowId: number,
-  ) {
-    const villagers = filteredEntities
-      .filter(
-        escape((d: Struct) => d["refMasterId"] === masterToId["Villager"]),
-      )
-      .select(
+  private extractVillagerDistribution(windowId: number, playerId: number) {
+    const villagers = this.dataSet.query.entities({
+      bin: windowId,
+      ownerId: playerId,
+      masterIds: [masterToId["Villager"]],
+      columns: [
         "heldAttributeType",
         "heldAttributeAmount",
         "currentAction",
         "state",
-      )
-      .objects() as Array<{
+      ],
+    }) as Array<{
       heldAttributeType: number;
       heldAttributeAmount: number;
       currentAction?: {
@@ -247,11 +286,12 @@ export class GameStateExtractor {
       state: number;
     }>;
 
-    // Pre-load all entities for this window
-    const allEntitiesInWindow = this.dataSet.t.entities
-      .filter(escape((d: Struct) => d["sage:binId"] === windowId))
-      .select("id", "refMasterId")
-      .objects() as Array<{
+    // Villagers gather from entities owned by anyone (or by Gaia), so the
+    // target lookup spans the whole window rather than this player's entities.
+    const allEntitiesInWindow = this.dataSet.query.entities({
+      bin: windowId,
+      columns: ["id", "refMasterId"],
+    }) as Array<{
       id: number;
       refMasterId: number;
     }>;
@@ -383,20 +423,18 @@ export class GameStateExtractor {
     );
   }
 
-  private extractAge(filteredResearch: ColumnTable): number {
-    const ageUpgrades = filteredResearch
-      .filter(
-        escape((d: Struct) =>
-          [
-            techToId["Feudal Age"],
-            techToId["Castle Age"],
-            techToId["Imperial Age"],
-          ].includes(d["researchId"]),
-        ),
-      )
-      .objects() as Array<{ researchId: number; state: number }>;
+  private extractAge(windowId: number, playerId: number): number {
+    const ageUpgrades = this.dataSet.query.researchStates({
+      bin: windowId,
+      playerId,
+      researchIds: [
+        techToId["Feudal Age"],
+        techToId["Castle Age"],
+        techToId["Imperial Age"],
+      ].filter((id): id is number => id !== undefined),
+    }) as Array<{ researchId: number; state: number }>;
 
-    let age: number = ageToId["Dark Age"] ?? 0; 
+    let age: number = ageToId["Dark Age"] ?? 0;
 
     for (const upgrade of ageUpgrades) {
       if (
@@ -430,14 +468,11 @@ export class GameStateExtractor {
   }
 
   private extractPlayerTotals(windowId: number, playerId: number) {
-    const playerData = this.dataSet.t.players
-      .filter(
-        escape(
-          (d: Struct) => d["sage:binId"] === windowId && d["id"] === playerId,
-        ),
-      )
-      .select("id", "militaryPop", "civilianPop", "victoryPoints")
-      .objects() as Array<{
+    const playerData = this.dataSet.query.players({
+      bin: windowId,
+      id: playerId,
+      columns: ["id", "militaryPop", "civilianPop", "victoryPoints"],
+    }) as Array<{
       id: number;
       militaryPop: number;
       civilianPop: number;
@@ -458,22 +493,6 @@ export class GameStateExtractor {
       totalEcoUnits: player.civilianPop || 0,
       score: player.victoryPoints || 0,
     };
-  }
-
-  private isUnit(masterId: number): boolean {
-    return unitMasterIds.has(masterId);
-  }
-
-  private isBuilding(masterId: number): boolean {
-    for (const buildingType in buildingGroups) {
-      const buildingIds =
-        buildingGroups[buildingType as keyof typeof buildingGroups];
-      if ((buildingIds as readonly number[]).includes(masterId)) {
-        return true;
-      }
-    }
-
-    return buildingMasterIds.has(masterId);
   }
 
   private isForwardUnit(x: number, y: number, playerId: number): boolean {
@@ -535,4 +554,3 @@ export function createGameStateFromData(
   const extractor = new GameStateExtractor(dataSet);
   return extractor.extractGameState(timeMs, playerId);
 }
-

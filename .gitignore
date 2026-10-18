@@ -14,6 +14,12 @@ esm/
 cjs/
 *.tsbuildinfo
 coverage/
+.next/
+.turbo/
+.sage/
+*.duckdb
+*.duckdb.wal
+*.partial
 
 # Yarn (Berry / PnP)
 .pnp.*
@@ -31,6 +37,8 @@ coverage/
 .env.local
 .env.*.local
 *.log
+/docs/
+/openspec/
 
 # Python
 .venv/
@@ -58,3 +66,16 @@ to-process/
 /thesis/latex/*.fdb_latexmk
 /thesis/latex/*.synctex.gz
 
+
+# Generated commentary reports (existing tracked fixtures remain tracked)
+/packages/sage-core/reports/*
+
+# Desktop packaging output
+/apps/desktop/stage/
+/apps/desktop/release/
+/apps/desktop/.local-target/
+/apps/desktop/src-tauri/target/
+/apps/desktop/src-tauri/binaries/
+/apps/desktop/src-tauri/gen/
+
+/apps/desktop/src-tauri/icons/

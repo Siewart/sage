@@ -451,7 +451,7 @@ function detectPlayerStrategy(
 ): PlayerStrategy | null {
   // Use the actual GameStateExtractor to get real game data
   const dataSet = context.getDataSet();
-  const extractor = new GameStateExtractor(dataSet);
+  const extractor = new GameStateExtractor(dataSet, "ids");
 
   try {
     const gameState: GameState = {
@@ -567,4 +567,3 @@ export const tickPassthrough =
       },
     ];
   };
-

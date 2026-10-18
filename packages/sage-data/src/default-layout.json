@@ -1,0 +1,43 @@
+{
+  "repo": "Siewart/sage",
+  "revision": "4a5f43317d1afec1e49a0c6950cf10b09abc0f58",
+  "template": "{corpus}/export/{resolution}/{match}/{table}.parquet",
+  "facets": {
+    "corpus": ["kotd4", "may2026", "sample-unzipped"],
+    "resolution": ["1000", "60000"]
+  },
+  "defaultFacets": {
+    "corpus": "kotd4",
+    "resolution": "1000"
+  },
+  "tableAliases": {
+    "entities": "entities",
+    "masters": "masters",
+    "strings": "strings",
+    "researchstates": "researchStates",
+    "players": "players",
+    "events": "events",
+    "map": "map",
+    "settings": "settings",
+    "world": "world"
+  },
+  "tableStems": {
+    "entities": "entities",
+    "events": "events",
+    "map": "map",
+    "masters": "masters",
+    "players": "players",
+    "researchStates": "research-states",
+    "settings": "settings",
+    "strings": "strings",
+    "world": "world"
+  },
+  "archiveTemplate": "{corpus}/export/{resolution}/{match}/{match}.parquet.zip",
+  "archiveKind": "zip",
+  "metadataKind": "descriptor",
+  "metadataTemplate": "{corpus}/export/{resolution}/{match}/descriptor.json",
+  "shardedTables": [],
+  "warnings": [
+    "6558 of 6560 match directories hold a .parquet.zip archive; the rest hold loose Parquet files. Both shapes are read \u2014 the archive is tried first, loose files second."
+  ]
+}

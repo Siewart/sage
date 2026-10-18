@@ -1,3 +1,4 @@
+import { prepareHydration, type Hydrated } from "../../../events/hydration.js";
 import { createTemplate } from "../../../events/instant-traverser.js";
 import {
   eventBase,
@@ -7,13 +8,11 @@ import {
 } from "../../../gemini/prompts.js";
 import { Context } from "../study-context.js";
 import { initDataSetWithOverrides } from "../study-data-sets.js";
-import { BuildingEvent, RawBuildingEvent } from "../study-events.js";
+import { RawBuildingEvent } from "../study-events.js";
 import {
   makeLocationList,
   getNamedLocation,
 } from "../../../aoe2/map-quality.js";
-import { escape } from "arquero";
-import { Struct } from "arquero/dist/types/table/types.js";
 
 export const formatTime = (timeMs: number): string => {
   const totalSeconds = Math.floor(timeMs / 1000);
@@ -69,26 +68,16 @@ const isBuildingForward = (
     const windowId = dataSet.timeToWindow(timeMs);
     const enemyPlayerId = playerId === 1 ? 2 : 1;
 
-    const enemyTownCenters = dataSet.t.entities
-      .filter(
-        escape(
-          (d: Struct) =>
-            d["sage:binId"] === windowId &&
-            d["ownerId"] === enemyPlayerId &&
-            d["refMasterId"] === 109,
-        ),
-      )
-      .select("worldX", "worldY")
-      .objects() as Array<{ worldX: number; worldY: number }>;
-
     const FORWARD_DISTANCE = 25;
-    for (const tc of enemyTownCenters) {
-      const distance = Math.sqrt(
-        Math.pow(worldX - tc.worldX, 2) + Math.pow(worldY - tc.worldY, 2),
-      );
-      if (distance <= FORWARD_DISTANCE) {
-        return true;
-      }
+    const nearbyEnemyTownCenters = dataSet.query.entities({
+      bin: windowId,
+      ownerId: enemyPlayerId,
+      masterIds: [109],
+      near: { x: worldX, y: worldY, radius: FORWARD_DISTANCE },
+      columns: ["worldX", "worldY"],
+    });
+    if (nearbyEnemyTownCenters.length > 0) {
+      return true;
     }
     return false;
   } catch (error) {
@@ -130,6 +119,7 @@ const buildingInterpreter = (
 
     const result = context.queryEntity(event.entityId, event.worldTime, {
       playerId: event.subjectPlayerId,
+      resolveName: false,
     });
 
     if (
@@ -150,11 +140,9 @@ const buildingInterpreter = (
       return null;
     }
 
-    const hydrated: BuildingEvent = {
+    const numeric = {
       type: event.type,
       playerId: result.ownerId,
-      buildingName: getBuildingName(result.refMasterId),
-      location: getLocationName(context, event.worldX, event.worldY),
       worldX: event.worldX,
       worldY: event.worldY,
       worldZ: event.worldZ,
@@ -176,39 +164,44 @@ const buildingInterpreter = (
     };
 
     if (
-      hydrated.buildingName === "Town Center" &&
-      hydrated.worldX === lastTownCenterX &&
-      hydrated.worldY === lastTownCenterY
+      numeric.isTownCenter &&
+      numeric.worldX === lastTownCenterX &&
+      numeric.worldY === lastTownCenterY
     ) {
-      lastTownCenterX = hydrated.worldX;
-      lastTownCenterY = hydrated.worldY;
+      lastTownCenterX = numeric.worldX;
+      lastTownCenterY = numeric.worldY;
       return null;
     }
 
-    lastTownCenterX = hydrated.worldX;
-    lastTownCenterY = hydrated.worldY;
+    lastTownCenterX = numeric.worldX;
+    lastTownCenterY = numeric.worldY;
 
-    if (hydrated.type === "buildingPlaced" && !hydrated.isForward) {
+    if (numeric.type === "buildingPlaced" && !numeric.isForward) {
       return null;
     }
 
-    return {
+    const facts = {
       mainEvent:
-        hydrated.type === "buildingPlaced"
+        numeric.type === "buildingPlaced"
           ? ("foundation" as const)
           : ("completion" as const),
-      buildingType: hydrated.buildingName,
-      playerId: hydrated.playerId,
-      playerName: getPlayerName(hydrated.playerId),
-      location: hydrated.location,
-      isForward: hydrated.isForward,
-      isCastle: hydrated.isCastle,
-      isTownCenter: hydrated.isTownCenter,
-      timeMs: hydrated.worldTime,
-      worldX: hydrated.worldX,
-      worldY: hydrated.worldY,
-      worldZ: hydrated.worldZ,
+      entityId: numeric.entityId,
+      refMasterId: numeric.refMasterId,
+      playerId: numeric.playerId,
+      isForward: numeric.isForward,
+      isCastle: numeric.isCastle,
+      isTownCenter: numeric.isTownCenter,
+      timeMs: numeric.worldTime,
+      worldX: numeric.worldX,
+      worldY: numeric.worldY,
+      worldZ: numeric.worldZ,
     };
+    return prepareHydration(facts, () => ({
+      ...facts,
+      buildingType: getBuildingName(numeric.refMasterId),
+      playerName: getPlayerName(numeric.playerId),
+      location: getLocationName(context, numeric.worldX, numeric.worldY),
+    }));
   };
 };
 
@@ -262,7 +255,9 @@ const buildingClassifier = (
 };
 
 const buildingRealizer = (
-  interpretation: ReturnType<ReturnType<typeof buildingInterpreter>>,
+  interpretation: Hydrated<
+    NonNullable<ReturnType<ReturnType<typeof buildingInterpreter>>>
+  >,
   classification: ReturnType<typeof buildingClassifier>,
   _previousResponses: string[],
 ): { dataUsed: unknown; text: string } => {
@@ -389,7 +384,9 @@ const createBuildingLLMRealiser = (
   ) => Promise<string | undefined>,
 ) => {
   return async (
-    interpretation: ReturnType<ReturnType<typeof buildingInterpreter>>,
+    interpretation: Hydrated<
+      NonNullable<ReturnType<ReturnType<typeof buildingInterpreter>>>
+    >,
     classification: ReturnType<typeof buildingClassifier>,
     previousResponses: string[],
   ): Promise<{ dataUsed: unknown; text: string }> => {

@@ -1,7 +1,6 @@
-import { Struct } from "arquero/dist/types/table/types.js";
+import { referenceUnit } from "../../aoe2/unit-reference.js";
 import { DataSet } from "../../utility/data-set.js";
-import { escape } from "arquero";
-import type { ColumnTable } from "arquero";
+import type { Row } from "../../data/types.js";
 import { BaseBreakdown } from "../../fuzzy/strategy-detector.js";
 import type { DeferredRealisation } from "./templates/defer.js";
 
@@ -24,6 +23,7 @@ export interface Context<DataSetType extends DataSet> {
     worldTime: number,
     options?: {
       playerId?: number;
+      resolveName?: boolean;
       //   entityFields?: EntityFields[];
       //   masterFields?: MasterFields[];
     },
@@ -34,7 +34,7 @@ export interface Context<DataSetType extends DataSet> {
         refMasterId: number;
         masterId: number;
         type: number;
-        name: string; // Resolved entity name
+        name?: string; // Omitted for numeric analysis
       }
     | undefined;
 
@@ -90,8 +90,8 @@ export class BaseContext<DataSetType extends DataSet>
     string,
     ReturnType<Context<DataSetType>["queryEntity"]>
   >();
-  private windowCache = new Map<number, ColumnTable>(); // Cache filtered tables by windowId
-  private masterWindowCache = new Map<number, ColumnTable>(); // Cache filtered masters by windowId
+  // Per-window entity and master slices used to be cached here; the query
+  // layer caches them now, so both backends benefit rather than just Arquero.
   private stringCache = new Map<number, string>(); // Cache strings by stringId
 
   private playerStrategies = new Map<number, PlayerStrategy>();
@@ -110,30 +110,24 @@ export class BaseContext<DataSetType extends DataSet>
     return `${entityId}:${windowId}:${playerId ?? "any"}`;
   }
 
-  private getWindowEntities(windowId: number): ColumnTable {
-    if (this.windowCache.has(windowId)) {
-      return this.windowCache.get(windowId)!;
-    }
+  /** The shape `queryEntity` reports for one entity. */
+  private static readonly ENTITY_COLUMNS = [
+    "ownerId",
+    "id",
+    "refMasterId",
+    "masterId",
+    "type",
+  ];
 
-    const windowEntities = this.dataSet.baseTables.entities.filter(
-      escape((e: Struct) => e["sage:binId"] === windowId),
-    );
-
-    this.windowCache.set(windowId, windowEntities);
-    return windowEntities;
-  }
-
-  private getWindowMasters(windowId: number): ColumnTable {
-    if (this.masterWindowCache.has(windowId)) {
-      return this.masterWindowCache.get(windowId)!;
-    }
-
-    const windowMasters = this.dataSet.baseTables.masters.filter(
-      escape((m: Struct) => m["sage:binId"] === windowId),
-    );
-
-    this.masterWindowCache.set(windowId, windowMasters);
-    return windowMasters;
+  private toEntityResult(row: Row | undefined) {
+    if (!row) return undefined;
+    return {
+      ownerId: row["ownerId"] as number,
+      entityId: row["id"] as number,
+      refMasterId: row["refMasterId"] as number,
+      masterId: row["masterId"] as number,
+      type: row["type"] as number,
+    };
   }
 
   private getString(stringId: number): string | undefined {
@@ -141,12 +135,8 @@ export class BaseContext<DataSetType extends DataSet>
       return this.stringCache.get(stringId);
     }
 
-    const stringResult = this.dataSet.baseTables.strings
-      .filter(escape((s: Struct) => s["id"] === stringId))
-      .select("string")
-      .object() as { string?: string } | undefined;
-
-    const stringValue = stringResult?.string;
+    const [row] = this.dataSet.query.strings({ ids: [stringId] });
+    const stringValue = row?.["string"] as string | undefined;
     if (stringValue) {
       this.stringCache.set(stringId, stringValue);
     }
@@ -157,18 +147,18 @@ export class BaseContext<DataSetType extends DataSet>
     masterId: number,
     windowId: number,
   ): string | undefined {
-    const windowMasters = this.getWindowMasters(windowId);
+    const [master] = this.dataSet.query.masters({
+      bin: windowId,
+      ids: [Math.abs(masterId)], // We negate master ids
+      columns: ["stringId"],
+    });
 
-    const masterResult = windowMasters
-      .filter(escape((m: Struct) => m["id"] === Math.abs(masterId))) // We negate master ids
-      .select("stringId")
-      .object() as { stringId?: number } | undefined;
-
-    if (!masterResult?.stringId) {
-      return undefined;
+    const stringId = master?.["stringId"] as number | undefined;
+    if (!stringId) {
+      return referenceUnit(masterId)?.name;
     }
 
-    return this.getString(masterResult.stringId);
+    return this.getString(stringId) ?? referenceUnit(masterId)?.name;
   }
 
   queryEntity(
@@ -176,106 +166,64 @@ export class BaseContext<DataSetType extends DataSet>
     worldTime: number,
     options?: {
       playerId?: number;
+      resolveName?: boolean;
       //   entityFields?: EntityFields[];
       //   masterFields?: MasterFields[];
     },
   ) {
     const windowId = this.dataSet.timeToWindow(worldTime);
-    const cacheKey = this.getCacheKey(entityId, windowId, options?.playerId);
+    const cacheKey =
+      this.getCacheKey(entityId, windowId, options?.playerId) +
+      `:${options?.resolveName !== false}`;
 
     if (this.entityCache.has(cacheKey)) {
       return this.entityCache.get(cacheKey);
     }
 
-    const windowEntities = this.getWindowEntities(windowId);
-
-    // Filter on the window-sized table rather than all entities
-    let entityResult = windowEntities
-      .filter(
-        escape(
-          (e: Struct) =>
-            e["id"] === entityId &&
-            (options?.playerId === undefined ||
-              options?.playerId === e["ownerId"]),
-        ),
-      )
-      .select({
-        ownerId: "ownerId",
-        id: "entityId",
-        refMasterId: "refMasterId",
-        masterId: "masterId",
-        type: "type",
-      })
-      .object() as
-      | {
-          ownerId: number;
-          entityId: number;
-          refMasterId: number;
-          masterId: number;
-          type: number;
-        }
-      | undefined;
+    let entityResult = this.toEntityResult(
+      this.dataSet.query.entities({
+        bin: windowId,
+        ids: [entityId],
+        ...(options?.playerId === undefined
+          ? {}
+          : { ownerId: options.playerId }),
+        columns: BaseContext.ENTITY_COLUMNS,
+      })[0],
+    );
 
     if (!entityResult?.entityId) {
       // arquero returns an object with allempty keys when it fails
 
-      const alt = this.getWindowEntities(windowId + 1)
-        .filter(
-          escape(
-            (e: Struct) =>
-              e["id"] === entityId &&
-              (options?.playerId === undefined ||
-                options?.playerId === e["ownerId"]),
-          ),
-        )
-        .select({
-          ownerId: "ownerId",
-          id: "entityId",
-          refMasterId: "refMasterId",
-          masterId: "masterId",
-          type: "type",
-        })
-        .object() as
-        | {
-            ownerId: number;
-            entityId: number;
-            refMasterId: number;
-            masterId: number;
-            type: number;
-          }
-        | undefined;
+      const alt = this.toEntityResult(
+        this.dataSet.query.entities({
+          bin: windowId + 1,
+          ids: [entityId],
+          ...(options?.playerId === undefined
+            ? {}
+            : { ownerId: options.playerId }),
+          columns: BaseContext.ENTITY_COLUMNS,
+        })[0],
+      );
       if (alt?.entityId) {
         entityResult = alt;
       } else {
         // console.log("Quering all windows!");
-        const alt2 = this.dataSet.baseTables.entities
-          .filter(
-            escape(
-              (e: Struct) => e["id"] === entityId, //&&
-              // (options?.playerId === undefined ||
-              //   options?.playerId === e["ownerId"]),
-            ),
-          )
-          .select({
-            ownerId: "ownerId",
-            id: "entityId",
-            refMasterId: "refMasterId",
-            masterId: "masterId",
-            type: "type",
-            "sage:binId": "windowId",
-            "sage:ductType": "ductType",
+        // Deliberately unfiltered by owner and by window: the entity may only
+        // appear in a snapshot either side of the one being reported on.
+        const alt2 = this.dataSet.query
+          .entities({
+            ids: [entityId],
+            columns: [
+              ...BaseContext.ENTITY_COLUMNS,
+              "sage:binId",
+              "sage:ductType",
+            ],
           })
-          .objects() as
-          | {
-              ownerId: number;
-              entityId: number;
-              refMasterId: number;
-              masterId: number;
-              type: number;
-              windowId: number;
-              ductType: number;
-            }[]
-          | undefined;
+          .map((row) => ({
+            ...this.toEntityResult(row)!,
+            windowId: row["sage:binId"] as number,
+            ductType: row["sage:ductType"] as number,
+          }));
         if (alt2?.[0]?.entityId) {
           // Find the entity with windowId closest to the outer scope windowId
           const closest = alt2.reduce((prev, curr) => {
@@ -296,6 +244,11 @@ export class BaseContext<DataSetType extends DataSet>
           return undefined;
         }
       }
+    }
+
+    if (options?.resolveName === false) {
+      this.entityCache.set(cacheKey, entityResult);
+      return entityResult;
     }
 
     // Resolve the entity name through master -> string lookup
@@ -352,4 +305,3 @@ export class BaseContext<DataSetType extends DataSet>
     this.lastBattleReportTime = worldTime;
   }
 }
-

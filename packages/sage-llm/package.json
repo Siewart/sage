@@ -1,0 +1,26 @@
+{
+  "name": "@sage/llm",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.81",
+    "@ai-sdk/google": "^4.0.98",
+    "@ai-sdk/openai": "^4.0.95",
+    "@sage/contracts": "workspace:*",
+    "ai": "^7.0.142",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "typescript": "5.9.2"
+  }
+}

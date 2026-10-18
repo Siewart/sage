@@ -1,4 +1,6 @@
 import { ColumnTable, escape, from, op } from "arquero";
+import { clustersToTable } from "../../data/cluster.js";
+import type { Cluster, ClusterOptions, MapFilter } from "../../data/types.js";
 import {
   DataSet,
   DefaultAoE2BinnedTables,
@@ -9,6 +11,7 @@ import {
 } from "../../utility/data-set.js";
 import { Params, Struct } from "arquero/dist/types/table/types.js";
 import { cardinalLocation } from "../location-names.js";
+import { masterGroups, masterToId, terrainGroups } from "../ids.js";
 import { PlayerParams } from "../types/derived/playerParams.js";
 import { euclidean } from "../../functions/euclidean.js";
 import "../../functions/dbscan.js";
@@ -65,12 +68,33 @@ export function addMapQuality<
   dataSet: DataSet<T, B, P, D>,
 ): DataSet<T, B, P & ParamsOf<[ParamOf<"mapInfo", MapInfo>]>, D> {
   return dataSet.addParams("mapInfo", (t) => {
-    const hills = t.t.map
-      .derive({ id: op.row_number() })
-      .filter((d) => d["elevationLevel"] > 1);
+    // Gaia-owned resources live in the first snapshot window; clustering them
+    // is the same shape every time, so it runs through the query layer's
+    // cluster helpers rather than nine hand-written filter-and-cluster chains.
+    // `assignPositionsToOwnedClusters` reads map dimensions off the table's
+    // `dp` param, which used to arrive because clusters were derived from a
+    // DataSet table. Clusters are now built from plain rows, so the param is
+    // attached here instead.
+    const withParams = (clusters: Cluster[]) =>
+      clustersToTable(clusters).params({ dp: t.derivedParams }) as ColumnTable;
+
+    const clusterResources = (
+      masterIds: readonly number[],
+      options: ClusterOptions,
+      { gaiaOnly = true }: { gaiaOnly?: boolean } = {},
+    ) =>
+      withParams(
+        t.query.clusterEntities(
+          gaiaOnly ? { bin: 0, ownerId: 0, masterIds } : { bin: 0, masterIds },
+          options,
+        ),
+      );
+    const clusterTerrain = (filter: MapFilter, options: ClusterOptions) =>
+      withParams(t.query.clusterMapCells(filter, options));
+
     const clusteredHills = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(hills, "x", "y", "id", { minSize: 8 }),
+        clusterTerrain({ minElevationExclusive: 1 }, { minSize: 8 }),
         t.derivedParams.players,
         38,
       ),
@@ -78,28 +102,17 @@ export function addMapQuality<
     );
     const mapHills = ownedClustersToPlayerMap(clusteredHills);
 
-    const ponds = t.t.map
-      .derive({ id: op.row_number() })
-      .filter((d, $) =>
-        op.includes($["h"]["terrainGroups"]["Water"], d["terrainType"]),
-      );
     const clusteredPonds = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(ponds, "x", "y", "id", { minSize: 4 }),
+        clusterTerrain({ terrainTypes: terrainGroups.Water }, { minSize: 4 }),
         t.derivedParams.players,
         38,
       ),
     );
 
-    const huntables = t.t.entities.filter(
-      (d, $) =>
-        d["sage:binId"] === 0 &&
-        d["ownerId"] === 0 &&
-        op.includes($["h"]["masterGroups"]["Huntables"], d["refMasterId"]),
-    );
     const clusteredHuntables = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(huntables, "worldX", "worldY", "id", {
+        clusterResources(masterGroups.Huntables, {
           maxDistance: 8,
           minSize: 2,
         }),
@@ -109,32 +122,23 @@ export function addMapQuality<
     );
     const mapHuntables = ownedClustersToPlayerMap(clusteredHuntables);
 
-    const herdables = t.t.entities.filter(
-      (d, $) =>
-        d["sage:binId"] === 0 &&
-        op.includes($["h"]["masterGroups"]["Herdables"], d["refMasterId"]),
-    );
+    // Herdables can already have been claimed, so they are not filtered by owner.
     const clusteredHerdables = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(herdables, "worldX", "worldY", "id", {
-          maxDistance: 3,
-          minSize: 2,
-        }),
+        clusterResources(
+          masterGroups.Herdables,
+          { maxDistance: 3, minSize: 2 },
+          { gaiaOnly: false },
+        ),
         t.derivedParams.players,
         38,
       ),
     );
     const mapHerdables = ownedClustersToPlayerMap(clusteredHerdables);
 
-    const goldMines = t.t.entities.filter(
-      (d, $) =>
-        d["sage:binId"] === 0 &&
-        d["ownerId"] === 0 &&
-        $["h"]["masterToId"]["Gold Mine"] === d["refMasterId"],
-    );
     const clusteredGoldMines = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(goldMines, "worldX", "worldY", "id", {
+        clusterResources([masterToId["Gold Mine"]], {
           maxDistance: 2,
           minSize: 2,
         }),
@@ -145,15 +149,9 @@ export function addMapQuality<
     );
     const mapGoldMines = ownedClustersToPlayerMap(clusteredGoldMines);
 
-    const stoneMines = t.t.entities.filter(
-      (d, $) =>
-        d["sage:binId"] === 0 &&
-        d["ownerId"] === 0 &&
-        $["h"]["masterToId"]["Stone Mine"] === d["refMasterId"],
-    );
     const clusteredStoneMines = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(stoneMines, "worldX", "worldY", "id", {
+        clusterResources([masterToId["Stone Mine"]], {
           maxDistance: 2,
           minSize: 2,
         }),
@@ -164,15 +162,9 @@ export function addMapQuality<
     );
     const mapStoneMines = ownedClustersToPlayerMap(clusteredStoneMines);
 
-    const forageBushes = t.t.entities.filter(
-      (d, $) =>
-        d["sage:binId"] === 0 &&
-        d["ownerId"] === 0 &&
-        op.includes($["h"]["masterGroups"]["Forage Bushes"], d["refMasterId"]),
-    );
     const clusteredForageBushes = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(forageBushes, "worldX", "worldY", "id", {
+        clusterResources(masterGroups["Forage Bushes"], {
           maxDistance: 2,
           minSize: 2,
         }),
@@ -182,36 +174,18 @@ export function addMapQuality<
     );
     const mapForageBushes = ownedClustersToPlayerMap(clusteredForageBushes);
 
-    const woodLines = t.t.entities.filter(
-      (d, $) =>
-        d["sage:binId"] === 0 &&
-        d["ownerId"] === 0 &&
-        op.includes($["h"]["masterGroups"]["Trees"], d["refMasterId"]),
-    );
     const clusteredWoodLines = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(woodLines, "worldX", "worldY", "id", {
-          maxDistance: 3,
-          minSize: 3,
-        }),
+        clusterResources(masterGroups.Trees, { maxDistance: 3, minSize: 3 }),
         t.derivedParams.players,
         28,
       ),
     );
     const mapWoodLines = ownedClustersToPlayerMap(clusteredWoodLines);
 
-    const lurables = t.t.entities.filter(
-      (d, $) =>
-        d["sage:binId"] === 0 &&
-        d["ownerId"] === 0 &&
-        op.includes($["h"]["masterGroups"]["Lurables"], d["refMasterId"]),
-    );
     const clusteredLurables = assignPositionsToOwnedClusters(
       assignOwnersToClusters(
-        cluster2d(lurables, "worldX", "worldY", "id", {
-          maxDistance: 1,
-          minSize: 1,
-        }),
+        clusterResources(masterGroups.Lurables, { maxDistance: 1, minSize: 1 }),
         t.derivedParams.players,
         38,
       ),
@@ -282,6 +256,19 @@ export function assignOwnersToClusters(
   players: Array<PlayerParams>,
   maxDistance: number,
 ) {
+  // An empty grouped rollup can produce an undefined aggregate row in Arquero.
+  // Keep the schema and params, but do not manufacture a resource cluster.
+  if (table.numRows() === 0)
+    return table
+      .select("dbscan", "clusterX", "clusterY", "ids")
+      .rename({ dbscan: "clusterId" })
+      .derive({
+        owner: () => null,
+        ownerX: () => null,
+        ownerY: () => null,
+        idCount: () => 0,
+        distance: () => null,
+      });
   return table
     .cross(from(players).select("playerId", "startX", "startY"))
     .params({ maxDistance })
@@ -465,4 +452,3 @@ function mapsToPlayerMap(
     hills: maps.hills.get(player) ?? [],
   };
 }
-

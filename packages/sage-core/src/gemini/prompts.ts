@@ -29,7 +29,7 @@ const parallelEventStructuringEvent = `Create live battle commentary showing:
 For game endings: outline key events leading to victory, then announce the winner.
 Use "events" data section for details.`;
 
-const contentCompression = `CONTENT FILTERING RULES:
+export const contentCompression = `CONTENT FILTERING RULES:
 - Skip unimportant or repetitive events to maintain engagement
 - "deferredData" entries were deferred by you in previous responses
 - NEVER defer if a winner is declared
@@ -158,9 +158,7 @@ export const eventBase = mkPrompt(
   systemInstruction,
   eventsCommunicativeGoal,
   onlinePromotional,
-  [
-    expertInsightsEventsNegative /*contentCompression*/,
-  ],
+  [expertInsightsEventsNegative /*contentCompression*/],
   40,
 );
 
@@ -168,7 +166,7 @@ export const eventInsights = mkPrompt(
   systemInstruction,
   eventsCommunicativeGoal,
   onlinePromotional,
-  [expertInsightsEvents, /*contentCompression*/],
+  [expertInsightsEvents /*contentCompression*/],
   40,
 );
 
@@ -218,4 +216,3 @@ export const eventDeferredOnly = mkPrompt(
   ],
   75,
 );
-

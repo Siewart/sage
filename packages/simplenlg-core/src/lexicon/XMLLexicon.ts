@@ -86,7 +86,7 @@ export class XMLLexicon extends Lexicon {
       lexiconURI = source;
     } else {
       try {
-        lexiconURI = new URL("default-lexicon.xml", import.meta.url);
+        lexiconURI = process.env["SAGE_LEXICON_URL"] ? new URL(process.env["SAGE_LEXICON_URL"]) : new URL("default-lexicon.xml", import.meta.url);
       } catch (ex) {
         console.error(ex);
         return;

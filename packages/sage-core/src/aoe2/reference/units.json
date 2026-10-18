@@ -1,0 +1,6967 @@
+{
+  "0": {
+    "name": "Moveable Map Revealer A",
+    "stringId": 21090,
+    "type": 70
+  },
+  "1": {
+    "name": "Imperial Legionary",
+    "stringId": 5670,
+    "type": 70
+  },
+  "4": {
+    "name": "Archer",
+    "stringId": 5083,
+    "type": 70
+  },
+  "5": {
+    "name": "Hand Cannoneer",
+    "stringId": 5086,
+    "type": 70
+  },
+  "6": {
+    "name": "Elite Skirmisher",
+    "stringId": 5087,
+    "type": 70
+  },
+  "7": {
+    "name": "Skirmisher",
+    "stringId": 5088,
+    "type": 70
+  },
+  "8": {
+    "name": "Longbowman",
+    "stringId": 5107,
+    "type": 70
+  },
+  "10": {
+    "name": "Archery Range",
+    "stringId": 5128,
+    "type": 80
+  },
+  "11": {
+    "name": "Mangudai",
+    "stringId": 5108,
+    "type": 70
+  },
+  "12": {
+    "name": "Barracks",
+    "stringId": 5135,
+    "type": 80
+  },
+  "13": {
+    "name": "Fishing Ship",
+    "stringId": 5090,
+    "type": 70
+  },
+  "14": {
+    "name": "Archery Range",
+    "stringId": 5128,
+    "type": 80
+  },
+  "15": {
+    "name": "Junk",
+    "stringId": 5092,
+    "type": 70
+  },
+  "17": {
+    "name": "Trade Cog",
+    "stringId": 5089,
+    "type": 70
+  },
+  "18": {
+    "name": "Blacksmith",
+    "stringId": 5131,
+    "type": 80
+  },
+  "19": {
+    "name": "Blacksmith",
+    "stringId": 5131,
+    "type": 80
+  },
+  "20": {
+    "name": "Barracks",
+    "stringId": 5135,
+    "type": 80
+  },
+  "21": {
+    "name": "War Galley",
+    "stringId": 5091,
+    "type": 70
+  },
+  "24": {
+    "name": "Crossbowman",
+    "stringId": 5084,
+    "type": 70
+  },
+  "25": {
+    "name": "Teutonic Knight",
+    "stringId": 5112,
+    "type": 70
+  },
+  "30": {
+    "name": "Monastery",
+    "stringId": 5138,
+    "type": 80
+  },
+  "31": {
+    "name": "Monastery",
+    "stringId": 5138,
+    "type": 80
+  },
+  "32": {
+    "name": "Monastery",
+    "stringId": 5138,
+    "type": 80
+  },
+  "33": {
+    "name": "Fortress",
+    "stringId": 5187,
+    "type": 80
+  },
+  "35": {
+    "name": "Battering Ram",
+    "stringId": 5094,
+    "type": 70
+  },
+  "36": {
+    "name": "Bombard Cannon",
+    "stringId": 5093,
+    "type": 70
+  },
+  "38": {
+    "name": "Knight",
+    "stringId": 5068,
+    "type": 70
+  },
+  "39": {
+    "name": "Cavalry Archer",
+    "stringId": 5085,
+    "type": 70
+  },
+  "40": {
+    "name": "Cataphract",
+    "stringId": 5101,
+    "type": 70
+  },
+  "41": {
+    "name": "Huskarl",
+    "stringId": 5104,
+    "type": 70
+  },
+  "42": {
+    "name": "Trebuchet",
+    "stringId": 5097,
+    "type": 80
+  },
+  "45": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "46": {
+    "name": "Janissary",
+    "stringId": 5105,
+    "type": 70
+  },
+  "47": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "48": {
+    "name": "Wild Boar",
+    "stringId": 5406,
+    "type": 70
+  },
+  "49": {
+    "name": "Siege Workshop",
+    "stringId": 5169,
+    "type": 80
+  },
+  "50": {
+    "name": "Farm",
+    "stringId": 5149,
+    "type": 80
+  },
+  "51": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "52": {
+    "name": "Royal Janissary",
+    "stringId": 5115,
+    "type": 70
+  },
+  "53": {
+    "name": "Fish (Perch)",
+    "stringId": 5072,
+    "type": 30
+  },
+  "56": {
+    "name": "Fisherman",
+    "stringId": 5499,
+    "type": 70
+  },
+  "57": {
+    "name": "Fisherman",
+    "stringId": 5499,
+    "type": 70
+  },
+  "59": {
+    "name": "Forage Bush",
+    "stringId": 5401,
+    "type": 10
+  },
+  "61": {
+    "name": "Dolphin",
+    "stringId": 5332,
+    "type": 30
+  },
+  "63": {
+    "name": "Fortified Gate (up.)",
+    "stringId": 21029,
+    "type": 80
+  },
+  "64": {
+    "name": "Gate (up.)",
+    "stringId": 21025,
+    "type": 80
+  },
+  "65": {
+    "name": "Deer",
+    "stringId": 5071,
+    "type": 70
+  },
+  "66": {
+    "name": "Gold Mine",
+    "stringId": 5400,
+    "type": 10
+  },
+  "67": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "68": {
+    "name": "Mill",
+    "stringId": 5157,
+    "type": 80
+  },
+  "69": {
+    "name": "Shore Fish",
+    "stringId": 5501,
+    "type": 30
+  },
+  "70": {
+    "name": "House",
+    "stringId": 5344,
+    "type": 80
+  },
+  "71": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "72": {
+    "name": "Palisade Wall",
+    "stringId": 5202,
+    "type": 80
+  },
+  "73": {
+    "name": "Chu Ko Nu",
+    "stringId": 5102,
+    "type": 70
+  },
+  "74": {
+    "name": "Militia",
+    "stringId": 5079,
+    "type": 70
+  },
+  "75": {
+    "name": "Man-at-Arms",
+    "stringId": 5080,
+    "type": 70
+  },
+  "76": {
+    "name": "Heavy Swordsman",
+    "stringId": 5077,
+    "type": 70
+  },
+  "77": {
+    "name": "Long Swordsman",
+    "stringId": 5081,
+    "type": 70
+  },
+  "78": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "79": {
+    "name": "Watch Tower",
+    "stringId": 5178,
+    "type": 80
+  },
+  "80": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "81": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "82": {
+    "name": "Castle",
+    "stringId": 5142,
+    "type": 80
+  },
+  "83": {
+    "name": "Villager (Male)",
+    "stringId": 5121,
+    "type": 70
+  },
+  "84": {
+    "name": "Market",
+    "stringId": 5161,
+    "type": 80
+  },
+  "85": {
+    "name": "Fortified Gate (down.)",
+    "stringId": 21030,
+    "type": 80
+  },
+  "86": {
+    "name": "Stable",
+    "stringId": 5171,
+    "type": 80
+  },
+  "87": {
+    "name": "Archery Range",
+    "stringId": 5128,
+    "type": 80
+  },
+  "88": {
+    "name": "Gate (down.)",
+    "stringId": 21026,
+    "type": 80
+  },
+  "89": {
+    "name": "Dire Wolf",
+    "stringId": 21316,
+    "type": 70
+  },
+  "90": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "91": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "92": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "93": {
+    "name": "Spearman",
+    "stringId": 5078,
+    "type": 70
+  },
+  "95": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "96": {
+    "name": "Hawk",
+    "stringId": 5073,
+    "type": 70
+  },
+  "101": {
+    "name": "Stable",
+    "stringId": 5171,
+    "type": 80
+  },
+  "102": {
+    "name": "Stone Mine",
+    "stringId": 5252,
+    "type": 10
+  },
+  "103": {
+    "name": "Blacksmith",
+    "stringId": 5131,
+    "type": 80
+  },
+  "104": {
+    "name": "Monastery",
+    "stringId": 5138,
+    "type": 80
+  },
+  "105": {
+    "name": "Blacksmith",
+    "stringId": 5131,
+    "type": 80
+  },
+  "106": {
+    "name": "Leif Erikson",
+    "stringId": 5472,
+    "type": 70
+  },
+  "109": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "110": {
+    "name": "Trade Workshop",
+    "stringId": 5174,
+    "type": 80
+  },
+  "112": {
+    "name": "Flare",
+    "stringId": 5316,
+    "type": 10
+  },
+  "114": {
+    "name": "Stoertebeker",
+    "stringId": 5473,
+    "type": 70
+  },
+  "116": {
+    "name": "Market",
+    "stringId": 5161,
+    "type": 80
+  },
+  "117": {
+    "name": "Stone Wall",
+    "stringId": 5203,
+    "type": 80
+  },
+  "118": {
+    "name": "Builder",
+    "stringId": 5122,
+    "type": 70
+  },
+  "119": {
+    "name": "Fortified Palisade Wall",
+    "stringId": 5205,
+    "type": 80
+  },
+  "120": {
+    "name": "Forager",
+    "stringId": 5402,
+    "type": 70
+  },
+  "122": {
+    "name": "Hunter",
+    "stringId": 5124,
+    "type": 70
+  },
+  "123": {
+    "name": "Lumberjack",
+    "stringId": 5125,
+    "type": 70
+  },
+  "124": {
+    "name": "Stone Miner",
+    "stringId": 5126,
+    "type": 70
+  },
+  "125": {
+    "name": "Monk",
+    "stringId": 5099,
+    "type": 70
+  },
+  "126": {
+    "name": "Grey Wolf",
+    "stringId": 5075,
+    "type": 70
+  },
+  "127": {
+    "name": "Moveable Map Revealer B",
+    "stringId": 21268,
+    "type": 70
+  },
+  "128": {
+    "name": "Trade Cart (Empty)",
+    "stringId": 5100,
+    "type": 70
+  },
+  "129": {
+    "name": "Mill",
+    "stringId": 5157,
+    "type": 80
+  },
+  "130": {
+    "name": "Mill",
+    "stringId": 5157,
+    "type": 80
+  },
+  "131": {
+    "name": "Mill",
+    "stringId": 5157,
+    "type": 80
+  },
+  "132": {
+    "name": "Barracks",
+    "stringId": 5135,
+    "type": 80
+  },
+  "133": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "137": {
+    "name": "Market",
+    "stringId": 5161,
+    "type": 80
+  },
+  "141": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "142": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "143": {
+    "name": "Rubble 1 x 1",
+    "stringId": 5001,
+    "type": 10
+  },
+  "144": {
+    "name": "Rubble 2 x 2",
+    "stringId": 5002,
+    "type": 10
+  },
+  "145": {
+    "name": "Rubble 3 x 3",
+    "stringId": 5003,
+    "type": 10
+  },
+  "146": {
+    "name": "Rubble 4 x 4",
+    "stringId": 5004,
+    "type": 10
+  },
+  "147": {
+    "name": "Rubble 6 x 6",
+    "stringId": 5005,
+    "type": 10
+  },
+  "148": {
+    "name": "Rubble 8 x 8",
+    "stringId": 5006,
+    "type": 10
+  },
+  "150": {
+    "name": "Siege Workshop",
+    "stringId": 5169,
+    "type": 80
+  },
+  "153": {
+    "name": "Stable",
+    "stringId": 5171,
+    "type": 80
+  },
+  "155": {
+    "name": "Fortified Wall",
+    "stringId": 5204,
+    "type": 80
+  },
+  "156": {
+    "name": "Repairer",
+    "stringId": 5127,
+    "type": 70
+  },
+  "158": {
+    "name": "Outlaw",
+    "stringId": 6007,
+    "type": 70
+  },
+  "159": {
+    "name": "Relic Cart",
+    "stringId": 5082,
+    "type": 70
+  },
+  "160": {
+    "name": "Richard the Lionheart",
+    "stringId": 5633,
+    "type": 70
+  },
+  "161": {
+    "name": "The Black Prince",
+    "stringId": 5622,
+    "type": 70
+  },
+  "163": {
+    "name": "Friar Tuck",
+    "stringId": 5626,
+    "type": 70
+  },
+  "164": {
+    "name": "Sheriff of Nottingham",
+    "stringId": 5635,
+    "type": 70
+  },
+  "165": {
+    "name": "Charlemagne",
+    "stringId": 5623,
+    "type": 70
+  },
+  "166": {
+    "name": "Roland",
+    "stringId": 5634,
+    "type": 70
+  },
+  "167": {
+    "name": "Belisarius",
+    "stringId": 5621,
+    "type": 70
+  },
+  "168": {
+    "name": "Theodoric the Goth",
+    "stringId": 5638,
+    "type": 70
+  },
+  "169": {
+    "name": "Aethelfrith",
+    "stringId": 5619,
+    "type": 70
+  },
+  "170": {
+    "name": "Siegfried",
+    "stringId": 5636,
+    "type": 70
+  },
+  "171": {
+    "name": "Erik the Red",
+    "stringId": 5625,
+    "type": 70
+  },
+  "172": {
+    "name": "Tamerlane",
+    "stringId": 5637,
+    "type": 70
+  },
+  "173": {
+    "name": "King Arthur",
+    "stringId": 5628,
+    "type": 70
+  },
+  "174": {
+    "name": "Lancelot",
+    "stringId": 5630,
+    "type": 70
+  },
+  "175": {
+    "name": "Gawain",
+    "stringId": 5627,
+    "type": 70
+  },
+  "176": {
+    "name": "Mordred",
+    "stringId": 5632,
+    "type": 70
+  },
+  "177": {
+    "name": "Archbishop",
+    "stringId": 5620,
+    "type": 70
+  },
+  "179": {
+    "name": "Trade Workshop",
+    "stringId": 5174,
+    "type": 80
+  },
+  "184": {
+    "name": "Condottiero",
+    "stringId": 5114,
+    "type": 70
+  },
+  "185": {
+    "name": "Slinger",
+    "stringId": 5690,
+    "type": 70
+  },
+  "188": {
+    "name": "Flamethrower",
+    "stringId": 5118,
+    "type": 70
+  },
+  "190": {
+    "name": "Fire Tower",
+    "stringId": 5158,
+    "type": 80
+  },
+  "191": {
+    "name": "House",
+    "stringId": 5344,
+    "type": 80
+  },
+  "192": {
+    "name": "House",
+    "stringId": 5344,
+    "type": 80
+  },
+  "193": {
+    "name": "Vlad Dracula",
+    "stringId": 5616,
+    "type": 70
+  },
+  "195": {
+    "name": "Kitabatake",
+    "stringId": 5629,
+    "type": 70
+  },
+  "196": {
+    "name": "Minamoto",
+    "stringId": 5631,
+    "type": 70
+  },
+  "197": {
+    "name": "Alexander Nevski",
+    "stringId": 5639,
+    "type": 70
+  },
+  "198": {
+    "name": "El Cid",
+    "stringId": 5624,
+    "type": 70
+  },
+  "199": {
+    "name": "Fish Trap",
+    "stringId": 5495,
+    "type": 80
+  },
+  "200": {
+    "name": "Robin Hood",
+    "stringId": 5640,
+    "type": 70
+  },
+  "201": {
+    "name": "Tree",
+    "stringId": 5651,
+    "type": 10
+  },
+  "202": {
+    "name": "Rabid Wolf",
+    "stringId": 5652,
+    "type": 70
+  },
+  "203": {
+    "name": "Vasco da Gama",
+    "stringId": 5474,
+    "type": 70
+  },
+  "204": {
+    "name": "Trade Cart (Full)",
+    "stringId": 5485,
+    "type": 70
+  },
+  "206": {
+    "name": "VMDL",
+    "stringId": 5653,
+    "type": 70
+  },
+  "207": {
+    "name": "Imperial Camel Rider",
+    "stringId": 5419,
+    "type": 70
+  },
+  "209": {
+    "name": "University",
+    "stringId": 5176,
+    "type": 80
+  },
+  "210": {
+    "name": "University",
+    "stringId": 5176,
+    "type": 80
+  },
+  "212": {
+    "name": "Builder",
+    "stringId": 5122,
+    "type": 70
+  },
+  "214": {
+    "name": "Farmer",
+    "stringId": 5123,
+    "type": 70
+  },
+  "216": {
+    "name": "Hunter",
+    "stringId": 5124,
+    "type": 70
+  },
+  "218": {
+    "name": "Lumberjack",
+    "stringId": 5125,
+    "type": 70
+  },
+  "220": {
+    "name": "Stone Miner",
+    "stringId": 5126,
+    "type": 70
+  },
+  "222": {
+    "name": "Repairer",
+    "stringId": 5127,
+    "type": 70
+  },
+  "223": {
+    "name": "Alaric the Goth",
+    "stringId": 5019,
+    "type": 70
+  },
+  "230": {
+    "name": "King Bela IV",
+    "stringId": 5475,
+    "type": 70
+  },
+  "231": {
+    "name": "Aqueduct",
+    "stringId": 5758,
+    "type": 80
+  },
+  "232": {
+    "name": "Woad Raider",
+    "stringId": 5113,
+    "type": 70
+  },
+  "234": {
+    "name": "Guard Tower",
+    "stringId": 5154,
+    "type": 80
+  },
+  "235": {
+    "name": "Keep",
+    "stringId": 5155,
+    "type": 80
+  },
+  "236": {
+    "name": "Bombard Tower",
+    "stringId": 5156,
+    "type": 80
+  },
+  "239": {
+    "name": "War Elephant",
+    "stringId": 5109,
+    "type": 70
+  },
+  "241": {
+    "name": "Cracks",
+    "stringId": 5259,
+    "type": 10
+  },
+  "248": {
+    "name": "Pile of Stone",
+    "stringId": 5320,
+    "type": 10
+  },
+  "250": {
+    "name": "Longship",
+    "stringId": 5106,
+    "type": 70
+  },
+  "251": {
+    "name": "Amphitheatre",
+    "stringId": 5575,
+    "type": 80
+  },
+  "252": {
+    "name": "Pile of Gold",
+    "stringId": 5321,
+    "type": 70
+  },
+  "253": {
+    "name": "Empty",
+    "stringId": 1202,
+    "type": 70
+  },
+  "254": {
+    "name": "Empty",
+    "stringId": 1202,
+    "type": 70
+  },
+  "255": {
+    "name": "Empty",
+    "stringId": 1202,
+    "type": 70
+  },
+  "256": {
+    "name": "Empty",
+    "stringId": 1202,
+    "type": 70
+  },
+  "257": {
+    "name": "Empty",
+    "stringId": 1202,
+    "type": 70
+  },
+  "258": {
+    "name": "Empty",
+    "stringId": 1202,
+    "type": 70
+  },
+  "259": {
+    "name": "Farmer",
+    "stringId": 5123,
+    "type": 70
+  },
+  "261": {
+    "name": "Empty",
+    "stringId": 1202,
+    "type": 70
+  },
+  "262": {
+    "name": "Pile of Food",
+    "stringId": 5324,
+    "type": 70
+  },
+  "263": {
+    "name": "Colosseum",
+    "stringId": 5317,
+    "type": 80
+  },
+  "274": {
+    "name": "Flare",
+    "stringId": 5316,
+    "type": 10
+  },
+  "275": {
+    "name": "Imperial Centurion",
+    "stringId": 5450,
+    "type": 70
+  },
+  "276": {
+    "name": "Wonder",
+    "stringId": 5182,
+    "type": 80
+  },
+  "278": {
+    "name": "Dead Fish Trap",
+    "stringId": 5492,
+    "type": 80
+  },
+  "279": {
+    "name": "Scorpion",
+    "stringId": 5096,
+    "type": 70
+  },
+  "280": {
+    "name": "Mangonel",
+    "stringId": 5095,
+    "type": 70
+  },
+  "281": {
+    "name": "Throwing Axeman",
+    "stringId": 5111,
+    "type": 70
+  },
+  "282": {
+    "name": "Mameluke",
+    "stringId": 5103,
+    "type": 70
+  },
+  "283": {
+    "name": "Cavalier",
+    "stringId": 5070,
+    "type": 70
+  },
+  "284": {
+    "name": "Tree TD",
+    "stringId": 5348,
+    "type": 10
+  },
+  "285": {
+    "name": "Relic",
+    "stringId": 5350,
+    "type": 70
+  },
+  "286": {
+    "name": "Monk with Relic",
+    "stringId": 5380,
+    "type": 70
+  },
+  "291": {
+    "name": "Samurai",
+    "stringId": 5110,
+    "type": 70
+  },
+  "293": {
+    "name": "Villager (Female)",
+    "stringId": 5607,
+    "type": 70
+  },
+  "299": {
+    "name": "Bandit",
+    "stringId": 5098,
+    "type": 70
+  },
+  "301": {
+    "name": "Grass Patch, Green",
+    "stringId": 21046,
+    "type": 10
+  },
+  "302": {
+    "name": "Bush A",
+    "stringId": 5766,
+    "type": 10
+  },
+  "303": {
+    "name": "Seagulls",
+    "stringId": 5767,
+    "type": 70
+  },
+  "304": {
+    "name": "Bonfire",
+    "stringId": 5768,
+    "type": 20
+  },
+  "305": {
+    "name": "Llama A",
+    "stringId": 21273,
+    "type": 70
+  },
+  "306": {
+    "name": "Black Tile",
+    "stringId": 5769,
+    "type": 10
+  },
+  "307": {
+    "name": "Cuauhtemoc",
+    "stringId": 21303,
+    "type": 70
+  },
+  "310": {
+    "name": "Mountain 1",
+    "stringId": 5342,
+    "type": 10
+  },
+  "311": {
+    "name": "Mountain 2",
+    "stringId": 5343,
+    "type": 10
+  },
+  "329": {
+    "name": "Camel Rider",
+    "stringId": 5416,
+    "type": 70
+  },
+  "330": {
+    "name": "Heavy Camel Rider",
+    "stringId": 5417,
+    "type": 70
+  },
+  "331": {
+    "name": "Trebuchet (Packed)",
+    "stringId": 5381,
+    "type": 80
+  },
+  "332": {
+    "name": "Flare",
+    "stringId": 5316,
+    "type": 10
+  },
+  "333": {
+    "name": "Deer",
+    "stringId": 5071,
+    "type": 30
+  },
+  "334": {
+    "name": "Flowers 1",
+    "stringId": 21184,
+    "type": 10
+  },
+  "335": {
+    "name": "Flowers 2",
+    "stringId": 21185,
+    "type": 10
+  },
+  "336": {
+    "name": "Flowers 3",
+    "stringId": 21186,
+    "type": 10
+  },
+  "337": {
+    "name": "Flowers 4",
+    "stringId": 21187,
+    "type": 10
+  },
+  "338": {
+    "name": "Path 4",
+    "stringId": 5386,
+    "type": 10
+  },
+  "339": {
+    "name": "Path 1",
+    "stringId": 5387,
+    "type": 10
+  },
+  "340": {
+    "name": "Path 2",
+    "stringId": 5388,
+    "type": 10
+  },
+  "341": {
+    "name": "Path 3",
+    "stringId": 5389,
+    "type": 10
+  },
+  "345": {
+    "name": "Ruins",
+    "stringId": 5393,
+    "type": 80
+  },
+  "347": {
+    "name": "Test String",
+    "stringId": 5000,
+    "type": 10
+  },
+  "348": {
+    "name": "Tree (Bamboo Forest)",
+    "stringId": 5396,
+    "type": 10
+  },
+  "349": {
+    "name": "Tree (Oak)",
+    "stringId": 5397,
+    "type": 10
+  },
+  "350": {
+    "name": "Tree (Pine Forest)",
+    "stringId": 5399,
+    "type": 10
+  },
+  "351": {
+    "name": "Tree (Palm Forest)",
+    "stringId": 5398,
+    "type": 10
+  },
+  "354": {
+    "name": "Forager",
+    "stringId": 5402,
+    "type": 70
+  },
+  "357": {
+    "name": "Dead Farm",
+    "stringId": 5407,
+    "type": 80
+  },
+  "358": {
+    "name": "Pikeman",
+    "stringId": 5408,
+    "type": 70
+  },
+  "359": {
+    "name": "Halberdier",
+    "stringId": 5409,
+    "type": 70
+  },
+  "361": {
+    "name": "Norse Warrior",
+    "stringId": 5117,
+    "type": 70
+  },
+  "370": {
+    "name": "City Wall",
+    "stringId": 5754,
+    "type": 80
+  },
+  "389": {
+    "name": "Sea Rocks 1",
+    "stringId": 5253,
+    "type": 10
+  },
+  "396": {
+    "name": "Sea Rocks 2",
+    "stringId": 5262,
+    "type": 10
+  },
+  "399": {
+    "name": "Tree A",
+    "stringId": 5265,
+    "type": 10
+  },
+  "400": {
+    "name": "Tree B",
+    "stringId": 5266,
+    "type": 10
+  },
+  "401": {
+    "name": "Tree C",
+    "stringId": 5267,
+    "type": 10
+  },
+  "402": {
+    "name": "Tree D",
+    "stringId": 5268,
+    "type": 10
+  },
+  "403": {
+    "name": "Tree E",
+    "stringId": 5269,
+    "type": 10
+  },
+  "404": {
+    "name": "Tree F",
+    "stringId": 5270,
+    "type": 10
+  },
+  "405": {
+    "name": "Tree G",
+    "stringId": 5271,
+    "type": 10
+  },
+  "406": {
+    "name": "Tree H",
+    "stringId": 5272,
+    "type": 10
+  },
+  "407": {
+    "name": "Tree I",
+    "stringId": 5273,
+    "type": 10
+  },
+  "408": {
+    "name": "Tree J",
+    "stringId": 5274,
+    "type": 10
+  },
+  "409": {
+    "name": "Tree K",
+    "stringId": 5275,
+    "type": 10
+  },
+  "410": {
+    "name": "Tree L",
+    "stringId": 5276,
+    "type": 10
+  },
+  "411": {
+    "name": "Tree (Oak Forest)",
+    "stringId": 5277,
+    "type": 10
+  },
+  "413": {
+    "name": "Tree (Snow Pine)",
+    "stringId": 5694,
+    "type": 10
+  },
+  "414": {
+    "name": "Tree (Jungle)",
+    "stringId": 5693,
+    "type": 10
+  },
+  "415": {
+    "name": "Stump",
+    "stringId": 5281,
+    "type": 10
+  },
+  "418": {
+    "name": "Henry the Lion",
+    "stringId": 5476,
+    "type": 70
+  },
+  "420": {
+    "name": "Cannon Galleon",
+    "stringId": 5287,
+    "type": 70
+  },
+  "422": {
+    "name": "Capped Ram",
+    "stringId": 5289,
+    "type": 70
+  },
+  "424": {
+    "name": "Charles Martel",
+    "stringId": 5291,
+    "type": 70
+  },
+  "425": {
+    "name": "Francisco de Orellana",
+    "stringId": 5292,
+    "type": 70
+  },
+  "426": {
+    "name": "Harald Hardrada",
+    "stringId": 5293,
+    "type": 70
+  },
+  "427": {
+    "name": "Gonzalo Pizarro",
+    "stringId": 5294,
+    "type": 70
+  },
+  "428": {
+    "name": "Hrolf the Ganger",
+    "stringId": 5295,
+    "type": 70
+  },
+  "429": {
+    "name": "Frederick Barbarossa",
+    "stringId": 5296,
+    "type": 70
+  },
+  "430": {
+    "name": "Joan the Maid",
+    "stringId": 5297,
+    "type": 70
+  },
+  "432": {
+    "name": "William Wallace",
+    "stringId": 5299,
+    "type": 70
+  },
+  "434": {
+    "name": "King",
+    "stringId": 5301,
+    "type": 70
+  },
+  "437": {
+    "name": "Prithviraj",
+    "stringId": 5298,
+    "type": 70
+  },
+  "439": {
+    "name": "Francesco Sforza",
+    "stringId": 5300,
+    "type": 70
+  },
+  "440": {
+    "name": "Petard",
+    "stringId": 5660,
+    "type": 70
+  },
+  "441": {
+    "name": "Hussar",
+    "stringId": 5661,
+    "type": 70
+  },
+  "442": {
+    "name": "Galleon",
+    "stringId": 5309,
+    "type": 70
+  },
+  "444": {
+    "name": "Town Center (Packed)",
+    "stringId": 5433,
+    "type": 80
+  },
+  "445": {
+    "name": "Poenari Castle",
+    "stringId": 5318,
+    "type": 80
+  },
+  "448": {
+    "name": "Scout Cavalry",
+    "stringId": 5326,
+    "type": 70
+  },
+  "450": {
+    "name": "Great Fish (Marlin)",
+    "stringId": 5330,
+    "type": 30
+  },
+  "451": {
+    "name": "Great Fish (Marlin)",
+    "stringId": 5331,
+    "type": 30
+  },
+  "453": {
+    "name": "Ataulf",
+    "stringId": 5020,
+    "type": 70
+  },
+  "455": {
+    "name": "Fish (Dorado)",
+    "stringId": 5335,
+    "type": 30
+  },
+  "456": {
+    "name": "Fish (Salmon)",
+    "stringId": 5336,
+    "type": 30
+  },
+  "457": {
+    "name": "Fish (Tuna)",
+    "stringId": 5337,
+    "type": 30
+  },
+  "458": {
+    "name": "Fish (Snapper)",
+    "stringId": 5338,
+    "type": 30
+  },
+  "463": {
+    "name": "House",
+    "stringId": 5344,
+    "type": 80
+  },
+  "464": {
+    "name": "House",
+    "stringId": 5344,
+    "type": 80
+  },
+  "465": {
+    "name": "House",
+    "stringId": 5344,
+    "type": 80
+  },
+  "472": {
+    "name": "Loot",
+    "stringId": 5711,
+    "type": 10
+  },
+  "473": {
+    "name": "Two-Handed Swordsman",
+    "stringId": 5411,
+    "type": 70
+  },
+  "474": {
+    "name": "Heavy Cavalry Archer",
+    "stringId": 5412,
+    "type": 70
+  },
+  "481": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "482": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "483": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "484": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "486": {
+    "name": "Brown Bear",
+    "stringId": 5713,
+    "type": 70
+  },
+  "487": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "488": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "490": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "491": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "492": {
+    "name": "Arbalester",
+    "stringId": 5418,
+    "type": 70
+  },
+  "493": {
+    "name": "Heavy Crossbowman",
+    "stringId": 5415,
+    "type": 70
+  },
+  "498": {
+    "name": "Barracks",
+    "stringId": 5135,
+    "type": 80
+  },
+  "499": {
+    "name": "Torch A",
+    "stringId": 5423,
+    "type": 20
+  },
+  "527": {
+    "name": "Demolition Ship",
+    "stringId": 5424,
+    "type": 70
+  },
+  "528": {
+    "name": "Heavy Demolition Ship",
+    "stringId": 5425,
+    "type": 70
+  },
+  "529": {
+    "name": "Fire Ship",
+    "stringId": 5426,
+    "type": 70
+  },
+  "530": {
+    "name": "Elite Longbowman",
+    "stringId": 5456,
+    "type": 70
+  },
+  "531": {
+    "name": "Elite Throwing Axeman",
+    "stringId": 5461,
+    "type": 70
+  },
+  "532": {
+    "name": "Fast Fire Ship",
+    "stringId": 5429,
+    "type": 70
+  },
+  "533": {
+    "name": "Elite Longship",
+    "stringId": 5457,
+    "type": 70
+  },
+  "534": {
+    "name": "Elite Woad Raider",
+    "stringId": 5463,
+    "type": 70
+  },
+  "539": {
+    "name": "Galley",
+    "stringId": 5436,
+    "type": 70
+  },
+  "542": {
+    "name": "Heavy Scorpion",
+    "stringId": 5439,
+    "type": 70
+  },
+  "545": {
+    "name": "Transport Ship",
+    "stringId": 5443,
+    "type": 70
+  },
+  "546": {
+    "name": "Light Cavalry",
+    "stringId": 5444,
+    "type": 70
+  },
+  "548": {
+    "name": "Siege Ram",
+    "stringId": 5446,
+    "type": 70
+  },
+  "550": {
+    "name": "Onager",
+    "stringId": 5448,
+    "type": 70
+  },
+  "553": {
+    "name": "Elite Cataphract",
+    "stringId": 5451,
+    "type": 70
+  },
+  "554": {
+    "name": "Elite Teutonic Knight",
+    "stringId": 5462,
+    "type": 70
+  },
+  "555": {
+    "name": "Elite Huskarl",
+    "stringId": 5454,
+    "type": 70
+  },
+  "556": {
+    "name": "Elite Mameluke",
+    "stringId": 5453,
+    "type": 70
+  },
+  "557": {
+    "name": "Elite Janissary",
+    "stringId": 5455,
+    "type": 70
+  },
+  "558": {
+    "name": "Elite War Elephant",
+    "stringId": 5459,
+    "type": 70
+  },
+  "559": {
+    "name": "Elite Chu Ko Nu",
+    "stringId": 5452,
+    "type": 70
+  },
+  "560": {
+    "name": "Elite Samurai",
+    "stringId": 5460,
+    "type": 70
+  },
+  "561": {
+    "name": "Elite Mangudai",
+    "stringId": 5458,
+    "type": 70
+  },
+  "562": {
+    "name": "Lumber Camp",
+    "stringId": 5464,
+    "type": 80
+  },
+  "563": {
+    "name": "Lumber Camp",
+    "stringId": 5464,
+    "type": 80
+  },
+  "564": {
+    "name": "Lumber Camp",
+    "stringId": 5464,
+    "type": 80
+  },
+  "565": {
+    "name": "Lumber Camp",
+    "stringId": 5464,
+    "type": 80
+  },
+  "567": {
+    "name": "Champion",
+    "stringId": 5469,
+    "type": 70
+  },
+  "569": {
+    "name": "Paladin",
+    "stringId": 5471,
+    "type": 70
+  },
+  "579": {
+    "name": "Gold Miner",
+    "stringId": 5482,
+    "type": 70
+  },
+  "581": {
+    "name": "Gold Miner",
+    "stringId": 5482,
+    "type": 70
+  },
+  "583": {
+    "name": "Genitour",
+    "stringId": 5663,
+    "type": 70
+  },
+  "584": {
+    "name": "Mining Camp",
+    "stringId": 5487,
+    "type": 80
+  },
+  "585": {
+    "name": "Mining Camp",
+    "stringId": 5487,
+    "type": 80
+  },
+  "586": {
+    "name": "Mining Camp",
+    "stringId": 5487,
+    "type": 80
+  },
+  "587": {
+    "name": "Mining Camp",
+    "stringId": 5487,
+    "type": 80
+  },
+  "588": {
+    "name": "Siege Onager",
+    "stringId": 5493,
+    "type": 70
+  },
+  "590": {
+    "name": "Shepherd",
+    "stringId": 5496,
+    "type": 70
+  },
+  "592": {
+    "name": "Shepherd",
+    "stringId": 5496,
+    "type": 70
+  },
+  "594": {
+    "name": "Sheep",
+    "stringId": 5498,
+    "type": 70
+  },
+  "596": {
+    "name": "Elite Genitour",
+    "stringId": 5665,
+    "type": 70
+  },
+  "597": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "598": {
+    "name": "Outpost",
+    "stringId": 5504,
+    "type": 80
+  },
+  "599": {
+    "name": "Cathedral",
+    "stringId": 5505,
+    "type": 80
+  },
+  "600": {
+    "name": "Flag A",
+    "stringId": 21218,
+    "type": 20
+  },
+  "601": {
+    "name": "Flag B",
+    "stringId": 21261,
+    "type": 20
+  },
+  "602": {
+    "name": "Flag C",
+    "stringId": 21200,
+    "type": 20
+  },
+  "603": {
+    "name": "Flag D",
+    "stringId": 21201,
+    "type": 20
+  },
+  "604": {
+    "name": "Flag E",
+    "stringId": 21202,
+    "type": 20
+  },
+  "605": {
+    "name": "Bridge A--Top",
+    "stringId": 21203,
+    "type": 80
+  },
+  "606": {
+    "name": "Bridge A--Middle",
+    "stringId": 21204,
+    "type": 80
+  },
+  "607": {
+    "name": "Bridge A--Bottom",
+    "stringId": 21205,
+    "type": 80
+  },
+  "608": {
+    "name": "Bridge B--Top",
+    "stringId": 21206,
+    "type": 80
+  },
+  "609": {
+    "name": "Bridge B--Middle",
+    "stringId": 21207,
+    "type": 80
+  },
+  "610": {
+    "name": "Bridge B--Bottom",
+    "stringId": 21208,
+    "type": 80
+  },
+  "611": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "612": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "613": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "614": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "615": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "616": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "617": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "618": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "619": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "620": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "621": {
+    "name": "Town Center",
+    "stringId": 5164,
+    "type": 80
+  },
+  "623": {
+    "name": "Rock 1",
+    "stringId": 21212,
+    "type": 10
+  },
+  "624": {
+    "name": "Pavilion A",
+    "stringId": 21213,
+    "type": 80
+  },
+  "625": {
+    "name": "Pavilion C",
+    "stringId": 21215,
+    "type": 80
+  },
+  "626": {
+    "name": "Pavilion B",
+    "stringId": 21214,
+    "type": 80
+  },
+  "629": {
+    "name": "Joan of Arc",
+    "stringId": 21260,
+    "type": 70
+  },
+  "632": {
+    "name": "Frankish Paladin",
+    "stringId": 21302,
+    "type": 70
+  },
+  "634": {
+    "name": "Sieur de Metz",
+    "stringId": 21304,
+    "type": 70
+  },
+  "636": {
+    "name": "Sieur Bertrand",
+    "stringId": 21306,
+    "type": 70
+  },
+  "637": {
+    "name": "Temple of Heaven",
+    "stringId": 21301,
+    "type": 80
+  },
+  "638": {
+    "name": "Duke D'Alençon",
+    "stringId": 21307,
+    "type": 70
+  },
+  "639": {
+    "name": "War Penguin",
+    "stringId": 5734,
+    "type": 70
+  },
+  "640": {
+    "name": "La Hire",
+    "stringId": 21308,
+    "type": 70
+  },
+  "642": {
+    "name": "Lord de Graville",
+    "stringId": 21309,
+    "type": 70
+  },
+  "644": {
+    "name": "Jean de Lorrain",
+    "stringId": 21310,
+    "type": 70
+  },
+  "646": {
+    "name": "Constable Richemont",
+    "stringId": 21311,
+    "type": 70
+  },
+  "648": {
+    "name": "Guy Josselyne",
+    "stringId": 21312,
+    "type": 70
+  },
+  "650": {
+    "name": "Jean Bureau",
+    "stringId": 21313,
+    "type": 70
+  },
+  "652": {
+    "name": "Sir John Fastolf",
+    "stringId": 21314,
+    "type": 70
+  },
+  "655": {
+    "name": "Mosque",
+    "stringId": 21315,
+    "type": 80
+  },
+  "659": {
+    "name": "Gate (hori.)",
+    "stringId": 21027,
+    "type": 80
+  },
+  "660": {
+    "name": "Fortified Gate (hori.)",
+    "stringId": 21031,
+    "type": 80
+  },
+  "661": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "662": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "663": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "664": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "665": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "666": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "667": {
+    "name": "Gate (vert.)",
+    "stringId": 21028,
+    "type": 80
+  },
+  "668": {
+    "name": "Fortified Gate (vert.)",
+    "stringId": 21032,
+    "type": 80
+  },
+  "669": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "670": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "671": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "672": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "673": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "674": {
+    "name": "Fortified Gate",
+    "stringId": 5649,
+    "type": 80
+  },
+  "678": {
+    "name": "Reynald de Chatillon",
+    "stringId": 21317,
+    "type": 70
+  },
+  "680": {
+    "name": "Master of the Templar",
+    "stringId": 21318,
+    "type": 70
+  },
+  "682": {
+    "name": "Bad Neighbor",
+    "stringId": 21319,
+    "type": 80
+  },
+  "683": {
+    "name": "God's Own Sling",
+    "stringId": 21320,
+    "type": 80
+  },
+  "684": {
+    "name": "The Accursed Tower",
+    "stringId": 21321,
+    "type": 80
+  },
+  "685": {
+    "name": "The Tower of Flies",
+    "stringId": 21322,
+    "type": 80
+  },
+  "686": {
+    "name": "Archer of the Eyes",
+    "stringId": 21323,
+    "type": 70
+  },
+  "688": {
+    "name": "Piece of the True Cross",
+    "stringId": 21325,
+    "type": 70
+  },
+  "689": {
+    "name": "Pyramid",
+    "stringId": 21326,
+    "type": 80
+  },
+  "690": {
+    "name": "Dome of the Rock",
+    "stringId": 21327,
+    "type": 80
+  },
+  "691": {
+    "name": "Elite Cannon Galleon",
+    "stringId": 5573,
+    "type": 70
+  },
+  "692": {
+    "name": "Berserk",
+    "stringId": 5574,
+    "type": 70
+  },
+  "694": {
+    "name": "Elite Berserk",
+    "stringId": 5576,
+    "type": 70
+  },
+  "696": {
+    "name": "Great Pyramid",
+    "stringId": 5578,
+    "type": 80
+  },
+  "698": {
+    "name": "Subotai",
+    "stringId": 5580,
+    "type": 70
+  },
+  "700": {
+    "name": "Hunting Wolf",
+    "stringId": 5582,
+    "type": 70
+  },
+  "702": {
+    "name": "Kushluk",
+    "stringId": 5584,
+    "type": 70
+  },
+  "703": {
+    "name": "Topa Yupanqui",
+    "stringId": 5018,
+    "type": 70
+  },
+  "704": {
+    "name": "Shah",
+    "stringId": 5586,
+    "type": 70
+  },
+  "705": {
+    "name": "Cow A",
+    "stringId": 21048,
+    "type": 70
+  },
+  "706": {
+    "name": "Saboteur",
+    "stringId": 5588,
+    "type": 70
+  },
+  "707": {
+    "name": "Ornlu the Wolf",
+    "stringId": 5589,
+    "type": 70
+  },
+  "709": {
+    "name": "Cactus",
+    "stringId": 5591,
+    "type": 30
+  },
+  "710": {
+    "name": "Skeleton",
+    "stringId": 5592,
+    "type": 10
+  },
+  "711": {
+    "name": "Rugs",
+    "stringId": 5593,
+    "type": 10
+  },
+  "712": {
+    "name": "Yurt A",
+    "stringId": 21111,
+    "type": 80
+  },
+  "713": {
+    "name": "Yurt B",
+    "stringId": 21112,
+    "type": 80
+  },
+  "714": {
+    "name": "Yurt C",
+    "stringId": 21113,
+    "type": 80
+  },
+  "715": {
+    "name": "Yurt D",
+    "stringId": 21114,
+    "type": 80
+  },
+  "716": {
+    "name": "Yurt E",
+    "stringId": 21115,
+    "type": 80
+  },
+  "717": {
+    "name": "Yurt F",
+    "stringId": 21116,
+    "type": 80
+  },
+  "718": {
+    "name": "Yurt G",
+    "stringId": 21117,
+    "type": 80
+  },
+  "719": {
+    "name": "Yurt H",
+    "stringId": 21118,
+    "type": 80
+  },
+  "720": {
+    "name": "Nine Bands",
+    "stringId": 5602,
+    "type": 20
+  },
+  "721": {
+    "name": "Shipwreck A",
+    "stringId": 5603,
+    "type": 20
+  },
+  "722": {
+    "name": "Shipwreck B",
+    "stringId": 5604,
+    "type": 20
+  },
+  "723": {
+    "name": "Crater",
+    "stringId": 5605,
+    "type": 10
+  },
+  "725": {
+    "name": "Jaguar Warrior",
+    "stringId": 5667,
+    "type": 70
+  },
+  "726": {
+    "name": "Elite Jaguar Warrior",
+    "stringId": 5669,
+    "type": 70
+  },
+  "728": {
+    "name": "Ice, Navigable",
+    "stringId": 10651,
+    "type": 10
+  },
+  "729": {
+    "name": "God's Own Sling (Packed)",
+    "stringId": 5611,
+    "type": 80
+  },
+  "730": {
+    "name": "Bad Neighbor (Packed)",
+    "stringId": 5612,
+    "type": 80
+  },
+  "731": {
+    "name": "Genghis Khan",
+    "stringId": 5613,
+    "type": 70
+  },
+  "733": {
+    "name": "Emperor in a Barrel",
+    "stringId": 5615,
+    "type": 70
+  },
+  "737": {
+    "name": "Bamboo Stump",
+    "stringId": 5618,
+    "type": 10
+  },
+  "738": {
+    "name": "Bridge A--Cracked",
+    "stringId": 5641,
+    "type": 80
+  },
+  "739": {
+    "name": "Bridge A--Broken Top",
+    "stringId": 5642,
+    "type": 80
+  },
+  "740": {
+    "name": "Bridge A--Broken Bottom",
+    "stringId": 5643,
+    "type": 80
+  },
+  "741": {
+    "name": "Bridge B--Cracked",
+    "stringId": 5644,
+    "type": 80
+  },
+  "742": {
+    "name": "Bridge B--Broken Top",
+    "stringId": 5645,
+    "type": 80
+  },
+  "743": {
+    "name": "Bridge B--Broken Bottom",
+    "stringId": 5646,
+    "type": 80
+  },
+  "744": {
+    "name": "Mountain 3",
+    "stringId": 5647,
+    "type": 10
+  },
+  "745": {
+    "name": "Mountain 4",
+    "stringId": 5648,
+    "type": 10
+  },
+  "748": {
+    "name": "Cobra Car",
+    "stringId": 5658,
+    "type": 70
+  },
+  "749": {
+    "name": "Cusi Yupanqui",
+    "stringId": 5017,
+    "type": 70
+  },
+  "751": {
+    "name": "Eagle Scout",
+    "stringId": 5672,
+    "type": 70
+  },
+  "752": {
+    "name": "Elite Eagle Warrior",
+    "stringId": 5673,
+    "type": 70
+  },
+  "753": {
+    "name": "Eagle Warrior",
+    "stringId": 5671,
+    "type": 70
+  },
+  "755": {
+    "name": "Tarkan",
+    "stringId": 5675,
+    "type": 70
+  },
+  "757": {
+    "name": "Elite Tarkan",
+    "stringId": 5677,
+    "type": 70
+  },
+  "758": {
+    "name": "Burned Building A",
+    "stringId": 21305,
+    "type": 10
+  },
+  "759": {
+    "name": "Huskarl",
+    "stringId": 5104,
+    "type": 70
+  },
+  "761": {
+    "name": "Elite Huskarl",
+    "stringId": 5454,
+    "type": 70
+  },
+  "763": {
+    "name": "Plumed Archer",
+    "stringId": 5683,
+    "type": 70
+  },
+  "765": {
+    "name": "Elite Plumed Archer",
+    "stringId": 5685,
+    "type": 70
+  },
+  "771": {
+    "name": "Conquistador",
+    "stringId": 5687,
+    "type": 70
+  },
+  "773": {
+    "name": "Elite Conquistador",
+    "stringId": 5689,
+    "type": 70
+  },
+  "775": {
+    "name": "Missionary",
+    "stringId": 5691,
+    "type": 70
+  },
+  "777": {
+    "name": "Attila the Hun",
+    "stringId": 5695,
+    "type": 70
+  },
+  "778": {
+    "name": "Canoe",
+    "stringId": 5119,
+    "type": 70
+  },
+  "779": {
+    "name": "Bleda the Hun",
+    "stringId": 5697,
+    "type": 70
+  },
+  "781": {
+    "name": "Pope Leo I",
+    "stringId": 5699,
+    "type": 70
+  },
+  "783": {
+    "name": "Scythian Wild Woman",
+    "stringId": 5701,
+    "type": 70
+  },
+  "785": {
+    "name": "Sea Tower",
+    "stringId": 5704,
+    "type": 80
+  },
+  "788": {
+    "name": "Sea Wall",
+    "stringId": 5707,
+    "type": 80
+  },
+  "789": {
+    "name": "Palisade Gate (up.)",
+    "stringId": 21021,
+    "type": 80
+  },
+  "790": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "791": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "792": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "793": {
+    "name": "Palisade Gate (down.)",
+    "stringId": 21022,
+    "type": 80
+  },
+  "794": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "795": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "796": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "797": {
+    "name": "Palisade Gate (hori.)",
+    "stringId": 21023,
+    "type": 80
+  },
+  "798": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "799": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "800": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "801": {
+    "name": "Palisade Gate (vert.)",
+    "stringId": 21024,
+    "type": 80
+  },
+  "802": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "803": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "804": {
+    "name": "Palisade Gate",
+    "stringId": 5186,
+    "type": 80
+  },
+  "805": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "806": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "807": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "808": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "809": {
+    "name": "Stump",
+    "stringId": 5281,
+    "type": 10
+  },
+  "810": {
+    "name": "Iron Boar",
+    "stringId": 5710,
+    "type": 70
+  },
+  "812": {
+    "name": "Jaguar",
+    "stringId": 5712,
+    "type": 70
+  },
+  "814": {
+    "name": "Horse A",
+    "stringId": 21052,
+    "type": 70
+  },
+  "816": {
+    "name": "Macaw",
+    "stringId": 5716,
+    "type": 70
+  },
+  "818": {
+    "name": "Plant",
+    "stringId": 5718,
+    "type": 10
+  },
+  "819": {
+    "name": "Sign",
+    "stringId": 5719,
+    "type": 10
+  },
+  "820": {
+    "name": "Grave",
+    "stringId": 5720,
+    "type": 10
+  },
+  "821": {
+    "name": "Head",
+    "stringId": 5721,
+    "type": 10
+  },
+  "822": {
+    "name": "Javelina",
+    "stringId": 5722,
+    "type": 70
+  },
+  "824": {
+    "name": "El Cid Campeador",
+    "stringId": 5724,
+    "type": 70
+  },
+  "825": {
+    "name": "Amazon Warrior",
+    "stringId": 5303,
+    "type": 70
+  },
+  "826": {
+    "name": "Monument",
+    "stringId": 5726,
+    "type": 80
+  },
+  "827": {
+    "name": "War Wagon",
+    "stringId": 5727,
+    "type": 70
+  },
+  "829": {
+    "name": "Elite War Wagon",
+    "stringId": 5729,
+    "type": 70
+  },
+  "831": {
+    "name": "Turtle Ship",
+    "stringId": 5731,
+    "type": 70
+  },
+  "832": {
+    "name": "Elite Turtle Ship",
+    "stringId": 5732,
+    "type": 70
+  },
+  "833": {
+    "name": "Turkey",
+    "stringId": 5733,
+    "type": 70
+  },
+  "835": {
+    "name": "Wild Horse A",
+    "stringId": 21233,
+    "type": 70
+  },
+  "837": {
+    "name": "Map Revealer",
+    "stringId": 21100,
+    "type": 20
+  },
+  "838": {
+    "name": "King Sancho",
+    "stringId": 5738,
+    "type": 70
+  },
+  "839": {
+    "name": "Rock (Stone)",
+    "stringId": 21216,
+    "type": 10
+  },
+  "840": {
+    "name": "King Alfonso",
+    "stringId": 5740,
+    "type": 70
+  },
+  "841": {
+    "name": "Rock (Gold)",
+    "stringId": 21217,
+    "type": 10
+  },
+  "842": {
+    "name": "Imam",
+    "stringId": 5742,
+    "type": 70
+  },
+  "844": {
+    "name": "Admiral Yi Sun-shin",
+    "stringId": 5744,
+    "type": 70
+  },
+  "845": {
+    "name": "Nobunaga",
+    "stringId": 5745,
+    "type": 70
+  },
+  "846": {
+    "name": "Donkey",
+    "stringId": 5306,
+    "type": 70
+  },
+  "847": {
+    "name": "Henry V",
+    "stringId": 5747,
+    "type": 70
+  },
+  "849": {
+    "name": "William the Conqueror",
+    "stringId": 5749,
+    "type": 70
+  },
+  "850": {
+    "name": "Amazon Archer",
+    "stringId": 5304,
+    "type": 70
+  },
+  "851": {
+    "name": "ES Flag",
+    "stringId": 5751,
+    "type": 20
+  },
+  "852": {
+    "name": "Scythian Scout",
+    "stringId": 5752,
+    "type": 70
+  },
+  "854": {
+    "name": "Torch A (Convertable)",
+    "stringId": 5753,
+    "type": 70
+  },
+  "855": {
+    "name": "Old Stone Head",
+    "stringId": 5756,
+    "type": 10
+  },
+  "856": {
+    "name": "Roman Ruins",
+    "stringId": 5757,
+    "type": 10
+  },
+  "857": {
+    "name": "Hay Stack",
+    "stringId": 5761,
+    "type": 10
+  },
+  "858": {
+    "name": "Broken Cart",
+    "stringId": 5759,
+    "type": 10
+  },
+  "859": {
+    "name": "Flower Bed",
+    "stringId": 5760,
+    "type": 10
+  },
+  "860": {
+    "name": "Furious the Monkey Boy",
+    "stringId": 5763,
+    "type": 70
+  },
+  "862": {
+    "name": "Stormy Dog",
+    "stringId": 5764,
+    "type": 70
+  },
+  "863": {
+    "name": "Rubble 1 x 1",
+    "stringId": 5001,
+    "type": 10
+  },
+  "864": {
+    "name": "Rubble 2 x 2",
+    "stringId": 5002,
+    "type": 10
+  },
+  "865": {
+    "name": "Rubble 3 x 3",
+    "stringId": 5003,
+    "type": 10
+  },
+  "866": {
+    "name": "Genoese Crossbowman",
+    "stringId": 5723,
+    "type": 70
+  },
+  "868": {
+    "name": "Elite Genoese Crossbowman",
+    "stringId": 5725,
+    "type": 70
+  },
+  "869": {
+    "name": "Magyar Huszar",
+    "stringId": 5728,
+    "type": 70
+  },
+  "871": {
+    "name": "Elite Magyar Huszar",
+    "stringId": 5730,
+    "type": 70
+  },
+  "872": {
+    "name": "Quimper Cathedral",
+    "stringId": 5762,
+    "type": 80
+  },
+  "873": {
+    "name": "Elephant Archer",
+    "stringId": 5682,
+    "type": 70
+  },
+  "875": {
+    "name": "Elite Elephant Archer",
+    "stringId": 5684,
+    "type": 70
+  },
+  "876": {
+    "name": "Boyar",
+    "stringId": 5447,
+    "type": 70
+  },
+  "878": {
+    "name": "Elite Boyar",
+    "stringId": 5449,
+    "type": 70
+  },
+  "879": {
+    "name": "Kamayuk",
+    "stringId": 5686,
+    "type": 70
+  },
+  "881": {
+    "name": "Elite Kamayuk",
+    "stringId": 5688,
+    "type": 70
+  },
+  "882": {
+    "name": "Condottiero",
+    "stringId": 5114,
+    "type": 70
+  },
+  "884": {
+    "name": "Wild Camel",
+    "stringId": 5736,
+    "type": 70
+  },
+  "885": {
+    "name": "Siege Tower",
+    "stringId": 5445,
+    "type": 70
+  },
+  "886": {
+    "name": "Tarkan",
+    "stringId": 5675,
+    "type": 70
+  },
+  "887": {
+    "name": "Elite Tarkan",
+    "stringId": 5677,
+    "type": 70
+  },
+  "892": {
+    "name": "Heavy Pikeman",
+    "stringId": 5410,
+    "type": 70
+  },
+  "894": {
+    "name": "Eastern Swordsman",
+    "stringId": 5116,
+    "type": 70
+  },
+  "896": {
+    "name": "Waterfall (Overlay)",
+    "stringId": 5755,
+    "type": 20
+  },
+  "897": {
+    "name": "Camel",
+    "stringId": 5700,
+    "type": 70
+  },
+  "899": {
+    "name": "Arch of Constantine",
+    "stringId": 21324,
+    "type": 80
+  },
+  "901": {
+    "name": "Flag F",
+    "stringId": 21209,
+    "type": 20
+  },
+  "902": {
+    "name": "Smoke",
+    "stringId": 21211,
+    "type": 20
+  },
+  "904": {
+    "name": "Wooden Bridge A--Top",
+    "stringId": 5488,
+    "type": 80
+  },
+  "905": {
+    "name": "Wooden Bridge A--Middle",
+    "stringId": 5489,
+    "type": 80
+  },
+  "906": {
+    "name": "Wooden Bridge A--Bottom",
+    "stringId": 5490,
+    "type": 80
+  },
+  "907": {
+    "name": "Wooden Bridge B--Top",
+    "stringId": 5491,
+    "type": 80
+  },
+  "908": {
+    "name": "Wooden Bridge B--Middle",
+    "stringId": 5494,
+    "type": 80
+  },
+  "909": {
+    "name": "Wooden Bridge B--Bottom",
+    "stringId": 5497,
+    "type": 80
+  },
+  "910": {
+    "name": "Impaled Corpse",
+    "stringId": 5500,
+    "type": 10
+  },
+  "914": {
+    "name": "Quarry",
+    "stringId": 5709,
+    "type": 10
+  },
+  "915": {
+    "name": "Lumber",
+    "stringId": 5706,
+    "type": 10
+  },
+  "916": {
+    "name": "Goods",
+    "stringId": 5705,
+    "type": 10
+  },
+  "917": {
+    "name": "Vulture",
+    "stringId": 5715,
+    "type": 70
+  },
+  "918": {
+    "name": "Rock 2",
+    "stringId": 21300,
+    "type": 10
+  },
+  "922": {
+    "name": "Monk with Relic",
+    "stringId": 5380,
+    "type": 70
+  },
+  "923": {
+    "name": "Queen",
+    "stringId": 5302,
+    "type": 70
+  },
+  "925": {
+    "name": "Sanyogita",
+    "stringId": 5307,
+    "type": 70
+  },
+  "926": {
+    "name": "Prithvi",
+    "stringId": 5308,
+    "type": 70
+  },
+  "927": {
+    "name": "Chand Bardai",
+    "stringId": 5310,
+    "type": 70
+  },
+  "929": {
+    "name": "Saladin",
+    "stringId": 4561,
+    "type": 70
+  },
+  "930": {
+    "name": "Khosrau",
+    "stringId": 5311,
+    "type": 70
+  },
+  "931": {
+    "name": "Norse Chieftain",
+    "stringId": 5702,
+    "type": 70
+  },
+  "932": {
+    "name": "Sogdian Cataphract",
+    "stringId": 5051,
+    "type": 70
+  },
+  "933": {
+    "name": "Barrels",
+    "stringId": 5305,
+    "type": 10
+  },
+  "934": {
+    "name": "Alfred the Alpaca",
+    "stringId": 5741,
+    "type": 70
+  },
+  "936": {
+    "name": "Elephant",
+    "stringId": 5743,
+    "type": 70
+  },
+  "938": {
+    "name": "Dragon Ship",
+    "stringId": 5739,
+    "type": 70
+  },
+  "939": {
+    "name": "Flame 1",
+    "stringId": 5770,
+    "type": 20
+  },
+  "940": {
+    "name": "Flame 2",
+    "stringId": 5771,
+    "type": 20
+  },
+  "941": {
+    "name": "Flame 3",
+    "stringId": 5772,
+    "type": 20
+  },
+  "942": {
+    "name": "Flame 4",
+    "stringId": 5773,
+    "type": 20
+  },
+  "943": {
+    "name": "Osman",
+    "stringId": 5312,
+    "type": 70
+  },
+  "944": {
+    "name": "Relic Cart",
+    "stringId": 5082,
+    "type": 70
+  },
+  "1001": {
+    "name": "Organ Gun",
+    "stringId": 5129,
+    "type": 70
+  },
+  "1003": {
+    "name": "Elite Organ Gun",
+    "stringId": 5130,
+    "type": 70
+  },
+  "1004": {
+    "name": "Caravel",
+    "stringId": 5132,
+    "type": 70
+  },
+  "1006": {
+    "name": "Elite Caravel",
+    "stringId": 5133,
+    "type": 70
+  },
+  "1007": {
+    "name": "Camel Archer",
+    "stringId": 5134,
+    "type": 70
+  },
+  "1009": {
+    "name": "Elite Camel Archer",
+    "stringId": 5136,
+    "type": 70
+  },
+  "1010": {
+    "name": "Genitour",
+    "stringId": 5137,
+    "type": 70
+  },
+  "1012": {
+    "name": "Elite Genitour",
+    "stringId": 5139,
+    "type": 70
+  },
+  "1013": {
+    "name": "Gbeto",
+    "stringId": 5140,
+    "type": 70
+  },
+  "1015": {
+    "name": "Elite Gbeto",
+    "stringId": 5141,
+    "type": 70
+  },
+  "1016": {
+    "name": "Shotel Warrior",
+    "stringId": 5143,
+    "type": 70
+  },
+  "1018": {
+    "name": "Elite Shotel Warrior",
+    "stringId": 5145,
+    "type": 70
+  },
+  "1019": {
+    "name": "Zebra",
+    "stringId": 5056,
+    "type": 70
+  },
+  "1021": {
+    "name": "Feitoria",
+    "stringId": 5159,
+    "type": 80
+  },
+  "1023": {
+    "name": "Priest",
+    "stringId": 5120,
+    "type": 70
+  },
+  "1025": {
+    "name": "Monk with Relic",
+    "stringId": 5380,
+    "type": 70
+  },
+  "1026": {
+    "name": "Ostrich",
+    "stringId": 5057,
+    "type": 70
+  },
+  "1028": {
+    "name": "Stork",
+    "stringId": 5058,
+    "type": 70
+  },
+  "1029": {
+    "name": "Lion",
+    "stringId": 5059,
+    "type": 70
+  },
+  "1031": {
+    "name": "Crocodile",
+    "stringId": 5060,
+    "type": 70
+  },
+  "1033": {
+    "name": "Grass Patch, Dry",
+    "stringId": 21047,
+    "type": 10
+  },
+  "1034": {
+    "name": "Musa ibn Nusayr",
+    "stringId": 5776,
+    "type": 70
+  },
+  "1035": {
+    "name": "Sundjata",
+    "stringId": 5777,
+    "type": 70
+  },
+  "1036": {
+    "name": "Tariq ibn Ziyad",
+    "stringId": 5775,
+    "type": 70
+  },
+  "1037": {
+    "name": "Richard de Clare",
+    "stringId": 5778,
+    "type": 70
+  },
+  "1038": {
+    "name": "Tristan",
+    "stringId": 5779,
+    "type": 70
+  },
+  "1039": {
+    "name": "Princess Yodit",
+    "stringId": 5781,
+    "type": 70
+  },
+  "1040": {
+    "name": "Henry II",
+    "stringId": 5780,
+    "type": 70
+  },
+  "1041": {
+    "name": "Mountain 5",
+    "stringId": 5782,
+    "type": 10
+  },
+  "1042": {
+    "name": "Mountain 6",
+    "stringId": 5783,
+    "type": 10
+  },
+  "1043": {
+    "name": "Mountain 7",
+    "stringId": 5784,
+    "type": 10
+  },
+  "1044": {
+    "name": "Mountain 8",
+    "stringId": 5785,
+    "type": 10
+  },
+  "1045": {
+    "name": "Snow Mountain 1",
+    "stringId": 5786,
+    "type": 10
+  },
+  "1046": {
+    "name": "Snow Mountain 2",
+    "stringId": 5787,
+    "type": 10
+  },
+  "1047": {
+    "name": "Snow Mountain 3",
+    "stringId": 5788,
+    "type": 10
+  },
+  "1048": {
+    "name": "Rock Formation 1",
+    "stringId": 5789,
+    "type": 10
+  },
+  "1049": {
+    "name": "Rock Formation 2",
+    "stringId": 5790,
+    "type": 10
+  },
+  "1050": {
+    "name": "Rock Formation 3",
+    "stringId": 5791,
+    "type": 10
+  },
+  "1051": {
+    "name": "Tree (Dragon)",
+    "stringId": 5792,
+    "type": 10
+  },
+  "1052": {
+    "name": "Tree (Baobab)",
+    "stringId": 5793,
+    "type": 10
+  },
+  "1053": {
+    "name": "Bush B",
+    "stringId": 5794,
+    "type": 10
+  },
+  "1054": {
+    "name": "Bush C",
+    "stringId": 5795,
+    "type": 10
+  },
+  "1056": {
+    "name": "Falcon",
+    "stringId": 5062,
+    "type": 70
+  },
+  "1059": {
+    "name": "Fruit Bush",
+    "stringId": 5796,
+    "type": 10
+  },
+  "1060": {
+    "name": "Goat",
+    "stringId": 5061,
+    "type": 70
+  },
+  "1062": {
+    "name": "Fence",
+    "stringId": 5797,
+    "type": 80
+  },
+  "1063": {
+    "name": "Tree (Acacia)",
+    "stringId": 5798,
+    "type": 10
+  },
+  "1064": {
+    "name": "Yekuno Amlak",
+    "stringId": 5799,
+    "type": 70
+  },
+  "1066": {
+    "name": "Yodit",
+    "stringId": 5220,
+    "type": 70
+  },
+  "1067": {
+    "name": "Itzcoatl",
+    "stringId": 5206,
+    "type": 70
+  },
+  "1068": {
+    "name": "Mustafa Pasha",
+    "stringId": 5207,
+    "type": 70
+  },
+  "1069": {
+    "name": "Pacal II",
+    "stringId": 5208,
+    "type": 70
+  },
+  "1070": {
+    "name": "Babur",
+    "stringId": 5209,
+    "type": 70
+  },
+  "1071": {
+    "name": "Abraha Elephant",
+    "stringId": 5210,
+    "type": 70
+  },
+  "1072": {
+    "name": "Guglielmo Embriaco",
+    "stringId": 5211,
+    "type": 70
+  },
+  "1073": {
+    "name": "Su Dingfang",
+    "stringId": 5212,
+    "type": 70
+  },
+  "1074": {
+    "name": "Pachacuti",
+    "stringId": 5213,
+    "type": 70
+  },
+  "1075": {
+    "name": "Huayna Capac",
+    "stringId": 5214,
+    "type": 70
+  },
+  "1076": {
+    "name": "Miklos Toldi",
+    "stringId": 5215,
+    "type": 70
+  },
+  "1077": {
+    "name": "Little John",
+    "stringId": 5216,
+    "type": 70
+  },
+  "1078": {
+    "name": "Zawisza the Black",
+    "stringId": 5217,
+    "type": 70
+  },
+  "1080": {
+    "name": "Sumanguru",
+    "stringId": 5218,
+    "type": 70
+  },
+  "1081": {
+    "name": "Storage",
+    "stringId": 5219,
+    "type": 80
+  },
+  "1082": {
+    "name": "Hut A",
+    "stringId": 21014,
+    "type": 80
+  },
+  "1083": {
+    "name": "Hut B",
+    "stringId": 21015,
+    "type": 80
+  },
+  "1084": {
+    "name": "Hut C",
+    "stringId": 21016,
+    "type": 80
+  },
+  "1085": {
+    "name": "Hut D",
+    "stringId": 21017,
+    "type": 80
+  },
+  "1086": {
+    "name": "Hut E",
+    "stringId": 21018,
+    "type": 80
+  },
+  "1087": {
+    "name": "Hut F",
+    "stringId": 21019,
+    "type": 80
+  },
+  "1088": {
+    "name": "Hut G",
+    "stringId": 21020,
+    "type": 80
+  },
+  "1089": {
+    "name": "Granary",
+    "stringId": 5222,
+    "type": 10
+  },
+  "1090": {
+    "name": "Barricade A",
+    "stringId": 21010,
+    "type": 80
+  },
+  "1091": {
+    "name": "Animal Skeleton",
+    "stringId": 5224,
+    "type": 10
+  },
+  "1092": {
+    "name": "Stelae A",
+    "stringId": 5225,
+    "type": 10
+  },
+  "1093": {
+    "name": "Stelae B",
+    "stringId": 5226,
+    "type": 10
+  },
+  "1094": {
+    "name": "Stelae C",
+    "stringId": 5227,
+    "type": 10
+  },
+  "1095": {
+    "name": "Gallow",
+    "stringId": 5228,
+    "type": 10
+  },
+  "1096": {
+    "name": "Palace",
+    "stringId": 5229,
+    "type": 80
+  },
+  "1097": {
+    "name": "Tent A",
+    "stringId": 21000,
+    "type": 80
+  },
+  "1098": {
+    "name": "Tent B",
+    "stringId": 21001,
+    "type": 80
+  },
+  "1099": {
+    "name": "Tent C",
+    "stringId": 21002,
+    "type": 80
+  },
+  "1100": {
+    "name": "Tent D",
+    "stringId": 21003,
+    "type": 80
+  },
+  "1101": {
+    "name": "Tent E",
+    "stringId": 21004,
+    "type": 80
+  },
+  "1102": {
+    "name": "Fortified Tower",
+    "stringId": 5231,
+    "type": 80
+  },
+  "1103": {
+    "name": "Fire Galley",
+    "stringId": 5160,
+    "type": 70
+  },
+  "1104": {
+    "name": "Demolition Raft",
+    "stringId": 5162,
+    "type": 70
+  },
+  "1105": {
+    "name": "Siege Tower",
+    "stringId": 5445,
+    "type": 70
+  },
+  "1106": {
+    "name": "Dagnajan",
+    "stringId": 5232,
+    "type": 70
+  },
+  "1109": {
+    "name": "Gidajan",
+    "stringId": 5233,
+    "type": 70
+  },
+  "1120": {
+    "name": "Ballista Elephant",
+    "stringId": 5146,
+    "type": 70
+  },
+  "1122": {
+    "name": "Elite Ballista Elephant",
+    "stringId": 5147,
+    "type": 70
+  },
+  "1123": {
+    "name": "Karambit Warrior",
+    "stringId": 5148,
+    "type": 70
+  },
+  "1125": {
+    "name": "Elite Karambit Warrior",
+    "stringId": 5150,
+    "type": 70
+  },
+  "1126": {
+    "name": "Arambai",
+    "stringId": 5151,
+    "type": 70
+  },
+  "1128": {
+    "name": "Elite Arambai",
+    "stringId": 5152,
+    "type": 70
+  },
+  "1129": {
+    "name": "Rattan Archer",
+    "stringId": 5165,
+    "type": 70
+  },
+  "1131": {
+    "name": "Elite Rattan Archer",
+    "stringId": 5166,
+    "type": 70
+  },
+  "1132": {
+    "name": "Battle Elephant",
+    "stringId": 5167,
+    "type": 70
+  },
+  "1134": {
+    "name": "Elite Battle Elephant",
+    "stringId": 5168,
+    "type": 70
+  },
+  "1135": {
+    "name": "Komodo Dragon",
+    "stringId": 5163,
+    "type": 70
+  },
+  "1137": {
+    "name": "Tiger",
+    "stringId": 5170,
+    "type": 70
+  },
+  "1139": {
+    "name": "Rhinoceros",
+    "stringId": 5172,
+    "type": 70
+  },
+  "1141": {
+    "name": "Box Turtles",
+    "stringId": 5173,
+    "type": 30
+  },
+  "1142": {
+    "name": "Water Buffalo",
+    "stringId": 5175,
+    "type": 70
+  },
+  "1144": {
+    "name": "Tree (Mangrove)",
+    "stringId": 5177,
+    "type": 10
+  },
+  "1145": {
+    "name": "Ninja",
+    "stringId": 5016,
+    "type": 70
+  },
+  "1146": {
+    "name": "Tree (Rainforest)",
+    "stringId": 5179,
+    "type": 10
+  },
+  "1148": {
+    "name": "Rock (Beach)",
+    "stringId": 5180,
+    "type": 10
+  },
+  "1149": {
+    "name": "Rock (Jungle)",
+    "stringId": 5181,
+    "type": 10
+  },
+  "1150": {
+    "name": "Flag G",
+    "stringId": 5183,
+    "type": 20
+  },
+  "1151": {
+    "name": "Flag H",
+    "stringId": 5184,
+    "type": 20
+  },
+  "1152": {
+    "name": "Flag I",
+    "stringId": 5188,
+    "type": 20
+  },
+  "1153": {
+    "name": "Flag J",
+    "stringId": 5189,
+    "type": 20
+  },
+  "1155": {
+    "name": "Imperial Skirmisher",
+    "stringId": 5190,
+    "type": 70
+  },
+  "1157": {
+    "name": "Gajah Mada",
+    "stringId": 5191,
+    "type": 70
+  },
+  "1158": {
+    "name": "Jayanegara",
+    "stringId": 5192,
+    "type": 70
+  },
+  "1159": {
+    "name": "Raden Wijaya",
+    "stringId": 5193,
+    "type": 70
+  },
+  "1160": {
+    "name": "Sunda Royal Fighter",
+    "stringId": 5194,
+    "type": 70
+  },
+  "1162": {
+    "name": "Suryavarman I",
+    "stringId": 5195,
+    "type": 70
+  },
+  "1163": {
+    "name": "Udayadityavarman I",
+    "stringId": 5196,
+    "type": 70
+  },
+  "1164": {
+    "name": "Jayaviravarman",
+    "stringId": 5197,
+    "type": 70
+  },
+  "1165": {
+    "name": "Bayinnaung",
+    "stringId": 5198,
+    "type": 70
+  },
+  "1166": {
+    "name": "Tabinshwehti",
+    "stringId": 5199,
+    "type": 70
+  },
+  "1171": {
+    "name": "Buddha Statue A",
+    "stringId": 5201,
+    "type": 10
+  },
+  "1172": {
+    "name": "Buddha Statue B",
+    "stringId": 5234,
+    "type": 10
+  },
+  "1173": {
+    "name": "Buddha Statue C",
+    "stringId": 5235,
+    "type": 10
+  },
+  "1174": {
+    "name": "Buddha Statue D",
+    "stringId": 5236,
+    "type": 10
+  },
+  "1175": {
+    "name": "Fern Patch",
+    "stringId": 5200,
+    "type": 10
+  },
+  "1176": {
+    "name": "Trowulan Gate",
+    "stringId": 5237,
+    "type": 10
+  },
+  "1177": {
+    "name": "Vases",
+    "stringId": 5238,
+    "type": 10
+  },
+  "1178": {
+    "name": "Le Loi",
+    "stringId": 5239,
+    "type": 70
+  },
+  "1179": {
+    "name": "Le Lai",
+    "stringId": 5240,
+    "type": 70
+  },
+  "1180": {
+    "name": "Le Lai",
+    "stringId": 5240,
+    "type": 70
+  },
+  "1181": {
+    "name": "Le Trien",
+    "stringId": 5241,
+    "type": 70
+  },
+  "1182": {
+    "name": "Luu Nhan Chu",
+    "stringId": 5242,
+    "type": 70
+  },
+  "1183": {
+    "name": "Bui Bi",
+    "stringId": 5243,
+    "type": 70
+  },
+  "1184": {
+    "name": "Dinh Le",
+    "stringId": 5244,
+    "type": 70
+  },
+  "1185": {
+    "name": "Wang Tong",
+    "stringId": 5245,
+    "type": 70
+  },
+  "1186": {
+    "name": "Envoy",
+    "stringId": 5246,
+    "type": 70
+  },
+  "1187": {
+    "name": "Rice Farm",
+    "stringId": 5247,
+    "type": 80
+  },
+  "1188": {
+    "name": "Dead Rice Farm",
+    "stringId": 5248,
+    "type": 80
+  },
+  "1189": {
+    "name": "Harbor",
+    "stringId": 5249,
+    "type": 80
+  },
+  "1191": {
+    "name": "Stupa",
+    "stringId": 5250,
+    "type": 10
+  },
+  "1192": {
+    "name": "Gate",
+    "stringId": 5185,
+    "type": 80
+  },
+  "1196": {
+    "name": "Army Tent A",
+    "stringId": 21005,
+    "type": 80
+  },
+  "1197": {
+    "name": "Army Tent B",
+    "stringId": 21006,
+    "type": 80
+  },
+  "1198": {
+    "name": "Army Tent C",
+    "stringId": 21007,
+    "type": 80
+  },
+  "1199": {
+    "name": "Army Tent D",
+    "stringId": 21008,
+    "type": 80
+  },
+  "1200": {
+    "name": "Army Tent E",
+    "stringId": 21009,
+    "type": 80
+  },
+  "1201": {
+    "name": "Pagoda A",
+    "stringId": 21091,
+    "type": 10
+  },
+  "1202": {
+    "name": "Pagoda B",
+    "stringId": 21092,
+    "type": 10
+  },
+  "1203": {
+    "name": "Pagoda C",
+    "stringId": 21093,
+    "type": 10
+  },
+  "1204": {
+    "name": "Bridge C--Top",
+    "stringId": 5255,
+    "type": 80
+  },
+  "1205": {
+    "name": "Bridge C--Middle",
+    "stringId": 5256,
+    "type": 80
+  },
+  "1206": {
+    "name": "Bridge C--Bottom",
+    "stringId": 5257,
+    "type": 80
+  },
+  "1207": {
+    "name": "Bridge D--Top",
+    "stringId": 5258,
+    "type": 80
+  },
+  "1208": {
+    "name": "Bridge D--Middle",
+    "stringId": 5260,
+    "type": 80
+  },
+  "1209": {
+    "name": "Bridge D--Bottom",
+    "stringId": 5261,
+    "type": 80
+  },
+  "1210": {
+    "name": "Bridge C--Cracked",
+    "stringId": 5278,
+    "type": 80
+  },
+  "1211": {
+    "name": "Bridge C--Broken Top",
+    "stringId": 5279,
+    "type": 80
+  },
+  "1212": {
+    "name": "Bridge C--Broken Bottom",
+    "stringId": 5280,
+    "type": 80
+  },
+  "1213": {
+    "name": "Bridge D--Cracked",
+    "stringId": 5282,
+    "type": 80
+  },
+  "1214": {
+    "name": "Bridge D--Broken Top",
+    "stringId": 5283,
+    "type": 80
+  },
+  "1215": {
+    "name": "Bridge D--Broken Bottom",
+    "stringId": 5284,
+    "type": 80
+  },
+  "1216": {
+    "name": "Sanchi Stupa",
+    "stringId": 5263,
+    "type": 80
+  },
+  "1217": {
+    "name": "Gol Gumbaz",
+    "stringId": 5264,
+    "type": 80
+  },
+  "1218": {
+    "name": "Barricade B",
+    "stringId": 21011,
+    "type": 80
+  },
+  "1219": {
+    "name": "Barricade C",
+    "stringId": 21012,
+    "type": 80
+  },
+  "1220": {
+    "name": "Barricade D",
+    "stringId": 21013,
+    "type": 80
+  },
+  "1222": {
+    "name": "Sharkatzor",
+    "stringId": 5285,
+    "type": 70
+  },
+  "1225": {
+    "name": "Konnik",
+    "stringId": 5288,
+    "type": 70
+  },
+  "1227": {
+    "name": "Elite Konnik",
+    "stringId": 5290,
+    "type": 70
+  },
+  "1228": {
+    "name": "Keshik",
+    "stringId": 5313,
+    "type": 70
+  },
+  "1230": {
+    "name": "Elite Keshik",
+    "stringId": 5314,
+    "type": 70
+  },
+  "1231": {
+    "name": "Kipchak",
+    "stringId": 5315,
+    "type": 70
+  },
+  "1233": {
+    "name": "Elite Kipchak",
+    "stringId": 5327,
+    "type": 70
+  },
+  "1234": {
+    "name": "Leitis",
+    "stringId": 5328,
+    "type": 70
+  },
+  "1236": {
+    "name": "Elite Leitis",
+    "stringId": 5329,
+    "type": 70
+  },
+  "1237": {
+    "name": "Bactrian Camel",
+    "stringId": 5333,
+    "type": 70
+  },
+  "1239": {
+    "name": "Ibex",
+    "stringId": 5340,
+    "type": 70
+  },
+  "1241": {
+    "name": "Snow Leopard",
+    "stringId": 5341,
+    "type": 70
+  },
+  "1243": {
+    "name": "Goose",
+    "stringId": 5345,
+    "type": 70
+  },
+  "1245": {
+    "name": "Pig",
+    "stringId": 5346,
+    "type": 70
+  },
+  "1247": {
+    "name": "Wild Bactrian Camel",
+    "stringId": 5334,
+    "type": 70
+  },
+  "1248": {
+    "name": "Tree (Oak Autumn)",
+    "stringId": 21072,
+    "type": 10
+  },
+  "1249": {
+    "name": "Tree (Oak Autumn Snow)",
+    "stringId": 21073,
+    "type": 10
+  },
+  "1250": {
+    "name": "Tree (Dead)",
+    "stringId": 21074,
+    "type": 10
+  },
+  "1251": {
+    "name": "Krepost",
+    "stringId": 5349,
+    "type": 80
+  },
+  "1252": {
+    "name": "Konnik (Dismounted)",
+    "stringId": 21057,
+    "type": 70
+  },
+  "1253": {
+    "name": "Elite Konnik (Dismounted)",
+    "stringId": 21058,
+    "type": 70
+  },
+  "1254": {
+    "name": "Konnik",
+    "stringId": 5288,
+    "type": 70
+  },
+  "1255": {
+    "name": "Elite Konnik",
+    "stringId": 5290,
+    "type": 70
+  },
+  "1258": {
+    "name": "Battering Ram",
+    "stringId": 5094,
+    "type": 70
+  },
+  "1260": {
+    "name": "Elite Kipchak",
+    "stringId": 5327,
+    "type": 70
+  },
+  "1262": {
+    "name": "Tokhtamysh Khan",
+    "stringId": 5374,
+    "type": 70
+  },
+  "1263": {
+    "name": "Flaming Camel",
+    "stringId": 5375,
+    "type": 70
+  },
+  "1264": {
+    "name": "Shrine",
+    "stringId": 5422,
+    "type": 80
+  },
+  "1265": {
+    "name": "Ivaylo",
+    "stringId": 5377,
+    "type": 70
+  },
+  "1266": {
+    "name": "Tsar Konstantin",
+    "stringId": 5378,
+    "type": 70
+  },
+  "1267": {
+    "name": "Kotyan Khan",
+    "stringId": 5379,
+    "type": 70
+  },
+  "1268": {
+    "name": "Cuman Chief",
+    "stringId": 5390,
+    "type": 70
+  },
+  "1269": {
+    "name": "Girgen Khan",
+    "stringId": 5391,
+    "type": 70
+  },
+  "1270": {
+    "name": "Dismantled Cart",
+    "stringId": 21098,
+    "type": 20
+  },
+  "1271": {
+    "name": "Ox Cart",
+    "stringId": 5395,
+    "type": 70
+  },
+  "1273": {
+    "name": "Ox Wagon",
+    "stringId": 5394,
+    "type": 70
+  },
+  "1275": {
+    "name": "Khan",
+    "stringId": 5404,
+    "type": 70
+  },
+  "1276": {
+    "name": "Urus Khan",
+    "stringId": 5376,
+    "type": 70
+  },
+  "1279": {
+    "name": "Statue (Civilization)",
+    "stringId": 21075,
+    "type": 10
+  },
+  "1281": {
+    "name": "Vytautas the Great",
+    "stringId": 5405,
+    "type": 70
+  },
+  "1282": {
+    "name": "Flag K",
+    "stringId": 21081,
+    "type": 20
+  },
+  "1283": {
+    "name": "Flag L",
+    "stringId": 21082,
+    "type": 20
+  },
+  "1284": {
+    "name": "Flag M",
+    "stringId": 21083,
+    "type": 20
+  },
+  "1285": {
+    "name": "FE Flag",
+    "stringId": 21084,
+    "type": 20
+  },
+  "1290": {
+    "name": "Ivaylo",
+    "stringId": 5377,
+    "type": 70
+  },
+  "1291": {
+    "name": "Invisible Object A",
+    "stringId": 21089,
+    "type": 70
+  },
+  "1292": {
+    "name": "Queen",
+    "stringId": 5302,
+    "type": 70
+  },
+  "1293": {
+    "name": "Sanyogita",
+    "stringId": 5307,
+    "type": 70
+  },
+  "1294": {
+    "name": "Prithvi",
+    "stringId": 5308,
+    "type": 70
+  },
+  "1295": {
+    "name": "Chand Bardai",
+    "stringId": 5310,
+    "type": 70
+  },
+  "1296": {
+    "name": "Saladin",
+    "stringId": 4561,
+    "type": 70
+  },
+  "1297": {
+    "name": "Khosrau",
+    "stringId": 5311,
+    "type": 70
+  },
+  "1298": {
+    "name": "Norse Chieftain",
+    "stringId": 5702,
+    "type": 70
+  },
+  "1299": {
+    "name": "Sogdian Cataphract",
+    "stringId": 5051,
+    "type": 70
+  },
+  "1300": {
+    "name": "Alfred the Alpaca",
+    "stringId": 5741,
+    "type": 70
+  },
+  "1301": {
+    "name": "Elephant",
+    "stringId": 5743,
+    "type": 70
+  },
+  "1302": {
+    "name": "Dragon Ship",
+    "stringId": 5739,
+    "type": 70
+  },
+  "1303": {
+    "name": "Osman",
+    "stringId": 5312,
+    "type": 70
+  },
+  "1304": {
+    "name": "Relic Cart",
+    "stringId": 5082,
+    "type": 70
+  },
+  "1305": {
+    "name": "Vulture",
+    "stringId": 5715,
+    "type": 70
+  },
+  "1307": {
+    "name": "Flag F",
+    "stringId": 21209,
+    "type": 20
+  },
+  "1308": {
+    "name": "Smoke",
+    "stringId": 21211,
+    "type": 20
+  },
+  "1309": {
+    "name": "Wooden Bridge A--Top",
+    "stringId": 5488,
+    "type": 80
+  },
+  "1310": {
+    "name": "Wooden Bridge A--Middle",
+    "stringId": 5489,
+    "type": 80
+  },
+  "1311": {
+    "name": "Wooden Bridge A--Bottom",
+    "stringId": 5490,
+    "type": 80
+  },
+  "1312": {
+    "name": "Wooden Bridge B--Top",
+    "stringId": 5491,
+    "type": 80
+  },
+  "1313": {
+    "name": "Wooden Bridge B--Middle",
+    "stringId": 5494,
+    "type": 80
+  },
+  "1314": {
+    "name": "Wooden Bridge B--Bottom",
+    "stringId": 5497,
+    "type": 80
+  },
+  "1315": {
+    "name": "Impaled Corpse",
+    "stringId": 5500,
+    "type": 10
+  },
+  "1319": {
+    "name": "Quarry",
+    "stringId": 5709,
+    "type": 10
+  },
+  "1320": {
+    "name": "Lumber",
+    "stringId": 5706,
+    "type": 10
+  },
+  "1321": {
+    "name": "Goods",
+    "stringId": 5705,
+    "type": 10
+  },
+  "1322": {
+    "name": "Statue (Column)",
+    "stringId": 5014,
+    "type": 10
+  },
+  "1323": {
+    "name": "Rock 2",
+    "stringId": 21300,
+    "type": 10
+  },
+  "1327": {
+    "name": "Monk with Relic",
+    "stringId": 5380,
+    "type": 70
+  },
+  "1330": {
+    "name": "Barrels",
+    "stringId": 5305,
+    "type": 10
+  },
+  "1333": {
+    "name": "Flame 1",
+    "stringId": 5770,
+    "type": 20
+  },
+  "1334": {
+    "name": "Flame 2",
+    "stringId": 5771,
+    "type": 20
+  },
+  "1335": {
+    "name": "Flame 3",
+    "stringId": 5772,
+    "type": 20
+  },
+  "1336": {
+    "name": "Flame 4",
+    "stringId": 5773,
+    "type": 20
+  },
+  "1338": {
+    "name": "Cart",
+    "stringId": 5466,
+    "type": 70
+  },
+  "1343": {
+    "name": "Statue (Left)",
+    "stringId": 21094,
+    "type": 10
+  },
+  "1345": {
+    "name": "Statue (Right)",
+    "stringId": 21095,
+    "type": 10
+  },
+  "1347": {
+    "name": "Tree (Cypress)",
+    "stringId": 21085,
+    "type": 10
+  },
+  "1348": {
+    "name": "Tree (Italian Pine)",
+    "stringId": 21086,
+    "type": 10
+  },
+  "1349": {
+    "name": "Tree (Olive)",
+    "stringId": 21087,
+    "type": 10
+  },
+  "1350": {
+    "name": "Tree (Reeds)",
+    "stringId": 21099,
+    "type": 10
+  },
+  "1351": {
+    "name": "Plant (Jungle)",
+    "stringId": 21088,
+    "type": 10
+  },
+  "1352": {
+    "name": "Plant (Underbrush Tropical)",
+    "stringId": 21033,
+    "type": 10
+  },
+  "1353": {
+    "name": "Plant (Underbrush)",
+    "stringId": 21034,
+    "type": 10
+  },
+  "1354": {
+    "name": "Plant (Rainforest)",
+    "stringId": 21035,
+    "type": 10
+  },
+  "1355": {
+    "name": "Plant (Underbrush Rainforest)",
+    "stringId": 21036,
+    "type": 10
+  },
+  "1356": {
+    "name": "Horse B",
+    "stringId": 21053,
+    "type": 70
+  },
+  "1358": {
+    "name": "Grass, Green",
+    "stringId": 21044,
+    "type": 10
+  },
+  "1359": {
+    "name": "Grass, Dry",
+    "stringId": 21045,
+    "type": 10
+  },
+  "1360": {
+    "name": "Plant (Bush, Green)",
+    "stringId": 21037,
+    "type": 10
+  },
+  "1361": {
+    "name": "Plant (Bush, Dry)",
+    "stringId": 21038,
+    "type": 10
+  },
+  "1362": {
+    "name": "Plant (Shrub, Green)",
+    "stringId": 21039,
+    "type": 10
+  },
+  "1363": {
+    "name": "Plant (Shrub, Dry)",
+    "stringId": 21040,
+    "type": 10
+  },
+  "1364": {
+    "name": "Plant (Weeds)",
+    "stringId": 21041,
+    "type": 10
+  },
+  "1365": {
+    "name": "Plant (Dead)",
+    "stringId": 21042,
+    "type": 10
+  },
+  "1366": {
+    "name": "Plant (Flowers)",
+    "stringId": 21043,
+    "type": 10
+  },
+  "1367": {
+    "name": "Sankore Madrasah",
+    "stringId": 5434,
+    "type": 80
+  },
+  "1368": {
+    "name": "Tower of London",
+    "stringId": 5007,
+    "type": 80
+  },
+  "1369": {
+    "name": "Dormition Cathedral",
+    "stringId": 5008,
+    "type": 80
+  },
+  "1370": {
+    "name": "Steppe Lancer",
+    "stringId": 5009,
+    "type": 70
+  },
+  "1372": {
+    "name": "Elite Steppe Lancer",
+    "stringId": 5010,
+    "type": 70
+  },
+  "1374": {
+    "name": "Iroquois Warrior",
+    "stringId": 5011,
+    "type": 70
+  },
+  "1376": {
+    "name": "Torch B",
+    "stringId": 5590,
+    "type": 20
+  },
+  "1377": {
+    "name": "Torch B (Convertable)",
+    "stringId": 21070,
+    "type": 70
+  },
+  "1378": {
+    "name": "Rock Church",
+    "stringId": 5012,
+    "type": 80
+  },
+  "1379": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1380": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1381": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1382": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1383": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1384": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1385": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1386": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1387": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1388": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1389": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1390": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1391": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1392": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1393": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1394": {
+    "name": "Sea Gate",
+    "stringId": 5708,
+    "type": 80
+  },
+  "1396": {
+    "name": "Chain",
+    "stringId": 5013,
+    "type": 80
+  },
+  "1397": {
+    "name": "Chain",
+    "stringId": 5013,
+    "type": 80
+  },
+  "1398": {
+    "name": "Chain",
+    "stringId": 5013,
+    "type": 80
+  },
+  "1399": {
+    "name": "Chain",
+    "stringId": 5013,
+    "type": 80
+  },
+  "1400": {
+    "name": "Priest with Relic",
+    "stringId": 5015,
+    "type": 70
+  },
+  "1497": {
+    "name": "Rubble 4 x 4",
+    "stringId": 5004,
+    "type": 10
+  },
+  "1498": {
+    "name": "Rubble 8 x 8",
+    "stringId": 5006,
+    "type": 10
+  },
+  "1536": {
+    "name": "Bamboo Stump",
+    "stringId": 5618,
+    "type": 10
+  },
+  "1537": {
+    "name": "Baobab Stump",
+    "stringId": 21236,
+    "type": 10
+  },
+  "1538": {
+    "name": "Lush Bamboo Stump",
+    "stringId": 21137,
+    "type": 10
+  },
+  "1539": {
+    "name": "Felled Tree",
+    "stringId": 21237,
+    "type": 10
+  },
+  "1540": {
+    "name": "Felled Tree (Bamboo)",
+    "stringId": 21239,
+    "type": 10
+  },
+  "1541": {
+    "name": "Felled Tree (Baobab)",
+    "stringId": 21238,
+    "type": 10
+  },
+  "1542": {
+    "name": "Felled Tree (Lush Bamboo)",
+    "stringId": 21240,
+    "type": 10
+  },
+  "1549": {
+    "name": "Forage Bush",
+    "stringId": 5401,
+    "type": 10
+  },
+  "1550": {
+    "name": "Bridge E--Top",
+    "stringId": 5021,
+    "type": 80
+  },
+  "1551": {
+    "name": "Bridge E--Middle",
+    "stringId": 5022,
+    "type": 80
+  },
+  "1552": {
+    "name": "Bridge E--Bottom",
+    "stringId": 5023,
+    "type": 80
+  },
+  "1553": {
+    "name": "Bridge F--Top",
+    "stringId": 5024,
+    "type": 80
+  },
+  "1554": {
+    "name": "Bridge F--Middle",
+    "stringId": 5025,
+    "type": 80
+  },
+  "1555": {
+    "name": "Bridge F--Bottom",
+    "stringId": 5026,
+    "type": 80
+  },
+  "1556": {
+    "name": "Bridge E--Cracked",
+    "stringId": 5027,
+    "type": 80
+  },
+  "1557": {
+    "name": "Bridge E--Broken Top",
+    "stringId": 5028,
+    "type": 80
+  },
+  "1558": {
+    "name": "Bridge E--Broken Bottom",
+    "stringId": 5029,
+    "type": 80
+  },
+  "1559": {
+    "name": "Bridge F--Cracked",
+    "stringId": 5030,
+    "type": 80
+  },
+  "1560": {
+    "name": "Bridge F--Broken Top",
+    "stringId": 5031,
+    "type": 80
+  },
+  "1561": {
+    "name": "Bridge F--Broken Bottom",
+    "stringId": 5032,
+    "type": 80
+  },
+  "1562": {
+    "name": "Torii Gate",
+    "stringId": 21063,
+    "type": 10
+  },
+  "1563": {
+    "name": "Nubian Pyramid",
+    "stringId": 21066,
+    "type": 10
+  },
+  "1564": {
+    "name": "Target A",
+    "stringId": 21064,
+    "type": 10
+  },
+  "1565": {
+    "name": "Target B",
+    "stringId": 21065,
+    "type": 10
+  },
+  "1566": {
+    "name": "Temple Ruin",
+    "stringId": 21068,
+    "type": 10
+  },
+  "1567": {
+    "name": "Well",
+    "stringId": 21067,
+    "type": 10
+  },
+  "1568": {
+    "name": "Mounted Samurai",
+    "stringId": 5039,
+    "type": 70
+  },
+  "1570": {
+    "name": "Xolotl Warrior",
+    "stringId": 5040,
+    "type": 70
+  },
+  "1572": {
+    "name": "Merchant",
+    "stringId": 5041,
+    "type": 70
+  },
+  "1574": {
+    "name": "Sosso Guard",
+    "stringId": 5042,
+    "type": 70
+  },
+  "1577": {
+    "name": "Photonman",
+    "stringId": 5043,
+    "type": 70
+  },
+  "1579": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1580": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1581": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1582": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1583": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1584": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1585": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1586": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1587": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1588": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1589": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1590": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1591": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1592": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1593": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1594": {
+    "name": "City Gate",
+    "stringId": 5044,
+    "type": 80
+  },
+  "1596": {
+    "name": "Cow B",
+    "stringId": 21049,
+    "type": 70
+  },
+  "1598": {
+    "name": "Cow C",
+    "stringId": 21050,
+    "type": 70
+  },
+  "1600": {
+    "name": "Cow D",
+    "stringId": 21051,
+    "type": 70
+  },
+  "1602": {
+    "name": "Horse C",
+    "stringId": 21054,
+    "type": 70
+  },
+  "1604": {
+    "name": "Horse D",
+    "stringId": 21055,
+    "type": 70
+  },
+  "1606": {
+    "name": "Horse E",
+    "stringId": 21056,
+    "type": 70
+  },
+  "1608": {
+    "name": "Butterflies",
+    "stringId": 21069,
+    "type": 70
+  },
+  "1609": {
+    "name": "Butterflies",
+    "stringId": 21069,
+    "type": 70
+  },
+  "1610": {
+    "name": "Butterflies",
+    "stringId": 21069,
+    "type": 70
+  },
+  "1622": {
+    "name": "Aachen Cathedral",
+    "stringId": 5339,
+    "type": 80
+  },
+  "1631": {
+    "name": "The Middlebrook",
+    "stringId": 5347,
+    "type": 70
+  },
+  "1634": {
+    "name": "Baobab Stump",
+    "stringId": 21236,
+    "type": 10
+  },
+  "1635": {
+    "name": "Waterfall (Background)",
+    "stringId": 21071,
+    "type": 20
+  },
+  "1646": {
+    "name": "Market",
+    "stringId": 5161,
+    "type": 10
+  },
+  "1647": {
+    "name": "Trade Workshop",
+    "stringId": 5174,
+    "type": 80
+  },
+  "1655": {
+    "name": "Coustillier",
+    "stringId": 5534,
+    "type": 70
+  },
+  "1657": {
+    "name": "Elite Coustillier",
+    "stringId": 5536,
+    "type": 70
+  },
+  "1658": {
+    "name": "Serjeant",
+    "stringId": 5538,
+    "type": 70
+  },
+  "1659": {
+    "name": "Elite Serjeant",
+    "stringId": 5540,
+    "type": 70
+  },
+  "1660": {
+    "name": "Serjeant",
+    "stringId": 5538,
+    "type": 70
+  },
+  "1661": {
+    "name": "Elite Serjeant",
+    "stringId": 5540,
+    "type": 70
+  },
+  "1663": {
+    "name": "Flemish Militia (Male)",
+    "stringId": 21061,
+    "type": 70
+  },
+  "1665": {
+    "name": "Donjon",
+    "stringId": 5544,
+    "type": 80
+  },
+  "1669": {
+    "name": "Edward Longshanks",
+    "stringId": 5470,
+    "type": 70
+  },
+  "1671": {
+    "name": "Gilbert de Clare",
+    "stringId": 5477,
+    "type": 70
+  },
+  "1673": {
+    "name": "John the Fearless",
+    "stringId": 5478,
+    "type": 70
+  },
+  "1675": {
+    "name": "Philip the Good",
+    "stringId": 5479,
+    "type": 70
+  },
+  "1677": {
+    "name": "Robert Guiscard",
+    "stringId": 5480,
+    "type": 70
+  },
+  "1679": {
+    "name": "Roger Bosso",
+    "stringId": 21328,
+    "type": 70
+  },
+  "1681": {
+    "name": "Bohemond",
+    "stringId": 21329,
+    "type": 70
+  },
+  "1683": {
+    "name": "Llywelyn ap Gruffydd",
+    "stringId": 5550,
+    "type": 70
+  },
+  "1685": {
+    "name": "Dafydd ap Gruffydd",
+    "stringId": 5551,
+    "type": 70
+  },
+  "1687": {
+    "name": "Bernard d’Armagnac",
+    "stringId": 5554,
+    "type": 70
+  },
+  "1689": {
+    "name": "Flare A (Permanent)",
+    "stringId": 21059,
+    "type": 10
+  },
+  "1690": {
+    "name": "Warwolf Trebuchet",
+    "stringId": 5555,
+    "type": 80
+  },
+  "1691": {
+    "name": "Warwolf Trebuchet (Packed)",
+    "stringId": 5556,
+    "type": 80
+  },
+  "1692": {
+    "name": "Jacqueline of Hainaut",
+    "stringId": 5557,
+    "type": 70
+  },
+  "1697": {
+    "name": "Flemish Militia (Female)",
+    "stringId": 21062,
+    "type": 70
+  },
+  "1699": {
+    "name": "Flemish Militia",
+    "stringId": 5542,
+    "type": 70
+  },
+  "1701": {
+    "name": "Obuch",
+    "stringId": 5558,
+    "type": 70
+  },
+  "1703": {
+    "name": "Elite Obuch",
+    "stringId": 5559,
+    "type": 70
+  },
+  "1704": {
+    "name": "Hussite Wagon",
+    "stringId": 5561,
+    "type": 70
+  },
+  "1706": {
+    "name": "Elite Hussite Wagon",
+    "stringId": 5563,
+    "type": 70
+  },
+  "1707": {
+    "name": "Winged Hussar",
+    "stringId": 5577,
+    "type": 70
+  },
+  "1709": {
+    "name": "Houfnice",
+    "stringId": 5579,
+    "type": 70
+  },
+  "1711": {
+    "name": "Folwark",
+    "stringId": 5581,
+    "type": 80
+  },
+  "1712": {
+    "name": "Pagan Shrine",
+    "stringId": 5583,
+    "type": 80
+  },
+  "1713": {
+    "name": "Jan Zizka",
+    "stringId": 5585,
+    "type": 70
+  },
+  "1715": {
+    "name": "Jadwiga",
+    "stringId": 5587,
+    "type": 70
+  },
+  "1717": {
+    "name": "Tree (Birch)",
+    "stringId": 21060,
+    "type": 10
+  },
+  "1718": {
+    "name": "Jogaila",
+    "stringId": 5608,
+    "type": 70
+  },
+  "1720": {
+    "name": "Folwark",
+    "stringId": 5581,
+    "type": 80
+  },
+  "1721": {
+    "name": "Kestutis",
+    "stringId": 5609,
+    "type": 70
+  },
+  "1723": {
+    "name": "Crusader Knight",
+    "stringId": 5610,
+    "type": 70
+  },
+  "1725": {
+    "name": "Algirdas",
+    "stringId": 5614,
+    "type": 70
+  },
+  "1727": {
+    "name": "Ulrich von Jungingen",
+    "stringId": 5659,
+    "type": 70
+  },
+  "1729": {
+    "name": "Emperor Sigismund",
+    "stringId": 5662,
+    "type": 70
+  },
+  "1730": {
+    "name": "Dmitry of Moscow",
+    "stringId": 5666,
+    "type": 70
+  },
+  "1731": {
+    "name": "Mikhail of Tver",
+    "stringId": 5668,
+    "type": 70
+  },
+  "1732": {
+    "name": "Young Jadwiga",
+    "stringId": 5674,
+    "type": 70
+  },
+  "1734": {
+    "name": "Folwark",
+    "stringId": 5581,
+    "type": 80
+  },
+  "1735": {
+    "name": "Urumi Swordsman",
+    "stringId": 5403,
+    "type": 70
+  },
+  "1737": {
+    "name": "Elite Urumi Swordsman",
+    "stringId": 5413,
+    "type": 70
+  },
+  "1738": {
+    "name": "Ratha (Melee)",
+    "stringId": 21096,
+    "type": 70
+  },
+  "1740": {
+    "name": "Elite Ratha (Melee)",
+    "stringId": 21097,
+    "type": 70
+  },
+  "1741": {
+    "name": "Chakram Thrower",
+    "stringId": 5421,
+    "type": 70
+  },
+  "1743": {
+    "name": "Elite Chakram Thrower",
+    "stringId": 5427,
+    "type": 70
+  },
+  "1744": {
+    "name": "Armored Elephant",
+    "stringId": 5428,
+    "type": 70
+  },
+  "1746": {
+    "name": "Siege Elephant",
+    "stringId": 5430,
+    "type": 70
+  },
+  "1747": {
+    "name": "Ghulam",
+    "stringId": 5431,
+    "type": 70
+  },
+  "1749": {
+    "name": "Elite Ghulam",
+    "stringId": 5432,
+    "type": 70
+  },
+  "1750": {
+    "name": "Thirisadai",
+    "stringId": 5435,
+    "type": 70
+  },
+  "1751": {
+    "name": "Shrivamsha Rider",
+    "stringId": 5437,
+    "type": 70
+  },
+  "1753": {
+    "name": "Elite Shrivamsha Rider",
+    "stringId": 5438,
+    "type": 70
+  },
+  "1754": {
+    "name": "Caravanserai",
+    "stringId": 5440,
+    "type": 80
+  },
+  "1755": {
+    "name": "Camel Scout",
+    "stringId": 5441,
+    "type": 70
+  },
+  "1759": {
+    "name": "Ratha (Ranged)",
+    "stringId": 21104,
+    "type": 70
+  },
+  "1761": {
+    "name": "Elite Ratha (Ranged)",
+    "stringId": 21105,
+    "type": 70
+  },
+  "1762": {
+    "name": "Mihira Bhoja",
+    "stringId": 5371,
+    "type": 70
+  },
+  "1763": {
+    "name": "Amoghavarsha",
+    "stringId": 5372,
+    "type": 70
+  },
+  "1764": {
+    "name": "Rajendra Chola",
+    "stringId": 5373,
+    "type": 70
+  },
+  "1766": {
+    "name": "General Araiyan",
+    "stringId": 5392,
+    "type": 70
+  },
+  "1768": {
+    "name": "Young Babur",
+    "stringId": 5465,
+    "type": 70
+  },
+  "1769": {
+    "name": "Qutlugh",
+    "stringId": 5481,
+    "type": 70
+  },
+  "1771": {
+    "name": "Ibrahim Lodi",
+    "stringId": 5483,
+    "type": 70
+  },
+  "1772": {
+    "name": "Shaybani Khan",
+    "stringId": 5486,
+    "type": 70
+  },
+  "1773": {
+    "name": "Minaret of Jam",
+    "stringId": 5664,
+    "type": 80
+  },
+  "1774": {
+    "name": "Map Revealer Medium",
+    "stringId": 21101,
+    "type": 20
+  },
+  "1775": {
+    "name": "Map Revealer Giant",
+    "stringId": 21102,
+    "type": 20
+  },
+  "1776": {
+    "name": "Blocker",
+    "stringId": 21103,
+    "type": 10
+  },
+  "1777": {
+    "name": "Indian Statues",
+    "stringId": 21108,
+    "type": 10
+  },
+  "1778": {
+    "name": "Rekha-Deul Temple",
+    "stringId": 21106,
+    "type": 10
+  },
+  "1784": {
+    "name": "Indian Ruins",
+    "stringId": 21107,
+    "type": 10
+  },
+  "1785": {
+    "name": "Flare B (Permanent)",
+    "stringId": 21109,
+    "type": 10
+  },
+  "1786": {
+    "name": "Spearman",
+    "stringId": 5078,
+    "type": 70
+  },
+  "1787": {
+    "name": "Pikeman",
+    "stringId": 5408,
+    "type": 70
+  },
+  "1788": {
+    "name": "Halberdier",
+    "stringId": 5409,
+    "type": 70
+  },
+  "1790": {
+    "name": "Centurion",
+    "stringId": 5052,
+    "type": 70
+  },
+  "1792": {
+    "name": "Elite Centurion",
+    "stringId": 5053,
+    "type": 70
+  },
+  "1793": {
+    "name": "Legionary",
+    "stringId": 5054,
+    "type": 70
+  },
+  "1795": {
+    "name": "Dromon",
+    "stringId": 5055,
+    "type": 70
+  },
+  "1796": {
+    "name": "Gazelle",
+    "stringId": 5063,
+    "type": 70
+  },
+  "1800": {
+    "name": "Composite Bowman",
+    "stringId": 5033,
+    "type": 70
+  },
+  "1802": {
+    "name": "Elite Composite Bowman",
+    "stringId": 5034,
+    "type": 70
+  },
+  "1803": {
+    "name": "Monaspa",
+    "stringId": 5035,
+    "type": 70
+  },
+  "1805": {
+    "name": "Elite Monaspa",
+    "stringId": 5036,
+    "type": 70
+  },
+  "1806": {
+    "name": "Fortified Church",
+    "stringId": 5038,
+    "type": 80
+  },
+  "1807": {
+    "name": "Svan Tower",
+    "stringId": 21110,
+    "type": 10
+  },
+  "1808": {
+    "name": "Mule Cart",
+    "stringId": 5045,
+    "type": 80
+  },
+  "1810": {
+    "name": "Villager",
+    "stringId": 5606,
+    "type": 70
+  },
+  "1811": {
+    "name": "Warrior Priest",
+    "stringId": 5037,
+    "type": 70
+  },
+  "1813": {
+    "name": "Savar",
+    "stringId": 5703,
+    "type": 70
+  },
+  "1815": {
+    "name": "Shah Ismail",
+    "stringId": 5047,
+    "type": 70
+  },
+  "1817": {
+    "name": "Qizilbash Warrior",
+    "stringId": 5048,
+    "type": 70
+  },
+  "1819": {
+    "name": "Ismail",
+    "stringId": 5049,
+    "type": 70
+  },
+  "1820": {
+    "name": "Selim the Grim",
+    "stringId": 5050,
+    "type": 70
+  },
+  "1821": {
+    "name": "Thoros",
+    "stringId": 5676,
+    "type": 70
+  },
+  "1822": {
+    "name": "Tamar",
+    "stringId": 5678,
+    "type": 70
+  },
+  "1824": {
+    "name": "Yury",
+    "stringId": 5680,
+    "type": 70
+  },
+  "1825": {
+    "name": "Ivane",
+    "stringId": 5746,
+    "type": 70
+  },
+  "1826": {
+    "name": "Zakare",
+    "stringId": 5748,
+    "type": 70
+  },
+  "1827": {
+    "name": "Stephan",
+    "stringId": 5750,
+    "type": 70
+  },
+  "1828": {
+    "name": "Mleh",
+    "stringId": 5046,
+    "type": 70
+  },
+  "1829": {
+    "name": "Elite Qizilbash Warrior",
+    "stringId": 5254,
+    "type": 70
+  },
+  "1831": {
+    "name": "Warrior Priest with Relic",
+    "stringId": 5737,
+    "type": 70
+  },
+  "1832": {
+    "name": "Yurt I",
+    "stringId": 21119,
+    "type": 80
+  },
+  "1833": {
+    "name": "Yurt J",
+    "stringId": 21120,
+    "type": 80
+  },
+  "1834": {
+    "name": "Yurt K",
+    "stringId": 21121,
+    "type": 80
+  },
+  "1835": {
+    "name": "Yurt L",
+    "stringId": 21122,
+    "type": 80
+  },
+  "1836": {
+    "name": "Chapel",
+    "stringId": 21123,
+    "type": 10
+  },
+  "1837": {
+    "name": "Castle Ruins",
+    "stringId": 21124,
+    "type": 10
+  },
+  "1838": {
+    "name": "Church Ruins",
+    "stringId": 21125,
+    "type": 10
+  },
+  "1839": {
+    "name": "Bridge Piece AB--End A",
+    "stringId": 21126,
+    "type": 80
+  },
+  "1840": {
+    "name": "Bridge Piece AB--End B",
+    "stringId": 21127,
+    "type": 80
+  },
+  "1841": {
+    "name": "Bridge Piece AB--End C",
+    "stringId": 21128,
+    "type": 80
+  },
+  "1842": {
+    "name": "Bridge Piece AB--Middle",
+    "stringId": 21129,
+    "type": 80
+  },
+  "1843": {
+    "name": "Bridge Piece AB--Broken A",
+    "stringId": 21130,
+    "type": 80
+  },
+  "1844": {
+    "name": "Bridge Piece AB--Broken B",
+    "stringId": 21131,
+    "type": 80
+  },
+  "1845": {
+    "name": "Bridge Piece AB--Broken C",
+    "stringId": 21132,
+    "type": 80
+  },
+  "1846": {
+    "name": "Bridge Piece AB--Cracked",
+    "stringId": 21133,
+    "type": 80
+  },
+  "1847": {
+    "name": "Bridge Piece AB--Rails",
+    "stringId": 21134,
+    "type": 80
+  },
+  "1869": {
+    "name": "Hunnic Horse",
+    "stringId": 21135,
+    "type": 70
+  },
+  "1870": {
+    "name": "Chief's Yurt",
+    "stringId": 14897,
+    "type": 80
+  },
+  "1885": {
+    "name": "Broken Fence A",
+    "stringId": 21225,
+    "type": 80
+  },
+  "1886": {
+    "name": "Broken Fence B",
+    "stringId": 21226,
+    "type": 80
+  },
+  "1889": {
+    "name": "Pasture",
+    "stringId": 5895,
+    "type": 80
+  },
+  "1891": {
+    "name": "Herder",
+    "stringId": 5897,
+    "type": 70
+  },
+  "1892": {
+    "name": "Herder",
+    "stringId": 5897,
+    "type": 70
+  },
+  "1893": {
+    "name": "Pasture",
+    "stringId": 5895,
+    "type": 80
+  },
+  "1894": {
+    "name": "Dead Pasture",
+    "stringId": 5896,
+    "type": 80
+  },
+  "1896": {
+    "name": "Argali",
+    "stringId": 21224,
+    "type": 70
+  },
+  "1897": {
+    "name": "Pasture",
+    "stringId": 5895,
+    "type": 80
+  },
+  "1898": {
+    "name": "Dead Pasture",
+    "stringId": 5896,
+    "type": 80
+  },
+  "1901": {
+    "name": "Fire Lancer",
+    "stringId": 5066,
+    "type": 70
+  },
+  "1903": {
+    "name": "Elite Fire Lancer",
+    "stringId": 5717,
+    "type": 70
+  },
+  "1904": {
+    "name": "Rocket Cart",
+    "stringId": 5064,
+    "type": 70
+  },
+  "1907": {
+    "name": "Heavy Rocket Cart",
+    "stringId": 5065,
+    "type": 70
+  },
+  "1908": {
+    "name": "Iron Pagoda",
+    "stringId": 5594,
+    "type": 70
+  },
+  "1910": {
+    "name": "Elite Iron Pagoda",
+    "stringId": 5595,
+    "type": 70
+  },
+  "1911": {
+    "name": "Grenadier",
+    "stringId": 5596,
+    "type": 70
+  },
+  "1920": {
+    "name": "Liao Dao",
+    "stringId": 5692,
+    "type": 70
+  },
+  "1922": {
+    "name": "Elite Liao Dao",
+    "stringId": 5696,
+    "type": 70
+  },
+  "1923": {
+    "name": "Mounted Trebuchet",
+    "stringId": 5698,
+    "type": 70
+  },
+  "1924": {
+    "name": "Walrus",
+    "stringId": 21389,
+    "type": 70
+  },
+  "1940": {
+    "name": "Pagan Priest",
+    "stringId": 5597,
+    "type": 70
+  },
+  "1941": {
+    "name": "Pagan Priest with Relic",
+    "stringId": 5518,
+    "type": 70
+  },
+  "1942": {
+    "name": "Traction Trebuchet",
+    "stringId": 5598,
+    "type": 70
+  },
+  "1943": {
+    "name": "Weapon Stacks B",
+    "stringId": 21394,
+    "type": 10
+  },
+  "1944": {
+    "name": "Hei Guang Cavalry",
+    "stringId": 5599,
+    "type": 70
+  },
+  "1946": {
+    "name": "Heavy Hei Guang Cavalry",
+    "stringId": 5600,
+    "type": 70
+  },
+  "1948": {
+    "name": "Lou Chuan",
+    "stringId": 5601,
+    "type": 70
+  },
+  "1949": {
+    "name": "Tiger Cavalry",
+    "stringId": 5074,
+    "type": 70
+  },
+  "1951": {
+    "name": "Elite Tiger Cavalry",
+    "stringId": 5153,
+    "type": 70
+  },
+  "1952": {
+    "name": "Xianbei Raider",
+    "stringId": 5286,
+    "type": 70
+  },
+  "1954": {
+    "name": "Cao Cao",
+    "stringId": 5323,
+    "type": 70
+  },
+  "1955": {
+    "name": "Red Fox",
+    "stringId": 21265,
+    "type": 70
+  },
+  "1956": {
+    "name": "Dummy Target",
+    "stringId": 21219,
+    "type": 70
+  },
+  "1958": {
+    "name": "Arctic Fox",
+    "stringId": 21266,
+    "type": 70
+  },
+  "1959": {
+    "name": "White Feather Guard",
+    "stringId": 5362,
+    "type": 70
+  },
+  "1961": {
+    "name": "Elite White Feather Guard",
+    "stringId": 5363,
+    "type": 70
+  },
+  "1962": {
+    "name": "War Chariot (Focus Fire)",
+    "stringId": 5364,
+    "type": 70
+  },
+  "1963": {
+    "name": "Llama B",
+    "stringId": 21274,
+    "type": 70
+  },
+  "1965": {
+    "name": "Arctic Wolf",
+    "stringId": 21275,
+    "type": 70
+  },
+  "1966": {
+    "name": "Liu Bei",
+    "stringId": 5365,
+    "type": 70
+  },
+  "1967": {
+    "name": "Rock (Mossy)",
+    "stringId": 21380,
+    "type": 10
+  },
+  "1968": {
+    "name": "Fire Archer",
+    "stringId": 5366,
+    "type": 70
+  },
+  "1970": {
+    "name": "Elite Fire Archer",
+    "stringId": 5367,
+    "type": 70
+  },
+  "1973": {
+    "name": "Nessie",
+    "stringId": 21339,
+    "type": 70
+  },
+  "1974": {
+    "name": "Jian Swordsman",
+    "stringId": 5368,
+    "type": 70
+  },
+  "1976": {
+    "name": "Jian Swordsman",
+    "stringId": 5368,
+    "type": 70
+  },
+  "1978": {
+    "name": "Sun Jian",
+    "stringId": 5370,
+    "type": 70
+  },
+  "1979": {
+    "name": "Stonehenge",
+    "stringId": 21340,
+    "type": 10
+  },
+  "1980": {
+    "name": "War Chariot (Barrage)",
+    "stringId": 21198,
+    "type": 70
+  },
+  "1981": {
+    "name": "Kelp Seaweeds",
+    "stringId": 21381,
+    "type": 20
+  },
+  "1984": {
+    "name": "Tree (Lush Bamboo Forest)",
+    "stringId": 21193,
+    "type": 10
+  },
+  "1985": {
+    "name": "Lush Bamboo Stump",
+    "stringId": 21137,
+    "type": 10
+  },
+  "1986": {
+    "name": "Paper Lantern",
+    "stringId": 21138,
+    "type": 10
+  },
+  "1987": {
+    "name": "Chinese Ruins",
+    "stringId": 21139,
+    "type": 10
+  },
+  "1988": {
+    "name": "Emperor in a Litter",
+    "stringId": 21140,
+    "type": 70
+  },
+  "1989": {
+    "name": "Paifang Gate (Small)",
+    "stringId": 21141,
+    "type": 10
+  },
+  "1990": {
+    "name": "Paifang Gate (Large)",
+    "stringId": 21142,
+    "type": 10
+  },
+  "1991": {
+    "name": "Fountain",
+    "stringId": 21143,
+    "type": 10
+  },
+  "1992": {
+    "name": "Bridge Piece CD--End A",
+    "stringId": 21144,
+    "type": 80
+  },
+  "1993": {
+    "name": "Bridge Piece CD--End B",
+    "stringId": 21145,
+    "type": 80
+  },
+  "1994": {
+    "name": "Bridge Piece CD--End C",
+    "stringId": 21146,
+    "type": 80
+  },
+  "1995": {
+    "name": "Bridge Piece CD--Middle A",
+    "stringId": 21147,
+    "type": 80
+  },
+  "1996": {
+    "name": "Bridge Piece CD--Middle B",
+    "stringId": 21148,
+    "type": 80
+  },
+  "1997": {
+    "name": "Bridge Piece CD--Middle C",
+    "stringId": 21149,
+    "type": 80
+  },
+  "1998": {
+    "name": "Bridge Piece CD--Broken A",
+    "stringId": 21150,
+    "type": 80
+  },
+  "1999": {
+    "name": "Bridge Piece CD--Broken B",
+    "stringId": 21151,
+    "type": 80
+  },
+  "2000": {
+    "name": "Bridge Piece CD--Broken C",
+    "stringId": 21152,
+    "type": 80
+  },
+  "2001": {
+    "name": "Bridge Piece CD--Cracked",
+    "stringId": 21153,
+    "type": 80
+  },
+  "2002": {
+    "name": "Bridge Piece CD--Rails A",
+    "stringId": 21154,
+    "type": 80
+  },
+  "2003": {
+    "name": "Bridge Piece CD--Rails B",
+    "stringId": 21155,
+    "type": 80
+  },
+  "2004": {
+    "name": "Bridge Piece CD--Rails C",
+    "stringId": 21156,
+    "type": 80
+  },
+  "2005": {
+    "name": "Pagoda D",
+    "stringId": 21157,
+    "type": 10
+  },
+  "2006": {
+    "name": "Pagoda E",
+    "stringId": 21158,
+    "type": 10
+  },
+  "2007": {
+    "name": "Garden Pavilion",
+    "stringId": 21159,
+    "type": 10
+  },
+  "2008": {
+    "name": "Rock (Pillar)",
+    "stringId": 21160,
+    "type": 10
+  },
+  "2009": {
+    "name": "Rock (Limestone)",
+    "stringId": 21161,
+    "type": 10
+  },
+  "2010": {
+    "name": "Flag N",
+    "stringId": 21162,
+    "type": 20
+  },
+  "2011": {
+    "name": "Flag O",
+    "stringId": 21163,
+    "type": 20
+  },
+  "2012": {
+    "name": "Flag P",
+    "stringId": 21164,
+    "type": 20
+  },
+  "2013": {
+    "name": "Flag Ritual A",
+    "stringId": 21165,
+    "type": 20
+  },
+  "2014": {
+    "name": "Flag Ritual B",
+    "stringId": 21166,
+    "type": 20
+  },
+  "2015": {
+    "name": "Flag Ritual C",
+    "stringId": 21167,
+    "type": 20
+  },
+  "2016": {
+    "name": "Tree (Asian Pine)",
+    "stringId": 21168,
+    "type": 10
+  },
+  "2017": {
+    "name": "Tree (Peach Blossom)",
+    "stringId": 21169,
+    "type": 10
+  },
+  "2018": {
+    "name": "Asian Carts",
+    "stringId": 21170,
+    "type": 10
+  },
+  "2019": {
+    "name": "Weapon Stacks A",
+    "stringId": 21171,
+    "type": 10
+  },
+  "2020": {
+    "name": "Garden Bridge",
+    "stringId": 21172,
+    "type": 10
+  },
+  "2021": {
+    "name": "Siege Props",
+    "stringId": 21173,
+    "type": 10
+  },
+  "2022": {
+    "name": "Asian Lanterns",
+    "stringId": 21174,
+    "type": 10
+  },
+  "2023": {
+    "name": "Burned Building B",
+    "stringId": 21175,
+    "type": 10
+  },
+  "2024": {
+    "name": "Asian Market Stalls",
+    "stringId": 21176,
+    "type": 10
+  },
+  "2025": {
+    "name": "Tree (Willow)",
+    "stringId": 21177,
+    "type": 10
+  },
+  "2026": {
+    "name": "Red Crown Crane",
+    "stringId": 21178,
+    "type": 70
+  },
+  "2027": {
+    "name": "Tree (Asian Maple, Green)",
+    "stringId": 21179,
+    "type": 10
+  },
+  "2028": {
+    "name": "Tree (Asian Maple, Autumn)",
+    "stringId": 21180,
+    "type": 10
+  },
+  "2029": {
+    "name": "Fallen Leaves (Peach Blossom)",
+    "stringId": 21181,
+    "type": 10
+  },
+  "2030": {
+    "name": "Fallen Leaves (Maple)",
+    "stringId": 21182,
+    "type": 10
+  },
+  "2031": {
+    "name": "Fallen Leaves (Maple, Autumn)",
+    "stringId": 21183,
+    "type": 10
+  },
+  "2032": {
+    "name": "Lü Bu",
+    "stringId": 5351,
+    "type": 70
+  },
+  "2033": {
+    "name": "Yurt M",
+    "stringId": 21250,
+    "type": 80
+  },
+  "2034": {
+    "name": "Guan Yu",
+    "stringId": 5352,
+    "type": 70
+  },
+  "2035": {
+    "name": "Burned Building E",
+    "stringId": 21383,
+    "type": 10
+  },
+  "2036": {
+    "name": "Zhuge Liang",
+    "stringId": 5353,
+    "type": 70
+  },
+  "2037": {
+    "name": "Wooden Bridge Piece--End A",
+    "stringId": 21384,
+    "type": 80
+  },
+  "2038": {
+    "name": "Zhang Fei",
+    "stringId": 5354,
+    "type": 70
+  },
+  "2039": {
+    "name": "Wooden Bridge Piece--End B",
+    "stringId": 21385,
+    "type": 80
+  },
+  "2040": {
+    "name": "Sun Ce",
+    "stringId": 5355,
+    "type": 70
+  },
+  "2041": {
+    "name": "Wooden Bridge Piece--End C",
+    "stringId": 21386,
+    "type": 80
+  },
+  "2042": {
+    "name": "Sun Quan",
+    "stringId": 5356,
+    "type": 70
+  },
+  "2043": {
+    "name": "Wooden Bridge Piece--Middle",
+    "stringId": 21387,
+    "type": 80
+  },
+  "2044": {
+    "name": "Zhou Yu",
+    "stringId": 5357,
+    "type": 70
+  },
+  "2045": {
+    "name": "Dong Zhuo",
+    "stringId": 5358,
+    "type": 70
+  },
+  "2046": {
+    "name": "Yuan Shao",
+    "stringId": 5359,
+    "type": 70
+  },
+  "2047": {
+    "name": "Yu Ji",
+    "stringId": 5360,
+    "type": 70
+  },
+  "2048": {
+    "name": "White Tiger Yan",
+    "stringId": 5361,
+    "type": 70
+  },
+  "2049": {
+    "name": "Liu Biao",
+    "stringId": 5382,
+    "type": 70
+  },
+  "2050": {
+    "name": "Zhang Jue",
+    "stringId": 5383,
+    "type": 70
+  },
+  "2051": {
+    "name": "Zhao Yun",
+    "stringId": 5384,
+    "type": 70
+  },
+  "2052": {
+    "name": "Cao Cao (Campaign)",
+    "stringId": 21188,
+    "type": 70
+  },
+  "2053": {
+    "name": "Liu Bei (Campaign)",
+    "stringId": 21189,
+    "type": 70
+  },
+  "2054": {
+    "name": "Sun Jian (Campaign)",
+    "stringId": 21190,
+    "type": 70
+  },
+  "2058": {
+    "name": "Huabiao Totem",
+    "stringId": 21191,
+    "type": 10
+  },
+  "2059": {
+    "name": "Que Tower",
+    "stringId": 21192,
+    "type": 10
+  },
+  "2060": {
+    "name": "Hall of Heroes",
+    "stringId": 5442,
+    "type": 80
+  },
+  "2061": {
+    "name": "Lü Bu",
+    "stringId": 5351,
+    "type": 70
+  },
+  "2063": {
+    "name": "Sun Quan",
+    "stringId": 5356,
+    "type": 70
+  },
+  "2064": {
+    "name": "Guan Yu",
+    "stringId": 5352,
+    "type": 70
+  },
+  "2065": {
+    "name": "Sun Jian",
+    "stringId": 5370,
+    "type": 70
+  },
+  "2066": {
+    "name": "Liu Bei",
+    "stringId": 5365,
+    "type": 70
+  },
+  "2067": {
+    "name": "Kongming Lantern",
+    "stringId": 5325,
+    "type": 70
+  },
+  "2068": {
+    "name": "Kongming Lantern",
+    "stringId": 5325,
+    "type": 80
+  },
+  "2081": {
+    "name": "Wooden Bridge Piece--Rails",
+    "stringId": 21388,
+    "type": 80
+  },
+  "2082": {
+    "name": "Panda Rock",
+    "stringId": 21194,
+    "type": 20
+  },
+  "2083": {
+    "name": "Chicken A",
+    "stringId": 21195,
+    "type": 70
+  },
+  "2084": {
+    "name": "Wild Chicken A",
+    "stringId": 21221,
+    "type": 70
+  },
+  "2085": {
+    "name": "Chicken B",
+    "stringId": 21196,
+    "type": 70
+  },
+  "2086": {
+    "name": "Wild Chicken B",
+    "stringId": 21222,
+    "type": 70
+  },
+  "2087": {
+    "name": "Chicken C",
+    "stringId": 21197,
+    "type": 70
+  },
+  "2088": {
+    "name": "Wild Chicken C",
+    "stringId": 21223,
+    "type": 70
+  },
+  "2089": {
+    "name": "Black Bear",
+    "stringId": 21227,
+    "type": 70
+  },
+  "2090": {
+    "name": "Polar Bear",
+    "stringId": 21228,
+    "type": 70
+  },
+  "2091": {
+    "name": "Arabian Wolf",
+    "stringId": 21251,
+    "type": 70
+  },
+  "2092": {
+    "name": "Wild Horse B",
+    "stringId": 21229,
+    "type": 70
+  },
+  "2093": {
+    "name": "Wild Horse C",
+    "stringId": 21230,
+    "type": 70
+  },
+  "2094": {
+    "name": "Wild Horse D",
+    "stringId": 21231,
+    "type": 70
+  },
+  "2095": {
+    "name": "Wild Horse E",
+    "stringId": 21232,
+    "type": 70
+  },
+  "2096": {
+    "name": "Monkey",
+    "stringId": 21234,
+    "type": 70
+  },
+  "2097": {
+    "name": "Penguin",
+    "stringId": 21235,
+    "type": 70
+  },
+  "2098": {
+    "name": "Hare A",
+    "stringId": 21263,
+    "type": 70
+  },
+  "2099": {
+    "name": "Hare B",
+    "stringId": 21264,
+    "type": 70
+  },
+  "2100": {
+    "name": "Arctic Hare",
+    "stringId": 21279,
+    "type": 70
+  },
+  "2120": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "2121": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "2122": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "2144": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "2145": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "2146": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "2170": {
+    "name": "Oysters",
+    "stringId": 21136,
+    "type": 10
+  },
+  "2173": {
+    "name": "Dock",
+    "stringId": 5144,
+    "type": 80
+  },
+  "2333": {
+    "name": "Pearler",
+    "stringId": 21332,
+    "type": 70
+  },
+  "2334": {
+    "name": "Pearler",
+    "stringId": 21332,
+    "type": 70
+  },
+  "2418": {
+    "name": "Castle",
+    "stringId": 5142,
+    "type": 80
+  },
+  "2435": {
+    "name": "Blocker",
+    "stringId": 21103,
+    "type": 10
+  },
+  "2550": {
+    "name": "Champi Scout",
+    "stringId": 5526,
+    "type": 70
+  },
+  "2551": {
+    "name": "Invisible Object B",
+    "stringId": 21269,
+    "type": 70
+  },
+  "2552": {
+    "name": "Champi Warrior",
+    "stringId": 5507,
+    "type": 70
+  },
+  "2553": {
+    "name": "Invisible Object C",
+    "stringId": 21270,
+    "type": 70
+  },
+  "2554": {
+    "name": "Elite Champi Warrior",
+    "stringId": 5508,
+    "type": 70
+  },
+  "2555": {
+    "name": "Invisible Object D",
+    "stringId": 21271,
+    "type": 70
+  },
+  "2556": {
+    "name": "Settlement",
+    "stringId": 5509,
+    "type": 80
+  },
+  "2557": {
+    "name": "Missionary with Relic",
+    "stringId": 5319,
+    "type": 70
+  },
+  "2558": {
+    "name": "Settlement",
+    "stringId": 5509,
+    "type": 80
+  },
+  "2559": {
+    "name": "Longhouse A",
+    "stringId": 21390,
+    "type": 80
+  },
+  "2560": {
+    "name": "Settlement",
+    "stringId": 5509,
+    "type": 80
+  },
+  "2561": {
+    "name": "Longhouse B",
+    "stringId": 21391,
+    "type": 80
+  },
+  "2562": {
+    "name": "Guecha Warrior",
+    "stringId": 5510,
+    "type": 70
+  },
+  "2563": {
+    "name": "Invisible Object E",
+    "stringId": 21272,
+    "type": 70
+  },
+  "2564": {
+    "name": "Elite Guecha Warrior",
+    "stringId": 5511,
+    "type": 70
+  },
+  "2566": {
+    "name": "Kona",
+    "stringId": 5512,
+    "type": 70
+  },
+  "2567": {
+    "name": "Tree (Oak Green)",
+    "stringId": 21287,
+    "type": 10
+  },
+  "2568": {
+    "name": "Elite Kona",
+    "stringId": 5513,
+    "type": 70
+  },
+  "2569": {
+    "name": "Bolas Rider",
+    "stringId": 5514,
+    "type": 70
+  },
+  "2570": {
+    "name": "Tree (Monkey Puzzle)",
+    "stringId": 21286,
+    "type": 10
+  },
+  "2571": {
+    "name": "Elite Bolas Rider",
+    "stringId": 5515,
+    "type": 70
+  },
+  "2576": {
+    "name": "Torch C",
+    "stringId": 21393,
+    "type": 20
+  },
+  "2577": {
+    "name": "Flotsam",
+    "stringId": 21395,
+    "type": 20
+  },
+  "2578": {
+    "name": "Raven",
+    "stringId": 21396,
+    "type": 70
+  },
+  "2579": {
+    "name": "Blackwood Archer",
+    "stringId": 5516,
+    "type": 70
+  },
+  "2580": {
+    "name": "Tree (Brazilwood)",
+    "stringId": 21283,
+    "type": 10
+  },
+  "2581": {
+    "name": "Elite Blackwood Archer",
+    "stringId": 5517,
+    "type": 70
+  },
+  "2582": {
+    "name": "Ibirapema Warrior",
+    "stringId": 5522,
+    "type": 70
+  },
+  "2583": {
+    "name": "Tree (Wax Palm)",
+    "stringId": 21284,
+    "type": 10
+  },
+  "2584": {
+    "name": "Elite Ibirapema Warrior",
+    "stringId": 5519,
+    "type": 70
+  },
+  "2585": {
+    "name": "Howler Monkey",
+    "stringId": 21248,
+    "type": 20
+  },
+  "2586": {
+    "name": "Temple Guard",
+    "stringId": 5520,
+    "type": 70
+  },
+  "2587": {
+    "name": "Elite Temple Guard",
+    "stringId": 5521,
+    "type": 70
+  },
+  "2588": {
+    "name": "Champi Runner",
+    "stringId": 5506,
+    "type": 70
+  },
+  "2589": {
+    "name": "Tapir",
+    "stringId": 21242,
+    "type": 70
+  },
+  "2590": {
+    "name": "Capybara",
+    "stringId": 21252,
+    "type": 70
+  },
+  "2591": {
+    "name": "Guanaco",
+    "stringId": 21253,
+    "type": 70
+  },
+  "2592": {
+    "name": "Snake",
+    "stringId": 21254,
+    "type": 70
+  },
+  "2593": {
+    "name": "Condor",
+    "stringId": 21255,
+    "type": 70
+  },
+  "2594": {
+    "name": "Caiman",
+    "stringId": 21256,
+    "type": 70
+  },
+  "2595": {
+    "name": "Black Panther",
+    "stringId": 21257,
+    "type": 70
+  },
+  "2596": {
+    "name": "Flamingo",
+    "stringId": 21258,
+    "type": 70
+  },
+  "2597": {
+    "name": "Rhea",
+    "stringId": 21259,
+    "type": 70
+  },
+  "2598": {
+    "name": "Small Waterfall",
+    "stringId": 21282,
+    "type": 20
+  },
+  "2599": {
+    "name": "Papaya Tree",
+    "stringId": 21280,
+    "type": 10
+  },
+  "2600": {
+    "name": "Wooden Fort",
+    "stringId": 21281,
+    "type": 80
+  },
+  "2601": {
+    "name": "Flag Q",
+    "stringId": 21288,
+    "type": 20
+  },
+  "2602": {
+    "name": "Flag R",
+    "stringId": 21289,
+    "type": 20
+  },
+  "2603": {
+    "name": "Flag S",
+    "stringId": 21290,
+    "type": 20
+  },
+  "2604": {
+    "name": "Flag T",
+    "stringId": 21291,
+    "type": 20
+  },
+  "2605": {
+    "name": "Flag U",
+    "stringId": 21292,
+    "type": 20
+  },
+  "2606": {
+    "name": "Burned Building C",
+    "stringId": 21293,
+    "type": 10
+  },
+  "2607": {
+    "name": "Gunpowder Keg",
+    "stringId": 21294,
+    "type": 70
+  },
+  "2611": {
+    "name": "Andean Ruins",
+    "stringId": 21295,
+    "type": 10
+  },
+  "2612": {
+    "name": "War Dog",
+    "stringId": 5546,
+    "type": 70
+  },
+  "2613": {
+    "name": "Elite War Dog",
+    "stringId": 5548,
+    "type": 70
+  },
+  "2614": {
+    "name": "Alpaca",
+    "stringId": 21299,
+    "type": 70
+  },
+  "2615": {
+    "name": "Wild Alpaca",
+    "stringId": 21331,
+    "type": 70
+  },
+  "2616": {
+    "name": "Invisible Spawner A",
+    "stringId": 21350,
+    "type": 80
+  },
+  "2617": {
+    "name": "Invisible Spawner B",
+    "stringId": 21351,
+    "type": 80
+  },
+  "2618": {
+    "name": "Invisible Spawner C",
+    "stringId": 21352,
+    "type": 80
+  },
+  "2619": {
+    "name": "Invisible Spawner D",
+    "stringId": 21353,
+    "type": 80
+  },
+  "2620": {
+    "name": "Invisible Spawner E",
+    "stringId": 21354,
+    "type": 80
+  },
+  "2621": {
+    "name": "Invisible Spawner F",
+    "stringId": 21355,
+    "type": 80
+  },
+  "2625": {
+    "name": "Whale",
+    "stringId": 21277,
+    "type": 30
+  },
+  "2626": {
+    "name": "Hulk",
+    "stringId": 5523,
+    "type": 70
+  },
+  "2627": {
+    "name": "War Hulk",
+    "stringId": 5524,
+    "type": 70
+  },
+  "2628": {
+    "name": "Carrack",
+    "stringId": 5525,
+    "type": 70
+  },
+  "2630": {
+    "name": "Whaling Ship",
+    "stringId": 21276,
+    "type": 70
+  },
+  "2633": {
+    "name": "Catapult Galleon",
+    "stringId": 5572,
+    "type": 70
+  },
+  "2635": {
+    "name": "Treasure Chest",
+    "stringId": 21241,
+    "type": 70
+  },
+  "2637": {
+    "name": "Lautaro",
+    "stringId": 21243,
+    "type": 70
+  },
+  "2638": {
+    "name": "Galvarino",
+    "stringId": 21244,
+    "type": 70
+  },
+  "2639": {
+    "name": "Guacolda",
+    "stringId": 21245,
+    "type": 70
+  },
+  "2640": {
+    "name": "Pacanchique",
+    "stringId": 21246,
+    "type": 70
+  },
+  "2641": {
+    "name": "Arariboia",
+    "stringId": 21247,
+    "type": 70
+  },
+  "2642": {
+    "name": "Arariboia",
+    "stringId": 21247,
+    "type": 70
+  },
+  "2643": {
+    "name": "Cunhambebe",
+    "stringId": 21249,
+    "type": 70
+  },
+  "2644": {
+    "name": "Scaffolding (Walkable)",
+    "stringId": 21296,
+    "type": 10
+  },
+  "2645": {
+    "name": "Invisible Spawner G",
+    "stringId": 21356,
+    "type": 80
+  },
+  "2646": {
+    "name": "Invisible Spawner H",
+    "stringId": 21357,
+    "type": 80
+  },
+  "2647": {
+    "name": "Invisible Spawner I",
+    "stringId": 21358,
+    "type": 80
+  },
+  "2648": {
+    "name": "Invisible Spawner J",
+    "stringId": 21359,
+    "type": 80
+  },
+  "2650": {
+    "name": "Pineapple Bush",
+    "stringId": 21267,
+    "type": 10
+  },
+  "2678": {
+    "name": "Fort Wall",
+    "stringId": 21297,
+    "type": 80
+  },
+  "2679": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2680": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2681": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2682": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2683": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2684": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2685": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2686": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2687": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2688": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2689": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2690": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2691": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2692": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2693": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2694": {
+    "name": "Fort Gate",
+    "stringId": 21298,
+    "type": 80
+  },
+  "2700": {
+    "name": "Mounted Crossbowman",
+    "stringId": 5527,
+    "type": 70
+  },
+  "2701": {
+    "name": "Heavy Mounted Crossbowman",
+    "stringId": 5528,
+    "type": 70
+  },
+  "2703": {
+    "name": "Varangian Guard",
+    "stringId": 5530,
+    "type": 70
+  },
+  "2704": {
+    "name": "Elite Varangian Guard",
+    "stringId": 5531,
+    "type": 70
+  },
+  "2705": {
+    "name": "Hearth Troop",
+    "stringId": 5532,
+    "type": 70
+  },
+  "2706": {
+    "name": "Elite Hearth Troop",
+    "stringId": 5533,
+    "type": 70
+  },
+  "2708": {
+    "name": "Jarl",
+    "stringId": 5535,
+    "type": 70
+  },
+  "2709": {
+    "name": "Elite Jarl",
+    "stringId": 5537,
+    "type": 70
+  },
+  "2711": {
+    "name": "Jomsviking",
+    "stringId": 5539,
+    "type": 70
+  },
+  "2712": {
+    "name": "Elite Jomsviking",
+    "stringId": 5541,
+    "type": 70
+  },
+  "2714": {
+    "name": "Repairer",
+    "stringId": 5127,
+    "type": 70
+  },
+  "2715": {
+    "name": "Repairer",
+    "stringId": 5127,
+    "type": 70
+  },
+  "2721": {
+    "name": "Harald",
+    "stringId": 21342,
+    "type": 70
+  },
+  "2722": {
+    "name": "Ulf Ospaksson",
+    "stringId": 21343,
+    "type": 70
+  },
+  "2723": {
+    "name": "Halldor Snorrason",
+    "stringId": 21344,
+    "type": 70
+  },
+  "2724": {
+    "name": "Tostig Godwinson",
+    "stringId": 21345,
+    "type": 70
+  },
+  "2725": {
+    "name": "Finn Arnason",
+    "stringId": 21346,
+    "type": 70
+  },
+  "2726": {
+    "name": "Kalf Arnason",
+    "stringId": 21347,
+    "type": 70
+  },
+  "2727": {
+    "name": "Einar Paunch-Shaker",
+    "stringId": 21348,
+    "type": 70
+  },
+  "2728": {
+    "name": "Dreki",
+    "stringId": 21349,
+    "type": 70
+  },
+  "2729": {
+    "name": "Legendary Item",
+    "stringId": 21360,
+    "type": 70
+  },
+  "2730": {
+    "name": "Wheeled Ship",
+    "stringId": 21361,
+    "type": 70
+  },
+  "2731": {
+    "name": "Tree (Spruce)",
+    "stringId": 21362,
+    "type": 10
+  },
+  "2732": {
+    "name": "Tree (Spruce Snow)",
+    "stringId": 21363,
+    "type": 10
+  },
+  "2733": {
+    "name": "Bush D",
+    "stringId": 21368,
+    "type": 10
+  },
+  "2734": {
+    "name": "Rock (Snow)",
+    "stringId": 21367,
+    "type": 10
+  },
+  "2735": {
+    "name": "Seal",
+    "stringId": 21364,
+    "type": 70
+  },
+  "2736": {
+    "name": "Lynx",
+    "stringId": 21365,
+    "type": 70
+  },
+  "2737": {
+    "name": "Elk",
+    "stringId": 21366,
+    "type": 70
+  },
+  "2738": {
+    "name": "Runestones",
+    "stringId": 21369,
+    "type": 10
+  },
+  "2739": {
+    "name": "Pheasant",
+    "stringId": 21370,
+    "type": 70
+  },
+  "2740": {
+    "name": "Driftwood (Ground)",
+    "stringId": 21371,
+    "type": 10
+  },
+  "2741": {
+    "name": "Driftwood (Water)",
+    "stringId": 21372,
+    "type": 20
+  },
+  "2742": {
+    "name": "Flaming Bird",
+    "stringId": 21373,
+    "type": 70
+  },
+  "2743": {
+    "name": "Plant (Heather)",
+    "stringId": 21374,
+    "type": 10
+  },
+  "2744": {
+    "name": "Burned Building D",
+    "stringId": 21375,
+    "type": 10
+  },
+  "2745": {
+    "name": "Army Tent F",
+    "stringId": 21376,
+    "type": 80
+  },
+  "2746": {
+    "name": "Shipwreck C",
+    "stringId": 21377,
+    "type": 20
+  },
+  "2747": {
+    "name": "Norse Column",
+    "stringId": 21378,
+    "type": 10
+  },
+  "2748": {
+    "name": "Wooden Road",
+    "stringId": 21379,
+    "type": 10
+  },
+  "2749": {
+    "name": "Norse Banner",
+    "stringId": 21382,
+    "type": 20
+  }
+}

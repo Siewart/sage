@@ -1,3 +1,4 @@
+import { prepareHydration } from "../../../events/hydration.js";
 import {
   Analyzable,
   createTemplate,
@@ -10,8 +11,6 @@ import {
   eventEventStructuring,
   eventAll,
 } from "../../../gemini/prompts.js";
-import { escape } from "arquero";
-import { Params } from "arquero/dist/types/table/types.js";
 import { formatTime } from "./building-template.js";
 
 const interpreter = (
@@ -21,20 +20,16 @@ const interpreter = (
   return (input: Analyzable<"worldTime", "type">) => {
     if (input.type === "finalTick") {
       const windowId = context.getDataSet().timeToWindow(input.worldTime);
-      const player1Data = context
-        .getDataSet()
-        .t.players.filter(
-          escape((d: Params) => d["sage:binId"] === windowId && d["id"] === 1),
-        )
-        .select("resigned")
-        .objects() as Array<{ resigned: boolean }>;
-      const player2Data = context
-        .getDataSet()
-        .t.players.filter(
-          escape((d: Params) => d["sage:binId"] === windowId && d["id"] === 2),
-        )
-        .select("resigned")
-        .objects() as Array<{ resigned: boolean }>;
+      const player1Data = context.getDataSet().query.players({
+        bin: windowId,
+        id: 1,
+        columns: ["resigned"],
+      }) as Array<{ resigned: boolean }>;
+      const player2Data = context.getDataSet().query.players({
+        bin: windowId,
+        id: 2,
+        columns: ["resigned"],
+      }) as Array<{ resigned: boolean }>;
       const player1Resigned =
         player1Data.length > 0 ? player1Data[0]!.resigned : false;
       const player2Resigned =
@@ -43,21 +38,11 @@ const interpreter = (
 
       if (player1Resigned && !player2Resigned) winner = 2;
       else if (player2Resigned && !player1Resigned) winner = 1;
-      // return enhanceDataForLLM(
-      //   {
-      //     winner,
-      //   },
-      //   context,
-      //   input.worldTime,
-      //   undefined,
-      //   withInsights,
-      // );
-      return {
-        type: "gameEnded",
-        winner,
+      const facts = { type: "gameEnded", winner, worldTime: input.worldTime };
+      return prepareHydration(facts, () => ({
+        ...facts,
         winnerName: getPlayerName(winner ?? 0, context),
-        worldTime: input.worldTime,
-      };
+      }));
     }
     return null;
   };
@@ -71,7 +56,7 @@ const createEndgameLLMRealiser = (
   ) => Promise<string | undefined>,
 ) => {
   return async (
-    input: { worldTime: number; },
+    input: { worldTime: number },
     _classification: { classification: string; value: number },
     previousResponses: string[],
   ): Promise<{ dataUsed: unknown; text: string }> => {
@@ -163,7 +148,12 @@ export const endgameTemplate = (
       value: 1,
     }),
     eventRealiser: (
-      interpretedEvent: { worldTime: number; winner: number | null, player1Resigned?: boolean, player2Resigned?: boolean },
+      interpretedEvent: {
+        worldTime: number;
+        winner: number | null;
+        player1Resigned?: boolean;
+        player2Resigned?: boolean;
+      },
       _classification: unknown,
       _previousResponses: string[],
     ) => ({
@@ -183,4 +173,3 @@ const getPlayerName = (
   }
   return result;
 };
-

@@ -320,6 +320,19 @@ export const terrainGroups = {
   Water: [1, 15, 22, 23, 26, 57, 58, 95, 96, 97, 98, 99],
 };
 
+/**
+ * Every master id the pipeline treats as a building: the plain building ids
+ * plus the grouped ones, which cover a building's upgraded and regional
+ * variants. Precomputed so a backend can push "is a building" down as an
+ * `IN` list instead of running a predicate per row.
+ */
+export const buildingLikeMasterIds = new Set<number>([
+  ...buildingMasterIds,
+  ...Object.values(buildingGroups).flatMap((ids) => [
+    ...(ids as readonly number[]),
+  ]),
+]);
+
 // All class IDs in Age of Empires II Definitive Edition
 export const classToId = {
   Archer: 0,
@@ -511,4 +524,3 @@ export const entityStatusToId: Record<string, number> = {
   Remove: 7, // create a rotting corpse
   Going: 8, // marked for cleanup
 };
-

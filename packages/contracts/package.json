@@ -1,0 +1,19 @@
+{
+  "name": "@sage/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./execution": "./src/execution.ts",
+    "./router": "./src/router.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "3.25.76",
+    "@trpc/server": "^11.0.0"
+  }
+}

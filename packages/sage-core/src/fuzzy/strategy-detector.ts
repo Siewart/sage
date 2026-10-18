@@ -1,4 +1,4 @@
-import type { masterToId, techToId } from "../aoe2/ids.js";
+import { masterToId, techToId } from "../aoe2/ids.js";
 
 type UnitTypeName = keyof typeof masterToId;
 type TechnologyName = keyof typeof techToId;
@@ -180,6 +180,10 @@ type VillagerDistributionState = {
 };
 
 interface GameState {
+  identityKeys?: {
+    masters: Record<number, string>;
+    technologies: Record<number, string>;
+  };
   unitCounts: Record<string, { countTotal: number; countForward: number }>;
   buildingCounts: Record<string, { countTotal: number; countForward: number }>;
   technologies: Record<
@@ -303,10 +307,16 @@ function evaluateBaseCriteria(
 
   if (criteria.unitCriteria) {
     const matches = criteria.unitCriteria.map((criteria) => {
+      const identity =
+        gameState.identityKeys?.masters[masterToId[criteria.unitType]];
+      const counts =
+        gameState.unitCounts[
+          identity ?? String(masterToId[criteria.unitType])
+        ] ?? gameState.unitCounts[criteria.unitType];
       const criteriaCount =
-        criteria.position === "forward"
-          ? gameState.unitCounts[criteria.unitType]?.countForward || 0
-          : gameState.unitCounts[criteria.unitType]?.countTotal || 0;
+        (criteria.position === "forward"
+          ? counts?.countForward
+          : counts?.countTotal) || 0;
       return {
         unitType: criteria.unitType,
         confidence: evaluateFuzzySet(criteriaCount, criteria.count),
@@ -331,10 +341,16 @@ function evaluateBaseCriteria(
 
   if (criteria.buildingCriteria) {
     const matches = criteria.buildingCriteria.map((criteria) => {
+      const identity =
+        gameState.identityKeys?.masters[masterToId[criteria.unitType]];
+      const counts =
+        gameState.buildingCounts[
+          identity ?? String(masterToId[criteria.unitType])
+        ] ?? gameState.buildingCounts[criteria.unitType];
       const criteriaCount =
-        criteria.position === "forward"
-          ? gameState.buildingCounts[criteria.unitType]?.countForward || 0
-          : gameState.buildingCounts[criteria.unitType]?.countTotal || 0;
+        (criteria.position === "forward"
+          ? counts?.countForward
+          : counts?.countTotal) || 0;
       return {
         buildingType: criteria.unitType,
         confidence: evaluateFuzzySet(criteriaCount, criteria.count),
@@ -369,7 +385,13 @@ function evaluateBaseCriteria(
 
     for (const techCriteria of criteria.technologyCriteria) {
       const state =
-        gameState.technologies[techCriteria.technology] ?? "unavailable";
+        gameState.technologies[
+          gameState.identityKeys?.technologies[
+            techToId[techCriteria.technology]!
+          ] ?? String(techToId[techCriteria.technology])
+        ] ??
+        gameState.technologies[techCriteria.technology] ??
+        "unavailable";
       const confidence =
         state === "researched" ? 1 : state === "researching" ? 0.5 : 0;
 
@@ -540,4 +562,3 @@ export {
   evaluateStrategy,
   detectStrategies,
 };
-
