@@ -74,8 +74,18 @@ export function auditDirectory(directory, { paths = [], secrets = [] } = {}) {
     ["utf8", "utf16le"].map((encoding) => ({
       kind,
       bytes: Buffer.from(text, encoding),
+      folded:
+        kind === "builder-or-private-path" &&
+        /^(?:[A-Za-z]:[\\/]|\\\\|\/\/)/.test(text),
     })),
   );
+  // Windows drive/path casing can change between the compiler and filesystem.
+  // Fold ASCII bytes in both UTF-8 and UTF-16; credential matching stays exact.
+  const fold = (bytes) =>
+    bytes.map((byte) => (byte >= 65 && byte <= 90 ? byte + 32 : byte));
+  for (const needle of needles)
+    if (needle.folded) needle.bytes = fold(needle.bytes);
+  const foldPaths = needles.some((needle) => needle.folded);
   const overlap = Math.max(
     256,
     ...needles.map((needle) => needle.bytes.length),
@@ -118,8 +128,10 @@ export function auditDirectory(directory, { paths = [], secrets = [] } = {}) {
           bytes += read;
           hash.update(chunk);
           const joined = Buffer.concat([previous, chunk]);
+          const folded = foldPaths ? fold(joined) : undefined;
           for (const needle of needles)
-            if (joined.includes(needle.bytes)) found.add(needle.kind);
+            if ((needle.folded ? folded : joined).includes(needle.bytes))
+              found.add(needle.kind);
           previous = Buffer.from(
             joined.subarray(Math.max(0, joined.length - overlap)),
           );
@@ -143,7 +155,13 @@ export function auditDirectory(directory, { paths = [], secrets = [] } = {}) {
 
 export function buildEnvironment(
   source,
-  { environment = process.env, repo, scratch, target } = {},
+  {
+    environment = process.env,
+    repo,
+    scratch,
+    target,
+    platform = process.platform,
+  } = {},
 ) {
   const result = {};
   for (const key of [
@@ -167,6 +185,31 @@ export function buildEnvironment(
     "DEVELOPER_DIR",
   ])
     if (environment[key]) result[key] = environment[key];
+  if (platform === "win32") {
+    for (const key of [
+      "PATHEXT",
+      "ProgramFiles",
+      "ProgramFiles(x86)",
+      "ProgramW6432",
+      "ProgramData",
+      "SYSTEMDRIVE",
+      "INCLUDE",
+      "LIB",
+      "LIBPATH",
+      "WindowsSdkDir",
+      "WindowsSDKVersion",
+      "VCToolsInstallDir",
+      "VSINSTALLDIR",
+      "VCINSTALLDIR",
+      "VSCMD_ARG_TGT_ARCH",
+      "VSCMD_ARG_HOST_ARCH",
+      "VSCMD_VER",
+      "UCRTVersion",
+      "UniversalCRTSdkDir",
+    ]) {
+      if (environment[key]) result[key] = environment[key];
+    }
+  }
   Object.assign(result, {
     CI: "true",
     NEXT_TELEMETRY_DISABLED: "1",
@@ -184,6 +227,9 @@ export function buildEnvironment(
       `--remap-path-prefix=${scratch}=/build/tmp`,
       `--remap-path-prefix=${repo}=/build/sage`,
       `--remap-path-prefix=${source}=/build/sage`,
+      ...(platform === "win32"
+        ? ["-C", "link-arg=/PDBALTPATH:sage-desktop.pdb"]
+        : []),
     ].join("\x1f"),
   });
   return result;

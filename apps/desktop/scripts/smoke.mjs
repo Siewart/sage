@@ -6,15 +6,29 @@ import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
 import { once } from "node:events";
 import assert from "node:assert/strict";
+import { parseArgs } from "node:util";
+const { values: options } = parseArgs({
+  options: {
+    runtime: { type: "string" },
+    node: { type: "string" },
+    frontend: { type: "string" },
+  },
+});
 const desktop = fileURLToPath(new URL("../", import.meta.url));
-const runtime = path.join(desktop, "stage/runtime");
+const runtime = options.runtime
+  ? path.resolve(options.runtime)
+  : path.join(desktop, "stage/runtime");
 const home = fs.mkdtempSync(path.join(os.tmpdir(), "sage-desktop-smoke-"));
-const binary = fs
-  .readdirSync(path.join(desktop, "src-tauri/binaries"))
-  .find((name) => name.startsWith("sage-runtime-"));
+const binary =
+  options.node ??
+  fs
+    .readdirSync(path.join(desktop, "src-tauri/binaries"))
+    .find((name) => name.startsWith("sage-runtime-"));
 assert.ok(binary, "Bundled Node sidecar is missing");
 const child = spawn(
-  path.join(desktop, "src-tauri/binaries", binary),
+  options.node
+    ? path.resolve(binary)
+    : path.join(desktop, "src-tauri/binaries", binary),
   [path.join(runtime, "bootstrap.mjs")],
   {
     env: {
@@ -44,7 +58,16 @@ try {
   const session = await reply();
   origin = session.url;
   assert.ok(session.token);
-  assert.ok(fs.existsSync(path.join(runtime, "web/index.html")));
+  assert.ok(
+    fs.existsSync(
+      path.join(
+        options.frontend
+          ? path.resolve(options.frontend)
+          : path.join(runtime, "web"),
+        "index.html",
+      ),
+    ),
+  );
   assert.equal(
     (
       await fetch(origin + "/trpc/runs", {
