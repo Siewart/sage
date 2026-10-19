@@ -345,6 +345,20 @@ input[type="number"] {
   gap: 14px;
   align-items: start;
 }
+.local-model-servers {
+  display: grid;
+  gap: 8px;
+}
+.local-model-server {
+  display: grid;
+  gap: 3px;
+  max-width: 100%;
+  text-align: left;
+}
+.local-model-server code {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
 .timeline-layout {
   display: grid;
   grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.3fr);
