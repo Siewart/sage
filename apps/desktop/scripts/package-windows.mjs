@@ -48,7 +48,7 @@ if (!sevenZip)
   );
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), "sage-local-release-"));
 const source = path.join(scratch, "source"),
-  target = path.join(desktop, ".local-target"),
+  target = path.join(desktop, ".local-target", commit.slice(0, 12)),
   output = path.join(desktop, "release", commit.slice(0, 12));
 const secrets = privateValues();
 const paths = [
