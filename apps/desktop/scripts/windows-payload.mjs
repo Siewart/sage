@@ -16,6 +16,17 @@ export function hashFile(file) {
   return hash.digest("hex");
 }
 
+/** Tauri replaces this three-byte bundle marker when making an NSIS installer. */
+export function hashNsisApplication(file) {
+  const bytes = fs.readFileSync(file);
+  const marker = Buffer.from("__TAURI_BUNDLE_TYPE_VAR_UNK");
+  const offset = bytes.indexOf(marker);
+  if (offset < 0 || bytes.indexOf(marker, offset + 1) >= 0)
+    throw new Error("Expected one unpatched Tauri bundle marker");
+  Buffer.from("NSS").copy(bytes, offset + marker.length - 3);
+  return createHash("sha256").update(bytes).digest("hex");
+}
+
 function walk(root) {
   const files = [];
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
@@ -30,7 +41,7 @@ export function windowsPayloadManifest({ executable, sidecar, runtime }) {
   const manifest = [
     {
       file: "sage-desktop.exe",
-      sha256: hashFile(executable),
+      sha256: hashNsisApplication(executable),
       application: true,
     },
     { file: "sage-runtime.exe", sha256: hashFile(sidecar) },
