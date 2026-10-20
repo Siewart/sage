@@ -30,6 +30,17 @@ coverage/
 
 # VSCode
 .vscode/
+*.code-workspace
+.yarn/sdks/
+
+# Local agent setup and generated instructions
+AGENTS.md
+AGENTS.override.md
+CLAUDE.md
+.agents/
+.codex/
+.claude/
+.cursor/
 
 # Misc
 .DS_Store

@@ -26,8 +26,8 @@ Rscript analysis/run_all.R
 Or in Docker (pinned package versions):
 
 ```sh
-yarn docker:build
-yarn docker:run
+pnpm docker:build
+pnpm docker:run
 ```
 
 Outputs land in `data/clean/` and `output/`.

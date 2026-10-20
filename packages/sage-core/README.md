@@ -1,109 +1,65 @@
-# SAGE — Semantic Abstraction & Generation from Events
+# SAGE CLI
 
-A data-to-text pipeline that generates live match commentary for Age of Empires II from CaptureAge game data. Built with TypeScript and Yarn workspaces.
+The CLI generates commentary and inspection reports from match descriptors. Set
+up the workspace with the [root instructions](../../README.md#run-from-source),
+then run the commands below from the repository root.
 
-## Packages
+## Generate commentary
 
-```
-packages/
-  sage-core/         main pipeline — signal analysis, interpretation, planning, realization
-  simplenlg-core/    TypeScript port of SimpleNLG, used for location name generation
-  simplenlg-unwrap/  CLI wrapper around simplenlg-core for XML-based realisation
-```
-
-## Setup
-
-Requires Node 22 and Yarn 4. If you have [Corepack](https://nodejs.org/api/corepack.html) enabled, Yarn is managed automatically via the `packageManager` field in `package.json`.
-
-```bash
-corepack enable        # once, if not already done
-yarn install
-yarn build
+```sh
+pnpm gen generate data/ --module base --provider templates
+pnpm gen generate "data/Kotd4-Groups S06G3-Mbl vs Vinchester/descriptor.json" --module base --provider templates
 ```
 
-## Environment variables
+Paths are resolved from `packages/sage-core/`, and a directory is searched
+recursively for `descriptor.json` files. Reports are written as Markdown and JSON
+to `packages/sage-core/reports/`.
 
-Create `.env.local` in this directory (`packages/sage-core/`, it is gitignored):
+| Option           | Values or behavior                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------------------- |
+| `--module`       | `all`, `base`, `eventStructuring`, `expertInsights`; defaults to `all`                                   |
+| `--provider`     | `templates`, `gemini`, `anthropic`, `openai`; defaults to templates unless configured in the environment |
+| `--model`        | Explicit provider model identifier                                                                       |
+| `--base-url`     | OpenAI-compatible API URL, including `/v1`                                                               |
+| `--backend`      | `duckdb` (default) or `arquero` for the bundled Arrow fixtures                                           |
+| `--no-anonymize` | Keep original player names instead of pseudonyms                                                         |
 
-```
-GEMINI_API_KEY=your_key_here
+`--module all` runs all four study configurations. Templates need no API key. For
+a model provider, pass its identifier with `--model` and set `GEMINI_API_KEY`,
+`ANTHROPIC_API_KEY` or `OPENAI_API_KEY`. A local OpenAI-compatible server on
+loopback needs no key:
 
-# Remove this line or set to false to enable LLM calls.
-# DISABLE_LLM=false
-```
-
-`DISABLE_LLM` defaults to **true** — the pipeline runs fully without any API calls and realisers fall back to string templates. Set `DISABLE_LLM=false` and supply a `GEMINI_API_KEY` to get natural language output from the LLM realiser. The free Gemini tier may hit rate limits for full runs; a paid key is recommended.
-
-## Running the pipeline
-
-```bash
-# run all module configs on all datasets in data/
-yarn workspace sage-core gen generate data/
-
-# run on a single dataset
-yarn workspace sage-core gen generate "data/Kotd4-Groups S06G3-Mbl vs Vinchester/descriptor.json"
-
-# run only one module config
-yarn workspace sage-core gen generate data/ --module base
-# modules: all | base | eventStructuring | expertInsights
-
-# player names are anonymized to pseudonyms by default; opt out to keep originals
-yarn workspace sage-core gen generate data/ --no-anonymize
-
-yarn workspace sage-core gen generate --help
+```sh
+pnpm gen generate data/ --module base --provider openai --model MODEL_ID --base-url http://localhost:11434/v1
 ```
 
-Reports are written to `packages/sage-core/reports/` as Markdown and JSON.
+Replace `MODEL_ID` with a model installed on your local server. The CLI also
+reads `SAGE_REALISER`, `SAGE_MODEL` and `SAGE_BASE_URL` from the environment;
+the command-line options take precedence.
 
-## Running with Docker
+## Run study selections
 
-```bash
-# build
-docker build -f packages/sage-core/Dockerfile -t sage-core .
+The selections run as tests, which check the generated reports and then remove
+them:
 
-# run — mount your data and reports directories, pass env vars from .env.local
-docker run --rm \
-  -v "$(pwd)/packages/sage-core/data:/app/packages/sage-core/data" \
-  -v "$(pwd)/packages/sage-core/reports:/app/packages/sage-core/reports" \
-  --env-file packages/sage-core/.env.local \
-  sage-core generate data/
-
-# override module config
-docker run --rm \
-  -v "$(pwd)/packages/sage-core/data:/app/packages/sage-core/data" \
-  -v "$(pwd)/packages/sage-core/reports:/app/packages/sage-core/reports" \
-  --env-file packages/sage-core/.env.local \
-  sage-core generate data/ --module base
+```sh
+pnpm test:generate                                                            # all study cases
+pnpm --filter sage-core test:generate:t1                                      # T1 in all configurations
+pnpm --filter sage-core test:generate --testNamePattern T1M2                  # one case
+pnpm --filter sage-core test:generate --testNamePattern 'M3 - eventStructuring'  # M3 on all four matches
 ```
 
-**`.env.local` for Docker** — the same file used for local dev:
-```
-GEMINI_API_KEY=your_key_here
-DISABLE_LLM=false
-```
-`DISABLE_LLM` defaults to true inside the container as well; uncomment to enable LLM calls.
+| Configuration | Modules                            |
+| ------------- | ---------------------------------- |
+| M1            | All modules                        |
+| M2            | Base pipeline                      |
+| M3            | Base pipeline + event structuring  |
+| M4            | Base pipeline + expert insights    |
 
-## Tests
+T1–T4 are the four bundled matches in `data/`. We keep their 60-second Arrow
+files so the study results can be traced; the [data note](data/DATA.MD) describes
+their limitations. More matches are on the
+[Hugging Face dataset](https://huggingface.co/datasets/Siewart/sage).
 
-```bash
-# generate reports for all datasets and module configs (requires all data to be present)
-yarn workspace sage-core test:generate
-
-# run only text 1
-yarn workspace sage-core test:generate:t1
-```
-
-
-## Data
-
-Game data lives in `packages/sage-core/data/` in Apache Arrow format. Each match has its own subdirectory with a `descriptor.json` pointing to the Arrow files. The included dataset is Group Stage round 6, game 3 from King of the Desert IV (Mbl vs Vinchester).
-
-The pipeline reads the descriptor, loads the Arrow tables, then streams events through the pipeline stages. Snapshot data uses 60-second windows; the `binTimes` array in the descriptor maps window IDs to game time ranges.
-
-## Additional files
-
-- `packages/sage-core/src/` — pipeline source: `events/`, `aoe2/`, `gemini/`, `templates/`, `fuzzy/`
-- `packages/sage-core/src/gemini/prompts.ts` — all LLM prompt templates
-- `packages/sage-core/src/templates/study/` — the full pipeline implementation used for the study
-- `packages/simplenlg-core/src/` — SimpleNLG TypeScript port
-- `yarn.lock` — exact dependency versions with integrity checksums (yarn berry format), for reproducible installs
+For the original paper environment, use the [INLG tag](https://github.com/Siewart/sage/tree/INLG)
+and its Yarn and Docker instructions.
