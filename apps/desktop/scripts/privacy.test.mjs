@@ -111,3 +111,58 @@ test("build environment excludes credentials, profiles, signing identities and p
     environment.HF_TOKEN,
   ]);
 });
+
+test("Windows path scans handle slash and ASCII case differences in binary encodings", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "sage-windows-paths-"));
+  try {
+    fs.writeFileSync(
+      path.join(root, "binary.exe"),
+      Buffer.concat([
+        Buffer.from("c:/users/private-builder/project"),
+        Buffer.from("C:\\USERS\\PRIVATE-BUILDER\\PROJECT", "utf16le"),
+        Buffer.from("token-only-lowercase"),
+      ]),
+    );
+    const result = auditDirectory(root, {
+      paths: ["C:\\Users\\Private-Builder\\Project"],
+      secrets: ["TOKEN-ONLY-LOWERCASE"],
+    });
+    assert.deepEqual(
+      result.matches.map((match) => match.kind),
+      ["builder-or-private-path"],
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("Windows compiler environment retains SDK paths but excludes injected compiler/signing options", () => {
+  const result = buildEnvironment("/tmp/source", {
+    repo: "/tmp/repo",
+    scratch: "/tmp/scratch",
+    target: "/tmp/target",
+    platform: "win32",
+    environment: {
+      HOME: os.homedir(),
+      PATH: "/usr/bin",
+      INCLUDE: "C:\\SDK\\include",
+      LIB: "C:\\SDK\\lib",
+      _CL_: "/path/injected",
+      TAURI_SIGNING_PRIVATE_KEY: "test-only-signing-secret",
+      WINDOWS_CERTIFICATE_PASSWORD: "test-only-password",
+    },
+  });
+  assert.equal(result.INCLUDE, "C:\\SDK\\include");
+  assert.equal(result.LIB, "C:\\SDK\\lib");
+  assert.ok(
+    result.CARGO_ENCODED_RUSTFLAGS.includes(
+      "link-arg=/PDBALTPATH:sage-desktop.pdb",
+    ),
+  );
+  for (const key of [
+    "_CL_",
+    "TAURI_SIGNING_PRIVATE_KEY",
+    "WINDOWS_CERTIFICATE_PASSWORD",
+  ])
+    assert.ok(!(key in result));
+});

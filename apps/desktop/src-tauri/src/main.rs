@@ -11,6 +11,30 @@ use std::{
 };
 use tauri::{Emitter, Manager};
 
+// Node 24 cannot resolve an entry script with a Windows verbatim path prefix.
+// Tauri's resource_dir() can return that form for installed applications.
+#[cfg(windows)]
+fn node_entry_path(path: PathBuf) -> Result<PathBuf, String> {
+    let value = path
+        .to_str()
+        .ok_or("The local runtime path cannot be passed to Node")?;
+    if let Some(unc) = value.strip_prefix(r"\\?\UNC\") {
+        return Ok(PathBuf::from(format!(r"\\{}", unc)));
+    }
+    if let Some(drive) = value.strip_prefix(r"\\?\") {
+        if PathBuf::from(drive).is_absolute() {
+            return Ok(PathBuf::from(drive));
+        }
+        return Err("Unsupported local runtime path".into());
+    }
+    Ok(path)
+}
+
+#[cfg(not(windows))]
+fn node_entry_path(path: PathBuf) -> Result<PathBuf, String> {
+    Ok(path)
+}
+
 #[derive(Serialize, Deserialize)]
 struct Session {
     url: String,
@@ -54,7 +78,7 @@ impl Runtime {
             });
         let mut command = Command::new(node);
         command
-            .arg(resources.join("bootstrap.mjs"))
+            .arg(node_entry_path(resources.join("bootstrap.mjs"))?)
             .env("SAGE_HOME", &home)
             .env(
                 "SAGE_DATA_DIR",
@@ -269,6 +293,22 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(windows)]
+    #[test]
+    fn node_entry_path_removes_windows_verbatim_prefix() {
+        assert_eq!(
+            node_entry_path(PathBuf::from(
+                r"\\?\C:\Program Files\SAGE\runtime\bootstrap.mjs"
+            ))
+            .unwrap(),
+            PathBuf::from(r"C:\Program Files\SAGE\runtime\bootstrap.mjs")
+        );
+        assert_eq!(
+            node_entry_path(PathBuf::from(r"\\?\UNC\server\share\runtime\bootstrap.mjs")).unwrap(),
+            PathBuf::from(r"\\server\share\runtime\bootstrap.mjs")
+        );
+        assert!(node_entry_path(PathBuf::from(r"\\?\Volume{1234}\bootstrap.mjs")).is_err());
+    }
     #[test]
     fn only_packaged_origins_can_receive_a_session() {
         assert_eq!(
