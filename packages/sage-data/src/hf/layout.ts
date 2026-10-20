@@ -7,7 +7,7 @@ import { VIEWS } from "../duckdb/sql.js";
  *
  * The SAGE corpus on the Hub holds thousands of matches at two snapshot
  * resolutions, and its directory shape is not something to hard-code from
- * memory. Run `yarn gen data probe` once, read what it inferred, then commit
+ * memory. Run `pnpm gen data probe` once, read what it inferred, then commit
  * the manifest. Everything downstream — listing matches, downloading, opening a
  * match in DuckDB — reads that file, so correcting a bad guess is a text edit
  * rather than a code change.

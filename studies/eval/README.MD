@@ -35,9 +35,9 @@ Rscript analysis/run_all.R --with-power # include the power simulation
 Or in Docker (pinned package versions):
 
 ```sh
-yarn docker:build
-yarn docker:run
-yarn docker:power   # with the power simulation
+pnpm docker:build
+pnpm docker:run
+pnpm docker:power   # with the power simulation
 ```
 
 Outputs land in `data/clean/` and `output/`.

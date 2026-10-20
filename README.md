@@ -1,80 +1,80 @@
 # SAGE: Age of Empires II commentary
 
-SAGE generates match commentary from exported Age of Empires II game data. The
-desktop app downloads matches, processes them locally with DuckDB, and lets you
-inspect the facts, planning steps and prompts behind each commentary.
+[![Discord](https://img.shields.io/badge/Discord-join%20the%20chat-5865F2?logo=discord&logoColor=white)](https://discord.gg/53vnjZ7WhS)
+
+SAGE turns exported Age of Empires II game data into match commentary. The
+desktop app downloads matches, processes them on your computer with DuckDB, and
+shows the facts, planning steps and prompts behind each piece of commentary. This
+repository also holds the INLG 2026 paper, the thesis and the R analysis for both
+user studies.
 
 [Download SAGE](https://github.com/Siewart/sage/releases/latest) ·
 [Dataset](https://huggingface.co/datasets/Siewart/sage) ·
-[Paper version](https://github.com/Siewart/sage/releases/tag/INLG) ·
+[Paper code (INLG tag)](https://github.com/Siewart/sage/releases/tag/INLG) ·
 [Discord](https://discord.gg/53vnjZ7WhS)
 
 ## Install
 
-The [latest release](https://github.com/Siewart/sage/releases/latest) includes
-installers for macOS Apple Silicon and Windows x64. The app includes its local
-runtime; you do not need Node.js, DuckDB or a terminal to use it.
+The [latest release](https://github.com/Siewart/sage/releases/latest) has
+installers for macOS on Apple Silicon (macOS 13.5 or newer) and Windows x64.
+Everything SAGE needs is bundled, so you do not need Node.js, DuckDB or a
+terminal. On macOS, open the DMG, drag SAGE into Applications and open it from
+there. On Windows, run the installer and open SAGE from the Start menu.
 
-| Platform                                 | Installation                                                                 |
-| ---------------------------------------- | ---------------------------------------------------------------------------- |
-| macOS Apple Silicon, macOS 13.5 or newer | Open the DMG, drag SAGE into Applications, then open SAGE from Applications. |
-| Windows x64                              | Run the installer, then open SAGE from the Start menu.                       |
-
-The macOS app is ad-hoc signed and is not notarized by Apple. If macOS says it
-cannot verify SAGE and offers **Move to Trash** or **Done**:
+The macOS app is ad-hoc signed and not notarized by Apple, so macOS blocks the
+first launch. If it says it cannot verify SAGE and offers **Move to Trash** or
+**Done**:
 
 1. Click **Done**.
 2. Open **System Settings → Privacy & Security**.
 3. Under **Security**, find the SAGE message and click **Open Anyway**.
 4. Confirm **Open** and authenticate if prompted.
 
-See [Apple's instructions](https://support.apple.com/en-ie/102445). The Windows
-installer is unsigned. Platform details and download sizes are listed in the
-release notes.
+Apple describes this in [its support article](https://support.apple.com/en-us/102445).
+The Windows installer is unsigned. Download sizes are in the release notes.
 
 ## Use SAGE
 
-1. Choose a match from the dataset browser. **Hugging Face · May 2026** is the
-   default source; **Local / bundled 60s** provides four example matches.
-2. Download the match if needed, then generate commentary. Templates work offline
+1. Pick a match in the dataset browser. The default source is
+   **Hugging Face · May 2026**; **Local / bundled 60s** has four example matches.
+2. Download the match if needed and generate commentary. Templates work offline,
    without a model or API key.
-3. Follow the commentary and current stage. Expand the pipeline inspector to see
-   the data and decisions for a realization.
+3. Follow the commentary and the current pipeline stage, and expand the pipeline
+   inspector to see the data and decisions behind a realization.
 
-The gear button opens Settings. Saved runs can be pinned, restored from Trash or
-permanently deleted. Settings also contains a download manager for removing
+The gear button opens Settings. Saved runs can be pinned, moved to Trash and
+restored, or deleted for good, and the download manager in Settings removes
 cached match files.
 
 ### Models
 
-SAGE supports Gemini, OpenAI, Anthropic and local OpenAI-compatible servers. In
-Settings, select a provider, enter its model identifier and save the model
-settings. Hosted providers require your own API key.
+SAGE works with Gemini, OpenAI, Anthropic and local OpenAI-compatible servers. In
+Settings, pick a provider, enter the model identifier and save. Hosted providers
+need your own API key.
 
-For **Ollama**, start Ollama with a downloaded model, select **OpenAI** in SAGE,
-and set the Base URL to `http://localhost:11434/v1`. Use the exact name of the
-installed model. A local Ollama server does not require an API key. Increase
-**Model request timeout** if model loading or generation takes longer than the
-configured limit.
+For **Ollama**, start Ollama with a downloaded model, choose **OpenAI** in SAGE
+and set the Base URL to `http://localhost:11434/v1`, using the exact name of the
+installed model. A local Ollama server needs no API key. If loading or generating
+takes longer than the limit, raise **Model request timeout**.
 
-Gemini's thinking budget defaults to **0**, as used in the research. This requests
-thinking off where the model supports it; provider-default thinking is a separate
-setting.
+Gemini's thinking budget defaults to **0**, the value used in the research, which
+turns thinking off on models that allow it. Provider-default thinking is a
+separate setting.
 
-### Data and storage
+### Data
 
-The repository includes four matches at 60-second resolution. The larger
-[Hugging Face corpus](https://huggingface.co/datasets/Siewart/sage) also provides
-1-second data. Downloads are stored in a local directory chosen in Settings;
-DuckDB processes the files on your computer.
+The repository includes four matches at 60-second resolution. The
+[Hugging Face corpus](https://huggingface.co/datasets/Siewart/sage) has more
+matches and also 1-second data. Downloads go to a folder you choose in Settings,
+and DuckDB processes them on your computer.
 
-Download sizes refer to compressed Arrow archives or Parquet files. Decoded
-tables need more space, so allow additional memory and temporary disk space for
-processing. Analysis ticks are separate from the dataset's snapshot resolution.
+Download sizes are for the compressed Arrow archives and Parquet files. Decoded
+tables are much larger, so leave room in memory and in temporary disk space.
+Analysis ticks are set separately from the dataset's snapshot resolution.
 
-You can save your own Hugging Face token in Settings. Model keys and the Hugging
-Face token are stored in local settings. Hosted model requests send the prepared
-facts and previous commentary to the selected provider.
+You can add your own Hugging Face token in Settings; it is stored in local
+settings together with the model keys. When you use a hosted model, SAGE sends
+the prepared facts and the previous commentary to that provider.
 
 ## Run from source
 
@@ -85,18 +85,12 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open the local URL printed by Next.js, normally `http://127.0.0.1:3000`, and pair
-with the local service using the address and code printed in the terminal. This
-starts both the interface and processing service on your machine.
+This starts the interface and the processing service. Open the URL that Next.js
+prints, normally `http://127.0.0.1:3000`, and pair it with the local service using
+the address and code shown in the terminal.
 
-For a production build:
-
-```sh
-pnpm build
-pnpm start
-```
-
-Useful checks:
+For a production build, run `pnpm build` and then `pnpm start`. To check your
+changes:
 
 ```sh
 pnpm typecheck
@@ -104,41 +98,36 @@ pnpm --filter @sage/data test
 pnpm --filter @sage/llm test
 pnpm --filter @sage/local-service test
 pnpm --filter sage-core test:data
-pnpm test:generate
 ```
 
-### CLI and study selections
+### Command line
 
-The CLI remains available alongside the desktop app:
+The original CLI still runs next to the desktop app:
 
 ```sh
 pnpm gen generate data/ --module base --provider templates
 ```
 
 It writes Markdown and JSON reports to `packages/sage-core/reports/`. DuckDB is
-the default backend; `--backend arquero` supports the bundled Arrow fixtures.
-See the [CLI reference](packages/sage-core/README.md) for model options and
-individual study selections.
+the default backend; `--backend arquero` runs the bundled Arrow fixtures. The
+[CLI reference](packages/sage-core/README.md) covers model options.
+
+The study selections run as tests, which check the generated reports and then
+remove them:
 
 ```sh
-pnpm test:generate
-pnpm --filter sage-core test:generate:t1
-pnpm --filter sage-core test:generate --testNamePattern T1M2
+pnpm test:generate                                            # all T1–T4 × M1–M4 cases
+pnpm --filter sage-core test:generate:t1                      # T1 in all four configurations
+pnpm --filter sage-core test:generate --testNamePattern T1M2  # one case
 ```
 
-These run all T1–T4 × M1–M4 cases, T1 across all configurations, or T1M2,
-respectively. Generation tests remove their temporary reports after checking
-them.
+## Research
 
-## Research and paper results
-
-The [INLG release](https://github.com/Siewart/sage/releases/tag/INLG) preserves
-the version used for the paper results at
-[`f4b2655`](https://github.com/Siewart/sage/commit/f4b26555ce4c0c3647b0e3acf1cd165e340e2334).
-Use that tag's code, Yarn toolchain and Docker instructions to reproduce the
-paper environment. The DuckDB backend and desktop app are later work.
-
-The research materials remain in this repository:
+The [INLG release](https://github.com/Siewart/sage/releases/tag/INLG) at
+[`f4b2655`](https://github.com/Siewart/sage/commit/f4b26555ce4c0c3647b0e3acf1cd165e340e2334)
+is the code behind the paper results. To reproduce them, use that tag's code,
+Yarn toolchain and Docker instructions; the DuckDB backend and the desktop app
+came later.
 
 | Location                           | Contents                                              |
 | ---------------------------------- | ----------------------------------------------------- |
@@ -147,12 +136,15 @@ The research materials remain in this repository:
 | [studies/prelim/](studies/prelim/) | Preliminary survey, R analysis and results            |
 | [studies/eval/](studies/eval/)     | Evaluation study, R analysis and results              |
 
-Each study has its own README with Docker and R instructions. From `paper/` or
-`thesis/`, `pnpm build` builds the document and `pnpm dev` watches for changes.
-These commands require TeX Live and `latexmk`.
+Each study folder has a README with its Docker and R instructions. In `paper/` or
+`thesis/`, `pnpm build` builds the PDF and `pnpm dev` rebuilds on save. Both need
+TeX Live with `latexmk`.
 
-Language models are used for commentary realization and have also assisted with
-code and documentation. The paper and thesis describe their role in the research.
+### A note on AI use
+
+Language models realize the commentary in the pipeline and were also used as
+coding and writing assistants. All design choices and interpretations were made
+by people. The paper and thesis describe where models were used in the research.
 
 ## Repository layout
 
@@ -183,6 +175,10 @@ For the pipeline:
 }
 ```
 
+**APA:** van Wingerden, S., Theune, M., & Gatti, L. (2026). _From full game state
+to live commentary: A data-to-text pipeline and corpus for Age of Empires II_. In
+Proceedings of the International Natural Language Generation Conference (INLG 2026).
+
 For the dataset:
 
 ```bibtex
@@ -199,8 +195,9 @@ For the dataset:
 ## License
 
 The code is [MIT](LICENSE), except for the [SimpleNLG port](packages/simplenlg-core/LICENSE),
-which is MPL 2.0. The paper is [CC BY 4.0](paper/LICENSE.md), with exclusions for
-the ACL style files and game screenshot described in its license.
+which is MPL 2.0 like SimpleNLG itself. The paper is [CC BY 4.0](paper/LICENSE.md),
+since MIT is a software license and does not fit a written work; the ACL style
+files and the game screenshot are excluded, as its license describes.
 
 The dataset is released separately under CC0, except for fields derived from game
 content, which remain subject to Xbox's Game Content Usage Rules.
