@@ -1,6 +1,8 @@
 # SAGE: Age of Empires II commentary
 
-[![Discord](https://img.shields.io/badge/Discord-join%20the%20chat-5865F2?logo=discord&logoColor=white)](https://discord.gg/53vnjZ7WhS)
+[![Dataset](https://img.shields.io/badge/Hugging%20Face-dataset-FFD21E?logo=huggingface&logoColor=white)](https://huggingface.co/datasets/Siewart/sage)
+[![PromptTree](https://img.shields.io/badge/PromptTree-easy%20setup-3448d0?logo=data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSI3NiAwIDcxNiA5MDIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEwMS4zLDQ3Ni4zQzEzNy43LDUxMi43IDEzNy43LDU3MS44IDEwMS4zLDYwOC4yQzEzNy43LDU3MS44IDE5Ni44LDU3MS44IDIzMy4yLDYwOC4yQzE5Ni44LDU3MS44IDE5Ni44LDU1Mi43IDIzMy4yLDQ3Ni4zQzE5Ni44LDUxMi43IDEzNy43LDUxMi43IDEwMS4zLDQ3Ni4zWk02MzUuMiw0OTUuNkM2NzEuNiw0NTkuMiA3MzAuNyw0NTkuMiA3NjcuMSw0OTUuNkM3MzAuNyw0NTkuMiA3MzAuNyw0MDAuMSA3NjcuMSwzNjMuN0M3MzAuNyw0MDAuMSA2NzEuNiw0MDAuMSA2MzUuMiwzNjMuN0M2NzEuNiw0MDAuMSA2NzEuNiw0NTkuMiA2MzUuMiw0OTUuNlpNNDMzLjgsMzk4LjFDNDMzLjgsMjk1LjIgNTE3LjQsMjExLjYgNjIwLjQsMjExLjZDNTE3LjQsMjExLjYgNDMzLjgsMTI4IDQzMy44LDI1QzQzMy44LDEyOCAzNTAuMiwyMTEuNiAyNDcuMiwyMTEuNkMzNTAuMiwyMTEuNiA0MzMuOCwyOTUuMiA0MzMuOCwzOTguMVpNMjgxLjksNTQ1LjRDMzY4LjMsNTYxLjcgNDMzLjgsNjM3LjcgNDMzLjgsNzI4LjhNNTg1LjcsODc2LjVDNDk5LjIsODYwLjMgNDMzLjgsNzg0LjMgNDMzLjgsNjkzLjJNMjgxLjksODc2LjVDMzY4LjMsODYwLjMgNDMzLjgsNzg0LjMgNDMzLjgsNjkzLjJNNTg1LjcsNDM0LjdDNDk5LjIsNDUxIDQzMy44LDUyNi45IDQzMy44LDYxOE00MzMuOCw0NjYuM0w0MzMuOCw2OTAuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI1MCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+)](https://prompttree.link/siewart/sage)
+[![Discord](https://img.shields.io/badge/Discord-support%20%26%20questions-5865F2?logo=discord&logoColor=white)](https://discord.gg/53vnjZ7WhS)
 
 SAGE turns exported Age of Empires II game data into match commentary. The
 desktop app downloads matches, processes them on your computer with DuckDB, and
@@ -9,9 +11,7 @@ repository also holds the INLG 2026 paper, the thesis and the R analysis for bot
 user studies.
 
 [Download SAGE](https://github.com/Siewart/sage/releases/latest) ·
-[Dataset](https://huggingface.co/datasets/Siewart/sage) ·
-[Paper code (INLG tag)](https://github.com/Siewart/sage/releases/tag/INLG) ·
-[Discord](https://discord.gg/53vnjZ7WhS)
+[Paper repro code (INLG tag)](https://github.com/Siewart/sage/releases/tag/INLG)
 
 ## Install
 
@@ -78,7 +78,7 @@ the prepared facts and the previous commentary to that provider.
 
 ## Run from source
 
-Use **Node.js 24.13.1** and **pnpm 9.15.9**. From the repository root:
+Use **Node.js 24** and **pnpm 9**. From the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
@@ -167,30 +167,18 @@ For the pipeline:
 
 ```bibtex
 @inproceedings{vanWingerden2026sage,
-  author    = {van Wingerden, Siewart and Theune, Mari\"et and Gatti, Lorenzo},
+  author    = {van Wingerden, Siewart and Theune, Mari{\"e}t and Gatti, Lorenzo},
   title     = {From Full Game State to Live Commentary: A Data-to-Text Pipeline and Corpus for {Age of Empires II}},
-  booktitle = {Proceedings of the International Natural Language Generation Conference (INLG 2026)},
+  booktitle = {Proceedings of the 19th International Natural Language Generation Conference (INLG 2026)},
   year      = {2026},
-  note      = {To appear},
+  address   = {Utrecht, The Netherlands},
+  publisher = {Association for Computational Linguistics},
 }
 ```
 
 **APA:** van Wingerden, S., Theune, M., & Gatti, L. (2026). _From full game state
 to live commentary: A data-to-text pipeline and corpus for Age of Empires II_. In
 Proceedings of the International Natural Language Generation Conference (INLG 2026).
-
-For the dataset:
-
-```bibtex
-@dataset{VanWingerden2026sage,
-  author    = {van Wingerden, S.},
-  title     = {{SAGE} Dataset: Age of Empires {II} {DE} Match Analytics},
-  year      = {2026},
-  publisher = {Hugging Face},
-  doi       = {10.57967/hf/10202},
-  url       = {https://huggingface.co/datasets/Siewart/sage},
-}
-```
 
 ## License
 
