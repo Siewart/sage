@@ -343,6 +343,11 @@ function Workspace({
     </QueryClientProvider>
   );
 }
+const localModelServers = [
+  { name: "Ollama", url: "http://localhost:11434/v1" },
+  { name: "LM Studio", url: "http://localhost:1234/v1" },
+] as const;
+
 function ProviderFields({
   value,
   onChange,
@@ -377,18 +382,43 @@ function ProviderFields({
               required
             />
           </label>
-          <label>
-            API base URL (optional)
-            <input
-              value={value.baseUrl}
-              onChange={(e) => onChange({ ...value, baseUrl: e.target.value })}
-              placeholder={
-                value.kind === "openai"
-                  ? "http://127.0.0.1:11434/v1"
-                  : "Provider default"
-              }
-            />
-          </label>
+          <div className="stack">
+            <label>
+              API base URL (optional)
+              <input
+                type="url"
+                value={value.baseUrl}
+                onChange={(e) =>
+                  onChange({ ...value, baseUrl: e.target.value })
+                }
+                placeholder="Provider default"
+              />
+            </label>
+            {value.kind === "openai" && (
+              <div className="local-model-servers">
+                <span className="small muted">Common local servers</span>
+                <div className="row">
+                  {localModelServers.map((server) => (
+                    <Button
+                      key={server.name}
+                      type="button"
+                      className="secondary local-model-server"
+                      onClick={() =>
+                        onChange({ ...value, baseUrl: server.url })
+                      }
+                    >
+                      <strong>{server.name}</strong>
+                      <code>{server.url}</code>
+                    </Button>
+                  ))}
+                </div>
+                <span className="small muted">
+                  Choose an address to fill the field. Start the server
+                  separately, then save your model settings.
+                </span>
+              </div>
+            )}
+          </div>
           <label>
             Model request timeout (seconds)
             <input
