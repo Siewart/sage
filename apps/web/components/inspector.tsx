@@ -1,4 +1,9 @@
 "use client";
+import dynamic from "next/dynamic";
+const MatchExplorer = dynamic(
+  () => import("./match-explorer").then((module) => module.MatchExplorer),
+  { ssr: false },
+);
 import { CommentaryFeed } from "./commentary-feed";
 import { DatasetResults } from "./dataset-results";
 import { GameTime } from "./game-time";
@@ -509,6 +514,10 @@ function Workbench({
   const [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [page, setPage] = useState(0);
+  const [explorerPosition, setExplorerPosition] = useState<{
+    timeMs: number;
+    sequence: number;
+  } | null>(null);
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
   const [downloadsOpen, setDownloadsOpen] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
@@ -633,6 +642,7 @@ function Workbench({
     void qc.invalidateQueries({ queryKey: ["datasets"] });
   });
   function chooseRun(id: string) {
+    setExplorerPosition(null);
     setRunId(id);
     setRealizationId("");
     setPage(0);
@@ -1204,6 +1214,34 @@ function Workbench({
                 >
                   Generate commentary
                 </Button>
+                <Button
+                  type="button"
+                  className="secondary"
+                  disabled={!selected || busy}
+                  onClick={() => {
+                    if (!selected) return;
+                    if (
+                      run.data?.descriptorPath &&
+                      JSON.stringify(run.data.request.source) ===
+                        JSON.stringify(selected.source)
+                    ) {
+                      setExplorerPosition({ timeMs: 0, sequence: Date.now() });
+                      return;
+                    }
+                    void action(async () => {
+                      const result = await api.start.mutate({
+                        source: selected.source,
+                        operation: "download",
+                        provider: emptyProvider,
+                        module: "base",
+                      });
+                      chooseRun(result.id);
+                      setExplorerPosition({ timeMs: 0, sequence: Date.now() });
+                    });
+                  }}
+                >
+                  {selected?.cached ? "Explore match" : "Download and explore"}
+                </Button>
                 {selected?.source.kind === "hf" && (
                   <Button
                     type="button"
@@ -1233,9 +1271,32 @@ function Workbench({
               </div>
             </form>
           </Panel>
+          {explorerPosition && run.data && (
+            <MatchExplorer
+              key={runId}
+              api={api}
+              run={run.data}
+              position={explorerPosition}
+              onClose={() => setExplorerPosition(null)}
+            />
+          )}
           <Panel
             title="Commentary"
-            aside={run.data ? <Badge>{run.data.status}</Badge> : undefined}
+            aside={
+              run.data ? (
+                <div className="row">
+                  <Badge>{run.data.status}</Badge>
+                  <Button
+                    className="secondary"
+                    onClick={() =>
+                      setExplorerPosition({ timeMs: 0, sequence: Date.now() })
+                    }
+                  >
+                    Explore match
+                  </Button>
+                </div>
+              ) : undefined
+            }
           >
             {run.data ? (
               <>
@@ -1243,6 +1304,9 @@ function Workbench({
                   key={runId}
                   run={run.data}
                   loadPage={loadCommentaryPage}
+                  onInspect={(timeMs) =>
+                    setExplorerPosition({ timeMs, sequence: Date.now() })
+                  }
                   busy={busy}
                   onStop={() =>
                     void action(() => api.cancel.mutate({ id: runId }))

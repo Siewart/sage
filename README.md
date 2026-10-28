@@ -42,6 +42,11 @@ The Windows installer is unsigned. Download sizes are in the release notes.
 3. Follow the commentary and the current pipeline stage, and expand the pipeline
    inspector to see the data and decisions behind a realization.
 
+**Explore match** opens linked events, snapshot tables, a GPU map and video playback,
+including before commentary is generated. Commentary entries have **Inspect this moment**;
+earlier commentary stays visible when no new text exists at the selected time.
+See the [match explorer guide](apps/web/README.md) for controls and video calibration.
+
 The gear button opens Settings. Saved runs can be pinned, moved to Trash and
 restored, or deleted for good, and the download manager in Settings removes
 cached match files.

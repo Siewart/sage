@@ -43,11 +43,14 @@ class InstantAnalyzer<
     >,
   ) {}
 
-  *nextEvent(): Generator<EventType, void> {
+  *nextEvent(
+    onCoverage?: (time: number, completed: boolean) => void,
+  ): Generator<EventType, void> {
     for (const item of this.data) {
       this.currentTime = Number(
         (item as Record<string, unknown>)["worldTime"] ?? 0,
       );
+      onCoverage?.(this.currentTime, false);
       this.currentSource = item;
       for (const parser of this.instantParsers) {
         this.currentAnalyzer = parser.name || "anonymous analyzer";
@@ -56,6 +59,7 @@ class InstantAnalyzer<
           yield* result;
         }
       }
+      onCoverage?.(this.currentTime, true);
     }
   }
 }
@@ -213,7 +217,7 @@ export class NLGSystem {
     const started = performance.now();
     let counter = 0;
     let lastCommentary = -Infinity;
-    for (const event of this.analyzer.nextEvent()) {
+    for (const event of this.analyzer.nextEvent(observer?.onCoverage)) {
       const gameTimeMs = this.analyzer.currentTime;
       observer?.onProgress?.(gameTimeMs);
       for (const [name, template] of Object.entries(this.templates)) {

@@ -10,6 +10,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@luma.gl/core": "9.4.2",
+    "@luma.gl/engine": "9.4.2",
+    "@luma.gl/webgl": "9.4.2",
+    "@luma.gl/webgpu": "9.4.2",
     "@sage/contracts": "workspace:*",
     "@sage/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.3.3",

@@ -1,3 +1,11 @@
+import { studyVideo } from "./study-videos.js";
+import { MatchReader } from "./match-reader.js";
+import { commentaryContext } from "./commentary-context.js";
+import type {
+  InspectionRequest,
+  MatchVideo,
+  CoverageProgress,
+} from "@sage/contracts/explorer";
 import { validateHfToken } from "./hf-token.js";
 import { matchesDataset, type CatalogFilter } from "./catalog-filter.js";
 import { fillTemplate } from "@sage/data/hf/layout";
@@ -58,6 +66,11 @@ export class Backend implements LocalBackend {
   >();
   private closing = false;
   private previewActive = false;
+  private matchReader = new MatchReader(WORKER, WORKER_ARGS);
+  private commentaryCache = new Map<
+    string,
+    { entries: Realization[]; coverage?: CoverageProgress }
+  >();
   private sequences = new Map<string, number>();
   private metadataIndexes = new Map<
     string,
@@ -130,6 +143,11 @@ export class Backend implements LocalBackend {
     };
     fs.appendFileSync(file, JSON.stringify(event) + "\n", { mode: 0o600 });
     this.sequences.set(id, event.sequence);
+    const cached = this.commentaryCache.get(id);
+    if (cached && kind === "realization")
+      cached.entries.push(data as Realization);
+    if (cached && kind === "coverage")
+      cached.coverage = data as CoverageProgress;
     this.emitter.emit(id, event);
   }
   register(descriptorPath: string): Dataset {
@@ -202,7 +220,8 @@ export class Backend implements LocalBackend {
     }
   }
   private downloadProtection(match: CachedMatch) {
-    if (this.previewActive) return "A dataset preview is running";
+    if (this.previewActive || this.matchReader.busy)
+      return "A dataset preview is running";
     for (const run of this.runs.values()) {
       if (
         !["queued", "running"].includes(run.status) &&
@@ -251,6 +270,7 @@ export class Backend implements LocalBackend {
     if (this.deletingDownloads)
       throw new Error("A dataset deletion is already in progress");
     this.deletingDownloads = true;
+    if (!this.matchReader.busy) this.matchReader.release();
     const result: import("@sage/contracts").DeleteDownloadsResult = {
       deleted: [],
       failed: [],
@@ -791,6 +811,75 @@ export class Backend implements LocalBackend {
     this.metadataIndexes.clear();
     return this.settings.update(input);
   }
+  inspect(input: InspectionRequest) {
+    if (this.closing || this.deletingDownloads)
+      throw new Error("Match inspection is temporarily unavailable");
+    const run = this.getRun(input.id);
+    if (!run.descriptorPath || !fs.existsSync(run.descriptorPath))
+      throw new Error(
+        "Download this match to inspect its data. Saved commentary remains available.",
+      );
+    return this.matchReader.read({
+      kind: "inspect",
+      id: run.id,
+      request: run.request,
+      descriptorPath: run.descriptorPath,
+      dataDirectory: this.settings.publicSettings().dataDirectory,
+      inspection: input,
+    });
+  }
+  commentaryAt(input: { id: string; timeMs: number; endMs: number }) {
+    const run = this.getRun(input.id);
+    if (input.endMs < input.timeMs)
+      throw new Error("Invalid commentary window");
+    let cached = this.commentaryCache.get(input.id);
+    if (!cached) {
+      const events = this.events(input.id, 0, Number.MAX_SAFE_INTEGER);
+      cached = {
+        entries: events
+          .filter((e) => e.kind === "realization")
+          .map((e) => e.data as Realization),
+        coverage: events.filter((e) => e.kind === "coverage").at(-1)?.data as
+          | CoverageProgress
+          | undefined,
+      };
+      if (this.commentaryCache.size >= 10)
+        this.commentaryCache.delete(this.commentaryCache.keys().next().value!);
+      this.commentaryCache.set(input.id, cached);
+    }
+    return commentaryContext(
+      run,
+      cached.entries,
+      cached.coverage,
+      input.timeMs,
+      input.endMs,
+    );
+  }
+
+  private videoFile(id: string) {
+    const run = this.getRun(id);
+    // Match-scoped, shared across generation and download-only runs.
+    const key = createHash("sha256")
+      .update(run.descriptorPath ?? JSON.stringify(run.request.source))
+      .digest("hex");
+    const directory = path.join(this.settings.home, "videos");
+    fs.mkdirSync(directory, { recursive: true });
+    return path.join(directory, key + ".json");
+  }
+  matchVideo(id: string): MatchVideo | null {
+    const file = this.videoFile(id);
+    try {
+      return JSON.parse(fs.readFileSync(file, "utf8"));
+    } catch {
+      return studyVideo(this.getRun(id).sourceName);
+    }
+  }
+  saveMatchVideo(id: string, video: MatchVideo) {
+    const file = this.videoFile(id);
+    fs.writeFileSync(file + ".partial", JSON.stringify(video), { mode: 0o600 });
+    fs.renameSync(file + ".partial", file);
+    return video;
+  }
   async preview(input: {
     id: string;
     table: string;
@@ -878,6 +967,7 @@ export class Backend implements LocalBackend {
   }
   async shutdown() {
     this.closing = true;
+    this.matchReader.close();
     const child = this.active?.child;
     if (!child) return;
     await new Promise<void>((resolve) => {

@@ -13,11 +13,13 @@ export function CommentaryFeed({
   loadPage,
   busy,
   onStop,
+  onInspect,
 }: {
   run: RunSummary;
   loadPage: (offset: number, signal: AbortSignal) => Promise<Realization[]>;
   busy: boolean;
   onStop: () => void;
+  onInspect: (timeMs: number) => void;
 }) {
   const feed = useRef<HTMLDivElement>(null);
   const follow = useRef(true);
@@ -44,7 +46,9 @@ export function CommentaryFeed({
       setHasMore(next.data.length === 50 || running);
     } else if (!running) setHasMore(false);
   }, [next.data, next.dataUpdatedAt, running, cursor]);
-  const messages = realizations.filter((item) => item.text.trim());
+  const messages = realizations.filter(
+    (item) => item.text.trim() && !item.deferred && !item.decision,
+  );
   const lastMessage = messages.at(-1)?.id;
   useEffect(() => {
     const el = feed.current;
@@ -96,6 +100,12 @@ export function CommentaryFeed({
             <div className="message-meta">
               <span>SAGE</span>
               <GameTime milliseconds={item.gameTimeMs} />
+              <Button
+                className="secondary"
+                onClick={() => onInspect(item.gameTimeMs)}
+              >
+                Inspect this moment
+              </Button>
             </div>
             <div className="commentary-markdown">
               <Markdown

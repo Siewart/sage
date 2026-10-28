@@ -1,3 +1,11 @@
+import {
+  inspectionSchema,
+  videoSchema,
+  type InspectionRequest,
+  type InspectionResult,
+  type CommentaryContext,
+  type MatchVideo,
+} from "./explorer.js";
 import { initTRPC } from "@trpc/server";
 import { z } from "zod";
 import { runRequestSchema, settingsUpdateSchema } from "./index.js";
@@ -14,6 +22,14 @@ import type {
 } from "./index.js";
 
 export interface LocalBackend {
+  inspect(input: InspectionRequest): Promise<InspectionResult>;
+  commentaryAt(input: {
+    id: string;
+    timeMs: number;
+    endMs: number;
+  }): CommentaryContext;
+  matchVideo(id: string): MatchVideo | null;
+  saveMatchVideo(id: string, video: MatchVideo): MatchVideo;
   datasets(input: {
     filter: string;
     minDurationMs?: number | undefined;
@@ -66,6 +82,23 @@ const t = initTRPC.create();
 const id = z.object({ id: z.string().regex(/^[a-f0-9-]{36}$/) });
 export function createLocalRouter(backend: LocalBackend) {
   return t.router({
+    inspect: t.procedure
+      .input(inspectionSchema)
+      .query(({ input }) => backend.inspect(input)),
+    commentaryAt: t.procedure
+      .input(
+        id.extend({
+          timeMs: z.number().finite().nonnegative(),
+          endMs: z.number().finite().nonnegative(),
+        }),
+      )
+      .query(({ input }) => backend.commentaryAt(input)),
+    matchVideo: t.procedure
+      .input(id)
+      .query(({ input }) => backend.matchVideo(input.id)),
+    saveMatchVideo: t.procedure
+      .input(id.extend({ video: videoSchema }))
+      .mutation(({ input }) => backend.saveMatchVideo(input.id, input.video)),
     datasets: t.procedure
       .input(
         z.object({

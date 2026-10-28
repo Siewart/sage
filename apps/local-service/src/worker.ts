@@ -1,3 +1,8 @@
+import { inspectMatch } from "./match-query.js";
+import type {
+  InspectionRequest,
+  CoverageProgress,
+} from "@sage/contracts/explorer";
 import { realizePrompt, preparedPromptSchema } from "@sage/llm";
 import { performance } from "node:perf_hooks";
 import { makeDataSetFromPath } from "../../../packages/sage-core/gen/study/init.js";
@@ -9,7 +14,8 @@ import { execution } from "@sage/contracts/execution";
 import type { RunRequest } from "@sage/contracts";
 
 export interface WorkerInput {
-  kind: "run" | "preview" | "rerun";
+  kind: "run" | "preview" | "rerun" | "inspect";
+  inspection?: InspectionRequest;
   id: string;
   request: RunRequest;
   descriptorPath?: string;
@@ -21,15 +27,37 @@ export interface WorkerInput {
   recordedRealization?: { gameTimeMs: number; template: string };
 }
 const send = (kind: string, data: unknown) => process.send?.({ kind, data });
-const MANIFEST = process.env["SAGE_RESOURCE_ROOT"] ? `${process.env["SAGE_RESOURCE_ROOT"]}/packages/sage-data/src/default-layout.json` : fileURLToPath(
-  new URL(
-    "../../../packages/sage-data/src/default-layout.json",
-    import.meta.url,
-  ),
-);
+const MANIFEST = process.env["SAGE_RESOURCE_ROOT"]
+  ? `${process.env["SAGE_RESOURCE_ROOT"]}/packages/sage-data/src/default-layout.json`
+  : fileURLToPath(
+      new URL(
+        "../../../packages/sage-data/src/default-layout.json",
+        import.meta.url,
+      ),
+    );
 console.log = () => {};
 
-process.once("message", async (input: WorkerInput) => {
+let matchQuery: ReturnType<typeof openDuckDbMatch> | undefined;
+process.on("disconnect", () => {
+  matchQuery?.close();
+  process.exit(0);
+});
+process.on("message", async (input: WorkerInput) => {
+  if (input.kind === "inspect") {
+    try {
+      process.env["SAGE_DATA_DIR"] = input.dataDirectory;
+      matchQuery ??= openDuckDbMatch(input.descriptorPath!);
+      send(
+        "inspection-result",
+        inspectMatch(matchQuery, input.descriptorPath!, input.inspection!),
+      );
+    } catch (error) {
+      send("inspection-failed", {
+        message: error instanceof Error ? error.message : "Inspection failed",
+      });
+    }
+    return;
+  }
   try {
     process.env["SAGE_DATA_DIR"] = input.dataDirectory;
     const started = performance.now();
@@ -158,25 +186,53 @@ process.once("message", async (input: WorkerInput) => {
         });
         send("phase", { phase: "generating" });
         let progressAt = 0;
-        await execution.run(
-          {
-            runId: input.id,
-            provider: input.request.provider,
-            apiKey: input.apiKey,
-          },
-          () =>
-            system.generateText({
-              commentaryIntervalMs: input.request.commentaryIntervalMs,
-              onStep: (id, step) => send("step", { id, step }),
-              onRealization: (value) => send("realization", value),
-              onProgress: (gameTimeMs) => {
-                if (performance.now() - progressAt > 250) {
-                  progressAt = performance.now();
-                  send("progress", { gameTimeMs });
-                }
-              },
-            }),
-        );
+        let coverageAt = 0;
+        const coverage: CoverageProgress = {
+          throughMs: null,
+          processingMs: null,
+        };
+        try {
+          await execution.run(
+            {
+              runId: input.id,
+              provider: input.request.provider,
+              apiKey: input.apiKey,
+            },
+            () =>
+              system.generateText({
+                commentaryIntervalMs: input.request.commentaryIntervalMs,
+                onCoverage: (time, completed) => {
+                  if (completed) {
+                    coverage.throughMs = time;
+                    coverage.processingMs = null;
+                  } else coverage.processingMs = time;
+                  if (
+                    performance.now() - coverageAt > 500 ||
+                    (!completed && coverage.throughMs === null)
+                  ) {
+                    coverageAt = performance.now();
+                    send("coverage", coverage);
+                  }
+                },
+                onStep: (id, step) => send("step", { id, step }),
+                onRealization: (value) => send("realization", value),
+                onProgress: (gameTimeMs) => {
+                  if (performance.now() - progressAt > 250) {
+                    progressAt = performance.now();
+                    send("progress", { gameTimeMs });
+                  }
+                },
+              }),
+          );
+        } catch (error) {
+          send("coverage", coverage);
+          throw error;
+        }
+        send("coverage", {
+          throughMs: data.query.binTimes().at(-1)?.[1] ?? 0,
+          processingMs: null,
+          complete: true,
+        });
         send("metrics", {
           elapsedMs: performance.now() - started,
           maxRssBytes: process.resourceUsage().maxRSS * 1024,
