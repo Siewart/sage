@@ -149,7 +149,7 @@ export class MatchMapRenderer {
         adapters: [webgpuAdapter],
         createCanvasContext: {
           canvas,
-          autoResize: true,
+          autoResize: false,
           useDevicePixels: Math.min(devicePixelRatio, 2),
         },
       });
@@ -159,7 +159,7 @@ export class MatchMapRenderer {
         adapters: [webgl2Adapter],
         createCanvasContext: {
           canvas,
-          autoResize: true,
+          autoResize: false,
           useDevicePixels: Math.min(devicePixelRatio, 2),
         },
       });
@@ -318,6 +318,15 @@ export class MatchMapRenderer {
       });
   }
   private draw() {
+    const rect = this.canvas.getBoundingClientRect();
+    if (!this.canvas.isConnected || rect.width <= 0 || rect.height <= 0) return;
+    const context = this.device.getDefaultCanvasContext();
+    const ratio = Math.min(devicePixelRatio, 2);
+    const [maxWidth, maxHeight] = context.getMaxDrawingBufferSize();
+    context.setDrawingBufferSize(
+      Math.min(maxWidth, Math.max(1, Math.round(rect.width * ratio))),
+      Math.min(maxHeight, Math.max(1, Math.round(rect.height * ratio))),
+    );
     const { sx, sy } = this.transform();
     this.camera.write(
       new Float32Array([sx, sy, -this.center[0] * sx, -this.center[1] * sy]),

@@ -254,7 +254,7 @@ export function MatchVideo({
           <p className="small">{file.name}</p>
           <video
             ref={native}
-            src={localUrl}
+            src={localUrl || undefined}
             controls
             preload="metadata"
             className="match-video"
