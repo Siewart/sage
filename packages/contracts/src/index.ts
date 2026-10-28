@@ -160,6 +160,7 @@ export interface Realization {
   realizeMs: number;
 }
 export interface GenerationObserver {
+  onCoverage?: (gameTimeMs:number, completed:boolean) => void;
   onStep?: (id: string, step: TraceStep) => void;
   onRealization?: (value: Realization) => void;
   onProgress?: (gameTimeMs: number) => void;

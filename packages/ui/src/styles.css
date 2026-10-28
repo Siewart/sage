@@ -1024,3 +1024,117 @@ footer {
     grid-column: 1;
   }
 }
+
+/* Match explorer: GPU canvas and independently scrollable, bounded data pages. */
+.match-explorer {
+  gap: 1rem;
+}
+.explorer-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+.explorer-split > * {
+  min-width: 0;
+}
+.match-map-wrap {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border, #68746a);
+  border-radius: 8px;
+  background: #171f19;
+}
+.match-map {
+  display: block;
+  width: 100%;
+  height: 380px;
+  touch-action: none;
+  cursor: grab;
+}
+.match-map:active {
+  cursor: grabbing;
+}
+.match-map:focus-visible {
+  outline: 3px solid #64c768;
+  outline-offset: -3px;
+}
+.map-selection-box {
+  position: absolute;
+  border: 1px solid white;
+  background: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+}
+.match-video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #101410;
+  border-radius: 8px;
+}
+.youtube-host iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 8px;
+}
+.explorer-table {
+  max-height: 360px;
+  overflow: auto;
+}
+.explorer-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface, #2b302d);
+}
+.explorer-table td {
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.selected-row {
+  background: rgba(80, 174, 107, 0.25);
+}
+.row-select {
+  cursor: pointer;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  min-width: 30px;
+  min-height: 30px;
+}
+.explorer-commentary {
+  border: 1px solid var(--border, #68746a);
+  padding: 1rem;
+  border-radius: 8px;
+}
+.explorer-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.explorer-time input {
+  max-width: 130px;
+}
+.match-explorer .json {
+  max-height: 400px;
+  overflow: auto;
+}
+@media (max-width: 1100px) {
+  .explorer-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .match-map {
+    height: 340px;
+  }
+}
+.explorer-table table {
+  table-layout: auto;
+  width: max-content;
+  min-width: 100%;
+}
+.explorer-table th {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}

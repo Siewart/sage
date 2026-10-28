@@ -6,7 +6,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./execution": "./src/execution.ts",
-    "./router": "./src/router.ts"
+    "./router": "./src/router.ts",
+    "./explorer": "./src/explorer.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

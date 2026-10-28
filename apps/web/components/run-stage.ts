@@ -9,6 +9,7 @@ export function currentStageName(run: RunSummary) {
       cancelled: "Cancelled",
       interrupted: "Interrupted",
     }[run.status];
+  if (run.request.operation === "download") return "Opening match data";
   if (run.phase === "downloading") return "Downloading dataset";
   if (run.phase === "preparing") return "Preparing match";
   const names = {

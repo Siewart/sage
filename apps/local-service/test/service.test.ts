@@ -113,6 +113,16 @@ test(
         result = await client.run.query({ id: run.id });
       }
       assert.equal(result.status, "completed", result.error);
+      assert.equal(
+        (
+          await client.commentaryAt.query({
+            id: run.id,
+            timeMs: 100000,
+            endMs: 120000,
+          })
+        ).state,
+        "analyzed",
+      );
       assert.ok(result.currentStage);
       assert.ok((result.realizationCount ?? 0) > 0);
       assert.ok(
